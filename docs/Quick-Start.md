@@ -4,7 +4,7 @@
 
 ### Machines
 
-You need ***Three*** kinds of machines:
+You need ***Three*** kinds of machines:
 
 1. A deploy machine. 
 

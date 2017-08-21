@@ -74,7 +74,7 @@ Detail explanations of gw/vlan/metric can be seen from the comments in `nic_sett
 
 But for simplicity, you shoud set the switch ports connected with those server nodes to `trunk` mode and allow all vlans pass through. In VMware workstation test environment, you don't have to worry about the underneath virtual switch configuration.
 
-### Which Networks should a Node configure?
+### Which Networks should a Node configure?
 
 Not all networks will be needed on all target nodes, so you can use `osdm_configure_<name>_if: <true/false>`  like variables on a per-node ansible ***host_vars*** file or on a ***per-group ansible group_vars*** to control wether to configure the specific networks for the target nodes.
 
