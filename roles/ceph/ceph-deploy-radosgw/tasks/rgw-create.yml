@@ -1,0 +1,16 @@
+---
+
+# using ceph-deploy to create rgw
+- name: check if ceph-deploy dir exists
+  stat: path={{ ceph_deploy_dir }}
+  register: ceph_deploy_dir_stat
+
+- name: fail when ceph-deploy dir not exist
+  fail:
+    msg: "Could not find ceph-deploy dir: {{ ceph_deploy_dir }}"
+  when: not ceph_deploy_dir_stat.stat.exists
+
+- name: ceph-deploy add/create rgw
+  shell: "cd {{ ceph_deploy_dir }};
+          ceph-deploy --overwrite-conf rgw create {{ hostvars[inventory_hostname]['ansible_hostname'] }};
+         "

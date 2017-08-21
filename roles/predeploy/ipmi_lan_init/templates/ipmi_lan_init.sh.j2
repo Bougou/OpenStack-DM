@@ -1,0 +1,27 @@
+#!/bin/bash
+
+lan_channel_num=1
+ipmi_user=root
+ipmi_pass='{{ osdm_ipmi_pass }}'
+
+# ipmitool treat 'off' to disable vlan.
+ipmi_lan_vlan='{% if osdm_ipmi_lan_vlan == 0 %}off{% else %}{{ osdm_ipmi_lan_vlan }}{% endif %}'
+
+ipmi_lan_ip='{{ osdm_ipmi_lan_ip }}'
+ipmi_lan_mask='{{ osdm_ipmi_lan_netmask }}'
+ipmi_lan_gw='{{ osdm_ipmi_lan_gw }}'
+
+ipmitool delloem lan set shared
+sleep 1; ipmitool lan set $lan_channel_num vlan id $ipmi_lan_vlan
+sleep 1; ipmitool lan set $lan_channel_num ipsrc static
+sleep 1; ipmitool lan set $lan_channel_num ipaddr $ipmi_lan_ip
+sleep 1; ipmitool lan set $lan_channel_num netmask $ipmi_lan_mask
+sleep 1; ipmitool lan set $lan_channel_num defgw ipaddr $ipmi_lan_gw
+sleep 1; ipmitool lan set $lan_channel_num access on
+
+sleep 1;
+ipmi_user_id=$(ipmitool user list $lan_channel_num | grep $ipmi_user | awk '{print $1}')
+
+sleep 1; ipmitool user enable $ipmi_user_id
+sleep 1; ipmitool channel setaccess $lan_channel_num $ipmi_user_id ipmi=on link=on privilege=4
+sleep 1; ipmitool user set password $ipmi_user_id $ipmi_pass

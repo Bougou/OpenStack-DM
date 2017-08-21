@@ -1,0 +1,3 @@
+nova_deploy_api_cell: false
+nova_deploy_nova_cell: false
+nova_deploy_nova_compute: false

@@ -1,0 +1,4 @@
+bosun_install_dir: '/opt/bosun'
+bosun_bin_dir: "{{ bosun_install_dir }}/bin"
+bosun_conf_dir: "{{ bosun_install_dir }}/config"
+

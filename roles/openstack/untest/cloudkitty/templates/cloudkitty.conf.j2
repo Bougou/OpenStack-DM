@@ -1,0 +1,70 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+log_dir = /var/log/cloudkitty
+
+[api]
+
+
+[tenant_fetcher]
+backend = keystone
+
+[keystone_fetcher]
+keystone_version = 3
+auth_section = auth
+
+[ceilometer_collector]
+auth_section = auth
+
+[auth]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = cloudkitty
+password = {{ osdm_user_service_pass }}
+interface = internalURL
+
+[collect]
+period = 3600
+services = compute,image,volume,network.bw.in,network.bw.out,network.floating
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+connection = mysql://{{ osdm_os_cloudkitty_db_user }}:{{ osdm_os_cloudkitty_db_pass }}@{{ osdm_mysql_mgmt_ip }}/cloudkitty
+
+
+[gnocchi_collector]
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = cinder
+password = {{ osdm_user_service_pass }}
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ osdm_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass }}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true
+rabbit_durable_queues = true
+

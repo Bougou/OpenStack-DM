@@ -1,0 +1,51 @@
+---
+
+- name: install lvm and nfs on share node
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - lvm2
+    - nfs-utils
+    - nfs4-acl-tools
+    - portmap
+  tags:
+    - install
+
+
+- name: ln nfs-server to nfs-kernel-server
+  file:
+    src: /usr/lib/systemd/system/nfs-server.service 
+    dest: /usr/lib/systemd/system/nfs-kernel-server.service
+    state: link
+    owner: root
+    group: root
+
+
+- name: install manila-share packages on manila-share node
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-manila-share
+    - python2-PyMySQL
+  tags:
+    - install
+    # - samba 
+  # when: inventory_hostname in groups['manila-share']
+
+- name: template malina.conf
+  template: src=manila.conf.j2 dest=/etc/manila/manila.conf backup=yes
+  tags:
+    - config
+
+
+- name: start lvm and nfs on share node
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - lvm2-lvmetad
+    - nfs-server
+      
+## prepare manila-volumes volume group
+
+- name: start openstack manila share services on manila share node
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-manila-share
+  # when: inventory_hostname in groups['manila-share']

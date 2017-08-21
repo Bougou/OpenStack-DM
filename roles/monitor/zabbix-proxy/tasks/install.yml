@@ -1,0 +1,18 @@
+---
+
+- name: transfer zabbix-release package
+  copy: src={{ zabbix_release }} dest=/tmp/{{ zabbix_release }}
+
+- name: install zabbix-release package
+  yum: name=/tmp/{{ zabbix_release }} state=present disablerepo=*
+
+- name: delete temporay file
+  file: path=/tmp/{{ zabbix_release }} state=absent
+
+- name: install zabbix packages on proxy
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - zabbix-agent
+    - zabbix-proxy-mysql
+    - zabbix-sender
+    - zabbix-get

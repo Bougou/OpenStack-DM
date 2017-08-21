@@ -1,0 +1,88 @@
+---
+
+- name: calculate out the server_id
+  script: caculate-server-id.sh
+  register: server_id
+  changed_when: false
+
+- name: capture the the calculated server_id
+  set_fact: server_id={{ server_id.stdout_lines[0] }}
+
+- name: ensure server_id looks sane
+  assert:
+    that:
+      - server_id is defined
+      - server_id|int >=0
+      - server_id|int < 4294967295
+
+- name: debug
+  debug: var=server_id
+
+# including this variable file should be after set_fact server_id
+- include_vars: mysql_settings.yml
+
+- name: template my.cnf
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+  notify:
+    - restart mysql service
+
+- name: make sure mysql service stopped
+  service: name={{ ps56_mysql_service }} state=stopped
+# mariadb must be stopped before to run mysql_install_db
+
+- name: make sure ps56_datadir exists
+  file: path={{ ps56_datadir }} state=directory owner=mysql group=mysql
+
+- name: cleanup ps56_datadir
+  shell: "test -d {{ ps56_datadir }} && cd {{ ps56_datadir }} && rm -rf * || :"
+
+- name: run mysql_install_db
+  shell: su - mysql -s /bin/sh -c mysql_install_db
+
+- name: start mysql service
+  service: name={{ ps56_mysql_service }} state=started enabled=yes
+
+# remove /root/.my.cnf before we update mysql root password
+- name: remove /root/.my.cnf if exists
+  file: path=/root/.my.cnf state=absent
+
+# 'localhost' needs to be the last item for idempotency, see
+# http://ansible.cc/docs/modules.html#mysql-user
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ ps56_mysql_root_pass }}
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: copy .my.cnf with root password credentials
+  template: src=root.my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600
+
+# allow mysql root user remote login
+- name: allow mysql root user remote login
+  mysql_user:
+    name: 'root'
+    host: '%'
+    password: "{{ ps56_mysql_root_pass }}"
+    priv: "*.*:ALL PRIVILEGES,GRANT"
+    state: present
+
+
+- name: delete anonymous MySQL user for {{ ansible_hostname }}
+  mysql_user: name='' host={{ ansible_hostname }} state=absent
+
+- name: delete anonymous MySQL user for locahost
+  mysql_user: name='' state=absent
+
+- name: create repl user
+  mysql_user:
+    name: "{{ ps56_mysql_repl_user }}"
+    host: '%'
+    password: "{{ ps56_mysql_repl_pass }}"
+    priv: "*.*:REPLICATION SLAVE"
+    state: present
+
+- name: remove the MySQL test database
+  mysql_db: db=test state=absent
+

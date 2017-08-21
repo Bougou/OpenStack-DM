@@ -1,0 +1,9 @@
+osdm_mysql_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+# for nova api cell and all opentack basic components
+
+osdm_mysql_root_pass: "mysql4openstack"
+
+osdm_mysql_sst_user: "sstuser"
+osdm_mysql_sst_pass: "sstpass"
+osdm_mysql_repl_user: "repluser"
+osdm_mysql_repl_pass: "replpass"

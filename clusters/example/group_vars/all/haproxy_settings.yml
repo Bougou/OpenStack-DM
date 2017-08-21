@@ -1,0 +1,83 @@
+osdm_enable_haproxy: false
+osdm_haproxy_colocate: true
+osdm_haproxy_pxc: false
+osdm_haproxy_pxc_onenode: true
+
+## For OpenStack Services
+
+osdm_os_haproxy_service_default:
+  srv_mode: tcp
+  srv_balance: roundrobin
+  srv_options:
+    - 'option httpchk'
+    - 'option tcpka'
+    - 'option tcplog'
+  srv_server_option: 'check inter 2000 rise 2 fall 5'
+  srv_frontend_binds:
+    - "{{ osdm_os_access_ext_vip }}"
+    - "{{ osdm_os_access_mgmt_vip }}"
+  srv_backend_role: 'os-controller'
+  srv_backend_ip_fact_name: 'osdm_os_mgmt_if_ipv4'
+
+
+osdm_os_haproxy_config_services:
+  - srv_name: http
+    srv_port: 80
+  - srv_name: https
+    srv_port: 443
+  - srv_name: glance-registry
+    srv_port: 9191
+  - srv_name: glance-api
+    srv_port: 9292
+  - srv_name: keystone-admin
+    srv_port: 35357
+  - srv_name: keystone-access
+    srv_port: 5000
+  - srv_name: cinder-api
+    srv_port: 8776
+  - srv_name: nova-os-compute-api
+    srv_port: 8774
+  - srv_name: nova-novncproxy
+    srv_port: 6080
+  - srv_name: neutron-api
+    srv_port: 9696
+  - srv_name: rabbitmq-server
+    srv_port: 5672
+    srv_options:
+      - 'option tcpka'
+      - 'option tcplog'
+      - 'timeout client 0'
+      - 'timeout server 0'
+
+# For PXC Service
+# just for pxc service, so this is a dict data structure.
+osdm_os_haproxy_pxc_service:
+  srv_name: pxc
+  srv_port: 3306
+  srv_balance: leastconn
+  srv_options:
+    - 'option tcplog'
+    - 'option httpchk'
+  srv_server_option: 'check port 9200 inter 2000 rise 2 fall 5'
+
+
+# For Ceph RGW Service
+osdm_rgw_haproxy_service_default:
+  srv_mode: tcp
+  srv_balance: roundrobin
+  srv_options:
+    - 'option httpchk'
+    - 'option tcpka'
+    - 'option tcplog'
+  srv_server_option: 'check inter 2000 rise 2 fall 5'
+  srv_frontend_binds:
+    - "{{ osdm_radosgw_access_ext_vip }}"
+    - "{{ osdm_radosgw_access_mgmt_vip }}"
+  srv_backend_role: 'ceph-radosgw'
+  srv_backend_ip_fact_name: 'osdm_os_mgmt_if_ipv4'
+
+osdm_rgw_haproxy_config_services:
+  - srv_name: http
+    srv_port: 80
+  - srv_name: https
+    srv_port: 443

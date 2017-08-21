@@ -1,0 +1,7 @@
+
+ create a special bare metal flavor in the Compute service. The flavor is mapped to the bare metal node through the hardware specifications.
+ 
+ openstack flavor create --ram 1024 --vcpus 2 --disk 10 my-baremetal-flavor
+
+
+openstack flavor set --property cpu_arch=x86_64 my-baremetal-flavor

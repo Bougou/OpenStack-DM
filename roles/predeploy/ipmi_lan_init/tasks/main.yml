@@ -1,0 +1,12 @@
+---
+
+- name: check the existence of file .ipmi_lan_init.finished
+  stat: path=/root/.ipmi_lan_init.finished
+  register: ipmi_lan_init_finished
+  tags:
+    - always
+
+# run.yml will create `.ipmi_lan_init.finished` finally
+- include: run.yml
+  when: not ipmi_lan_init_finished.stat.exists
+

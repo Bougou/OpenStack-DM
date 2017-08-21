@@ -1,0 +1,12 @@
+[DEFAULT]
+ovs_integration_bridge = {{ osdm_ovsbr_intergration }}
+ovs_use_veth = false
+
+{% if osdm_ml2_agent == 'br' %}
+interface_driver = linuxbridge
+{% else %}
+# Example of interface_driver option for OVS based plugins(OVS, Ryu, NEC, NVP, BigSwitch/Floodlight)
+interface_driver = openvswitch
+{% endif %}
+
+debug = {{ osdm_log_debug }}

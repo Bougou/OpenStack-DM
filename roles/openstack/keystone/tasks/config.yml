@@ -1,0 +1,13 @@
+---
+
+- debug: var=osdm_keystone_listen_addr
+
+- name: template keystone.conf
+  template: src="keystone.conf.j2" dest="/etc/keystone/keystone.conf" backup=yes
+
+- name: add rc file
+  template: src={{ item }}.j2 dest=/root/{{ item }}
+  with_items:
+    - keystone-rc.init
+    - keystone-rc.admin
+    - keystone-rc.demo

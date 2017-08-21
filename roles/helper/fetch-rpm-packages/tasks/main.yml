@@ -1,0 +1,19 @@
+---
+
+
+- name: get base package dirs on target
+  #shell: cd {{ frp_base_rpm_dir_on_target }};
+  #shell:  ls -d {{ frp_base_rpm_dir_on_target }}/*/
+  shell: find /var/cache/yum -type d | grep '/packages' || true
+  register: repo_dirs
+
+- name: fetch from ansible target to cluster proxy node
+  synchronize:
+    mode: pull
+    src: "{{ item }}/"
+    dest: "{{ osdm_local_repo_packages_proxy }}/packages/"
+    rsync_opts:
+      - "--include='*.rpm'"
+    #use_ssh_args: true
+  with_items: "{{ repo_dirs.stdout_lines }}"
+  delegate_to: "{{ osdm_cluster_proxy_addr_inner }}"

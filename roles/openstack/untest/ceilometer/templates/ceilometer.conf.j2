@@ -1,0 +1,86 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+use_syslog = False
+syslog_log_facility = LOG_USER
+
+notification_driver = messagingv2
+
+transport_url = rabbit://{{ osdm_mq_os_user }}:{{ osdm_mq_os_pass }}@{{ osdm_mq_mgmt_ip }}:5672/
+
+meter_dispatcher = gnocchi
+event_dispatchers = gnocchi
+
+pipeline_cfg_file = pipeline.yaml
+event_pipeline_cfg_file = event_pipeline.yaml
+
+
+[dispatcher_gnocchi]
+filter_service_activity = False
+
+[oslo_messaging_notifications]
+driver = messagingv2
+transport_url = rabbit://{{ osdm_mq_os_user }}:{{ osdm_mq_os_pass }}@{{ osdm_mq_mgmt_ip }}:5672/
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ osdm_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass }}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true
+rabbit_durable_queues = true
+
+[database]
+connection = mongodb://{{ osdm_os_ceilometer_db_user }}:{{ osdm_os_ceilometer_db_pass }}@{{ osdm_mongodb_mgmt_ip }}:27017/ceilometer
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = ceilometer
+password = {{ osdm_user_service_pass }}
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+[service_credentials]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = ceilometer
+password = {{ osdm_user_service_pass }}
+
+
+[collector]
+udp_address = 0.0.0.0
+udp_port = 4952
+
+
+[compute]
+instance_discovery_method = libvirt_metadata
+
+
+[publisher]
+telemetry_secret = {{ osdm_metering_secret }}
+
+[api]
+host = 0.0.0.0
+
+[publisher_notifier]
+metering_topic = metering
+event_topic = event
+telemetry_driver = messagingv2
+
+

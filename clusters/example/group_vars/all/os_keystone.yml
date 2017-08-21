@@ -1,0 +1,26 @@
+osdm_os_keystone_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_keystone_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_keystone_db_user: "keystonedb"
+osdm_os_keystone_db_pass: "keystonepass"
+
+osdm_keystone_default_role: "user"
+
+osdm_user_use_identity_version: 3
+
+osdm_glance_use_identity_version: 2.0
+osdm_cinder_use_identity_version: 2.0
+osdm_nova_use_identity_version: 2.0
+osdm_neutron_use_identity_version: 2.0
+osdm_ceilometer_use_identity_version: 2.0
+osdm_swift_use_identity_version: 2.0
+osdm_heat_use_identity_version: 2.0
+
+osdm_glance_use_ssl: 1
+osdm_cinder_use_ssl: 1
+osdm_nova_use_ssl: 1
+osdm_neutron_use_ssl: 1
+osdm_ceilometer_use_ssl: 1
+osdm_swift_use_ssl: 1
+osdm_heat_use_ssl: 1
+

@@ -1,0 +1,14 @@
+---
+
+- name: create ceilometer mongodb user/pass
+  mongodb_user:
+    login_host: "{{ osdm_mongodb_mgmt_ip }}"
+    login_user: "{{ osdm_mongodb_admin_user }}"
+    login_password: "{{ osdm_mongodb_admin_pass }}"
+    database: "ceilometer"
+    name: "{{ osdm_os_ceilometer_db_user }}"
+    password: "{{ osdm_os_ceilometer_db_pass }}"
+    state: present
+    roles:
+      - 'readWrite'
+      - 'dbAdmin'

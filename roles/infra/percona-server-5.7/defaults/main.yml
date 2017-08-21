@@ -1,0 +1,20 @@
+ps57_percona_release: "percona-release-0.1-4.noarch.rpm"
+
+# some releases provide 'mysql', some provide 'mysqld'
+ps57_mysql_service: mysqld
+
+ps57_mysql_root_pass: "mysql"
+ps57_mysql_repl_user: "repl"
+ps57_mysql_repl_pass: "repl"
+ps57_datadir: /var/lib/mysql
+ps57_stream_port: 9999
+
+# use this fact name to derive the ip address 
+# for use of connection between master and slave.
+ps57_ms_ip_fact_name: 'ansible_default_ipv4'
+
+# leave this empty if you only apply this role to one target
+ps57_mysql_master_host: ''
+ps57_mysql_slave_host: ''
+
+db_listen_addr: 0.0.0.0

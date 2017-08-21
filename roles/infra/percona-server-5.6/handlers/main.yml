@@ -1,0 +1,4 @@
+---
+
+- name: restart mysql service
+  service: name={{ ps56_mysql_service }} state=restarted

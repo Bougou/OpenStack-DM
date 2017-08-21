@@ -1,0 +1,14 @@
+---
+
+- name: start libvirtd
+  service: name=libvirtd state=restarted enabled=yes
+
+- name: start nova-compute
+  service: name=openstack-nova-compute state=restarted enabled=yes
+
+- name: start openstack-nova-network and openstack-nova-metadata-api
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-network
+    - openstack-nova-metadata-api
+  when: osdm_network_mode == 'nova-network' and osdm_use_multihost

@@ -1,0 +1,40 @@
+# Template my.cnf for PXC
+# Edit to your requirements.
+
+[mysqld]
+
+log_bin
+datadir                        = /var/lib/mysql
+
+binlog_format                  = ROW
+innodb_buffer_pool_size        = 100M
+innodb_flush_log_at_trx_commit = 0
+innodb_flush_method            = O_DIRECT
+innodb_log_files_in_group      = 2
+innodb_log_file_size           = 20M
+innodb_file_per_table          = 1
+
+wsrep_provider                 = /usr/lib64/galera3/libgalera_smm.so
+wsrep_cluster_address          = gcomm://{% for _host in groups[pxc56_cluster_group_name] -%}
+                                             {{ hostvars[_host][pxc56_sst_ip_fact_name]['address'] }},
+                                         {%- endfor %}
+
+wsrep_slave_threads            = 8
+wsrep_cluster_name             = pxc-cluster
+wsrep_provider_options         = "base_host={{ hostvars[inventory_hostname][pxc56_sst_ip_fact_name]['address'] }}; ist.recv_addr={{ hostvars[inventory_hostname][pxc56_sst_ip_fact_name]['address'] }};"
+wsrep_sst_receive_address      = {{ hostvars[inventory_hostname][pxc56_sst_ip_fact_name]['address'] }}
+wsrep_node_name                = {{ hostvars[inventory_hostname][pxc56_sst_ip_fact_name]['address'] }}
+wsrep_sst_method               = xtrabackup-v2
+wsrep_sst_auth                 = {{ pxc56_mysql_sst_user }}:{{ pxc56_mysql_sst_pass }}
+
+innodb_locks_unsafe_for_binlog = 1
+innodb_autoinc_lock_mode       = 2
+
+
+
+[mysqld_safe]
+pid-file = /run/mysqld/mysql.pid
+syslog
+
+
+!includedir /etc/my.cnf.d

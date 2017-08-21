@@ -1,0 +1,33 @@
+---
+
+- name: generate root user key pairs on `ansible target`
+  user:
+    name: root
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa   # relative to user's home directory
+    # ssh_key_comment:          # default is HOSTNAME
+
+- name: fetch key from `ansible target` and store it on `ansible host`
+  fetch: src=/root/.ssh/id_rsa.pub dest=/tmp/pubkey-{{ inventory_hostname }} flat=yes
+
+- name: transfer key to all `ssh_keys_targets` nodes
+  authorized_key: user=root key={{ lookup('file', '/tmp/pubkey-{{ inventory_hostname }}') }}
+  delegate_to: "{{ item }}"
+  with_items: "{{ ssh_keys_targets }}"
+
+- name: delete the tempary key file
+  file: path=/tmp/pubkey-{{ inventory_hostname }} state=absent
+  delegate_to: 127.0.0.1
+
+- name: skip host key check
+  lineinfile:
+    dest: "/etc/ssh/ssh_config"
+    regexp: "^\t{{ item }}$"
+    line: "\t{{ item }}"
+    insertafter: "^Host *"
+    state: present
+  with_items:
+    - "StrictHostKeyChecking no"
+    - "UserKnownHostsFile /dev/null"
+

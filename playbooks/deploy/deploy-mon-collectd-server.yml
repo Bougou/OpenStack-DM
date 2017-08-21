@@ -1,0 +1,28 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+
+- name: Deploy Monitor Solution - collectd-server
+  hosts:
+    - "{{ _hosts }}"
+  tags: ['play-collectd-server']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: monitor/collectd-5
+      tags: ['collectd']
+      collectd_server_enable: "{{ osdm_collectd_server_enable }}"
+      collectd_server_listen_port: "{{ osdm_collectd_server_listen_port }}"
+      collectd_server_forward_influxdb_enable: true
+      collectd_server_forward_influxdb_host: "{% set _influxdb_server=groups['influxdb'][0] %}{{ hostvars[_influxdb_server]['osdm_os_mgmt_if_ip'] | default('127.0.0.1') }}"
+      collectd_server_forward_influxdb_port: "{{ osdm_influxdb_collectd_port }}"
+
+
+      #collectd_server_host: "{{ groups['collectd-server'][0]['osdm_os_mgmt_if_ip'] | default('127.0.0.1') }}"
+      #collectd_interval: "{{ osdm_collectd_interval }}"

@@ -1,0 +1,23 @@
+- name: transfer script
+  copy: src=create-provider-vms.sh dest=/tmp/create-provider-vms.sh
+
+# Note: the provided envrionment variables will be used by the script.
+- name: create provider vms
+  shell: bash /tmp/create-provider-vms.sh
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+    pro_net_vlan1: "{{ osdm_ft_pro_vlan1 }}"
+    pro_net_vlan2: "{{ osdm_ft_pro_vlan2 }}"
+
+- name: remove the temporary file
+  file: path=/tmp/create-provider-vms.sh state=absent
+
+

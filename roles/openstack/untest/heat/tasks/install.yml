@@ -1,0 +1,18 @@
+---
+
+- name: install heat packages
+  yum: name={{ item }} state=present
+  with_items:
+    - openstack-heat-api
+    - openstack-heat-api-cfn
+    - openstack-heat-engine
+    - python2-heatclient
+    - openstack-heat-api-cloudwatch
+  tags:
+    - install
+
+- name: template heat.conf
+  template: src=heat.conf.j2 dest=/etc/heat/heat.conf backup=yes
+  tags:
+    - config
+

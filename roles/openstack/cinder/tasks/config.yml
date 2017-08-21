@@ -1,0 +1,7 @@
+---
+
+- name: template cinder.conf
+  template: src="cinder.conf.j2" dest="/etc/cinder/cinder.conf" backup=yes
+
+- name: make sure cinder owns ceph.client.cinder.keyring
+  file: path=/etc/ceph/ceph.client.cinder.keyring owner=cinder group=cinder

@@ -1,0 +1,40 @@
+---
+
+
+- name: get admin user id and set fact
+  shell: openstack user show admin -c id -f value
+  register: _admin_user_id_value
+  environment:
+    OS_TOKEN: "{{ osdm_admin_token }}"
+    OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+- name: set fact _admin_user_id
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: '_admin_user_id', value: "{{ _admin_user_id_value.stdout_lines[0] }}" }
+
+- name: get admin project id and set fact
+  shell: openstack user show admin -c id -f value
+  register: _admin_project_id_value
+  environment:
+    OS_TOKEN: "{{ osdm_admin_token }}"
+    OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+- name: set fact _admin_project_id
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: '_admin_project_id', value: "{{ _admin_project_id_value.stdout_lines[0] }}" }
+
+- name: adjust api-paste.ini file
+  ini_file:
+    dest: /etc/gnocchi/api-paste.ini
+    section: 'pipeline:main'
+    option: 'pipeline'
+    value: 'gnocchi+auth'
+    backup: yes
+
+- name: template gnocchi.conf
+  template: src="gnocchi.conf.j2" dest="/etc/gnocchi/gnocchi.conf" backup=yes
+

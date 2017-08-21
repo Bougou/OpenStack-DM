@@ -1,0 +1,13 @@
+---
+
+- name: Initialize on all nodes
+  hosts: os-controller[0]
+  roles:
+    - role: openstack/final
+      tags: ['os-final']
+
+
+    # - role: openstack/final
+    #   tags: ['os-final']
+    #   when: "inventory_hostname == groups['os-controller'][0] 
+    #         and osdm_enable_final_test"

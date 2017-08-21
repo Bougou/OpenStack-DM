@@ -1,0 +1,43 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+
+[agent]
+prevent_arp_spoofing = True
+
+
+### Note:
+## When create an external network, neutron-linuxbridge-agent automatically 
+## creates an qbr* bridge and bridge it to the physical interface, and it
+## also update the IP info (if existed) from the physical interface to the qbr.
+## So, here we just specify this mapping information, nothing else needs to do.
+## the qbr* bridge may bridge with a sub vlan interface.
+## Physical interfaces might be a Linux bond interfaces.
+## !!!!!! NOT COMPLETED.
+
+[linux_bridge]
+physical_interface_mappings = {% if osdm_enable_external_network and osdm_enable_provider_network -%}
+{{ osdm_external_physnet_label }}:{{ osdm_node_nics_ext_if }},{{ osdm_provider_physnet_label }}:{{ osdm_node_nics_pro_if }}
+                {%- elif osdm_enable_external_network -%}
+{{ osdm_external_physnet_label }}:{{ osdm_node_nics_ext_if }}           
+                {%- elif osdm_enable_provider_network -%}
+{{ osdm_provider_physnet_label }}:{{ osdm_node_nics_pro_if }}
+                {%- endif %}
+
+[securitygroup]
+enable_security_group = True
+enable_ipset = true
+firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+
+
+[vxlan]
+enable_vxlan = True
+# This setting must be the same on all the agents.
+vxlan_group = {{ osdm_vxlan_group }}
+local_ip = {{ osdm_os_ten_if_ip }}
+
+## `linuxbridge plugin + L3HA` is not compatible with `layer-2 population`.
+## !!!! NOT COMPLETED
+l2_population = {% if osdm_l3_router_mode == 'l3ha' %}False{% else %}True{% endif %}
+arp_responder = True
+
+

@@ -1,0 +1,46 @@
+---
+
+- name: bootstrap the first node
+  service: name=mysql@bootstrap state=started
+
+# remove /root/.my.cnf before we update mysql root password
+- name: remove /root/.my.cnf if exists
+  file: path=/root/.my.cnf state=absent
+
+# 'localhost' needs to be the last item for idempotency, see
+# http://ansible.cc/docs/modules.html#mysql-user
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ pxc56_mysql_root_pass }}
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: copy .my.cnf with root password credentials
+  template: src=root.my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600
+
+- name: allow mysql root user remote login
+  mysql_user:
+    name: 'root'
+    host: '%'
+    password: "{{ pxc56_mysql_root_pass }}"
+    priv: "*.*:ALL PRIVILEGES,GRANT"
+    state: present
+
+- name: delete anonymous MySQL user for {{ ansible_hostname }}
+  mysql_user: name='' host={{ ansible_hostname }} state=absent
+
+- name: delete anonymous MySQL user for locahost
+  mysql_user: name='' state=absent
+
+- name: create sst user
+  mysql_user:
+    name: "{{ pxc56_mysql_sst_user }}"
+    host: 'localhost'
+    password: "{{ pxc56_mysql_sst_pass }}"
+    priv: "*.*:RELOAD,LOCK TABLES,REPLICATION CLIENT"
+    state: present
+
+- name: remove the MySQL test database
+  mysql_db: db=test state=absent

@@ -1,0 +1,31 @@
+---
+
+- name: add cinder database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - cinder
+
+- name: create cinder db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_cinder_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_cinder_db_pass }}"
+    priv: "cinder.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate cinder database
+  shell: su cinder -s /bin/sh -c "cinder-manage db sync"
+  tags:
+    - db_sync

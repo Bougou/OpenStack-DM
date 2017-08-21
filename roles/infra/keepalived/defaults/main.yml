@@ -1,0 +1,4 @@
+# send vrrip packet through this interface
+keepalived_vrrp_interface: eth0
+
+keepalived_chk_proxy_enable: false

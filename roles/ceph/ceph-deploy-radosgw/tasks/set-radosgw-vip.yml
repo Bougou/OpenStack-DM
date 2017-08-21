@@ -1,0 +1,14 @@
+---
+
+# Ceph Radosgw Access VIP
+
+- name: transfer add_vip script
+  copy: src=add_vip.sh dest=/tmp/add_vip.sh
+
+- name: configure vip
+  shell: source /tmp/add_vip.sh;
+         add_vip {{ osdm_os_ext_if }} {{ ceph_deploy_radosgw_access_ext_vip }};
+         add_vip {{ osdm_os_mgmt_if }} {{ ceph_deploy_radosgw_access_mgmt_vip }};
+
+- name: remove temporary add_vip script
+  file: path=/tmp/add_vip.sh state=absent

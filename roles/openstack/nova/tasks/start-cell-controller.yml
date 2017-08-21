@@ -1,0 +1,7 @@
+---
+
+- name: start nova conductor on cell controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-scheduler

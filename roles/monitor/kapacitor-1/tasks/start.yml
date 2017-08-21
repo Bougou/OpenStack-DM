@@ -1,0 +1,23 @@
+---
+
+# for idempotence
+- name: stop kapacitor service if exists
+  service: name=kapacitor state=stopped
+
+- name: clear datadir
+  file: path={{ kapacitor_data_dir }} state=absent
+
+- name: make sure datadir exist
+  file: path={{ kapacitor_data_dir }} state=directory mode=0755 owner=kapacitor group=kapacitor
+
+- name: template kapacitor.conf
+  template: src=kapacitor.conf.j2 dest=/etc/kapacitor/kapacitor.conf
+  notify:
+    - restart kapacitor
+
+- name: start kapacitor service
+  service: name=kapacitor state=started enabled=yes
+
+# - name: create the influxadmin user
+#   shell: /usr/bin/influx -execute "create user {{ kapacitor_admin_user }} with password '{{ kapacitor_admin_pass }}' with all privileges"
+

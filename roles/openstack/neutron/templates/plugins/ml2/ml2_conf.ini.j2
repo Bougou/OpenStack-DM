@@ -1,0 +1,66 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+
+[ml2]
+# After you configure the ML2 plug-in, 
+# **removing values in the type_drivers option** can lead to database inconsistency.
+type_drivers = flat,vlan,vxlan,gre,geneve
+
+# The first value in the 'tenant_network_types' option becomes
+# the 'default' project network type when a regular/unprivileged user creates a network.
+# and the 'default' network type for HA VRRP routers.
+tenant_network_types = {{ osdm_allowed_tenant_network_types }}
+
+mechanism_drivers = openvswitch,linuxbridge,l2population
+
+extension_drivers = port_security,qos
+
+path_mtu = 1500
+segment_mtu = 1500
+
+[ml2_type_flat]
+flat_networks = {% if osdm_enable_external_network and osdm_enable_provider_network -%}
+                {{ osdm_external_physnet_label }},{{ osdm_provider_physnet_label }}
+                {%- elif osdm_enable_external_network -%}
+                {{ osdm_external_physnet_label }}
+                {%- elif osdm_enable_provider_network -%}
+                {{ osdm_provider_physnet_label }}
+                {%- endif %}
+
+
+[ml2_type_vlan]
+network_vlan_ranges = {% if osdm_enable_external_network and osdm_enable_provider_network -%}
+{{ osdm_external_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }},{{ osdm_provider_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}
+                    {%- elif osdm_enable_external_network -%}
+{{ osdm_external_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}               
+                    {%- elif osdm_enable_provider_network -%}
+{{ osdm_provider_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}
+                    {%- endif %}
+
+
+## gre
+## Tenant Network (internal): gre
+[ml2_type_gre]
+tunnel_id_ranges = {{ osdm_gre_min_id }}:{{ osdm_gre_max_id }}
+
+## vxlan
+## Tenant Network (internal): vxlan
+[ml2_type_vxlan]
+vni_ranges = {{ osdm_vxlan_min_id }}:{{ osdm_vxlan_max_id }}
+vxlan_group = {{ osdm_vxlan_group }}
+
+## geneve
+[ml2_type_geneve]
+vni_ranges = {{ osdm_geneve_min_id }}:{{ osdm_geneve_max_id }}
+max_header_size = 50
+
+[securitygroup]
+enable_security_group = True
+enable_ipset = True
+firewall_driver = {% if osdm_ml2_agent == 'br' -%}
+                  neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+                  {%- else -%}
+                  neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+                  {%- endif %}
+
+# firewall_driver = iptables_hybrid

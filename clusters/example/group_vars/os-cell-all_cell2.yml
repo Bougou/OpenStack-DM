@@ -1,0 +1,19 @@
+osdm_nova_cell_name: 'cell2'
+
+osdm_os_access_mgmt_vip: "172.30.17.86"
+
+### MySQL
+osdm_use_external_mysql: false
+## need to fill mysql-master, mysql-slave in inventory
+osdm_mysql_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+
+### RabbitMQ
+osdm_use_external_rabbitmq: false
+## need to fill inventory rabbitmq-master, rabbitmq-slave in inventory
+osdm_mq_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+
+# use 'cat /dev/urandom | tr -dc 'A-Z' | fold -w 20 | head -n1' to generate erlang cookie
+# override the default osdm_erlang_cookie of ansible rabbitmq role
+osdm_erlang_cookie: 'NPAULLICEBHFPEXRIVSX'

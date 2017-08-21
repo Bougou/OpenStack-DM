@@ -1,0 +1,41 @@
+---
+
+#
+- name: fetch httpd image from local
+  shell: /usr/bin/cp {{ osdm_local_repo_packages_target }}/images/{{ httpd_image }} /tmp/{{ httpd_image }}
+  when: osdm_install_mode == 'offline'
+# Note: Must using the absolute path of cp command for overrite behaviour.
+
+- name: download httpd image from inernet
+  get_url:
+    url: "{{ httpd_download_url }}"
+    dest: /tmp/{{ httpd_image }}
+  when: osdm_install_mode == 'online'
+  
+- name: transfer script
+  copy: src=upload-image.sh dest=/tmp/upload-image.sh
+
+- name: convert httpd image to raw format
+  shell: qemu-img convert -f qcow2 -O raw /tmp/{{ httpd_image }} /tmp/httpd.raw
+
+# Note: the provided envrionment variables will be used by the script.
+- name: upload image httpd
+  shell: bash /tmp/upload-image.sh httpd "/tmp/httpd.raw"
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+
+- name: remove the temporary file
+  file: path={{ item }} state=absent
+  with_items:
+    - "/tmp/httpd.raw"
+    - "/tmp/upload-image-httpd.sh"
+

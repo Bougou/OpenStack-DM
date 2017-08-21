@@ -1,0 +1,36 @@
+- include: install-cell-controller.yml
+  #when: inventory_hostname in groups['os-cell-controller']
+  #when: osdm_os_nova_cells[osdm_os_nova_cell_name]['standalone_cell_controllers']
+  tags:
+    - install-cell-controller
+
+- include: config-cell-controller.yml
+  #when: inventory_hostname in groups['os-cell-controller']
+  #when: osdm_os_nova_cells[osdm_os_nova_cell_name]['standalone_cell_controllers']
+  tags:
+    - config-cell-controller
+
+- include: fetch-nova-key.yml
+  when: inventory_hostname != groups['os-controller'][0]
+  tags:
+    - fetch-nova-key
+
+# apply to the first node under `os-cell-controller`
+# and delegate to groups['os-controller'][0]
+- include: add-cell-info.yml
+  #when: inventory_hostname == groups["os-cell-controller-{{ osdm_os_nova_cell_name }}"][0]
+  run_once: yes
+  tags:
+    - add-cell-info
+
+# run on cell controllers
+- include: init-cell-db.yml
+  #when: inventory_hostname == groups["os-cell-controller-{{ osdm_os_nova_cell_name }}"][0]
+  run_once: yes
+  tags:
+    - init-cell-db
+
+- include: start-cell-controller.yml
+  tags:
+    - start-cell-controller
+  

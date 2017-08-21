@@ -1,0 +1,11 @@
+---
+
+- name: setup rabbitmq openstack user/pass
+  rabbitmq_user:
+    user: "{{ osdm_mq_os_user }}"
+    password: "{{ osdm_mq_os_pass }}"
+    configure_priv: '.*'
+    read_priv: '.*'
+    write_priv: '.*'
+    state: present
+    

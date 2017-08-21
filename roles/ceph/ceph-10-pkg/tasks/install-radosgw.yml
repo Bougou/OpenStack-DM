@@ -1,0 +1,10 @@
+---
+
+- name: install ceph readosgw packages
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - ceph-radosgw
+    - mailcap
+    - python-boto
+    - httpd
+    - mod_ssl

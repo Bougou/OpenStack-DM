@@ -1,0 +1,368 @@
+# https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/5/html/Installation_Guide/s1-kickstart2-options.html
+# http://wiki.centos.org/TipsAndTricks/KickStart
+# https://github.com/CentOS/Community-Kickstarts
+
+# Use graphical install
+# graphical (optional, default mode)
+# text (optional)
+graphical
+
+
+# System keyborad, System language, System timezone
+keyboard us
+lang en_US
+timezone Asia/Shanghai
+
+
+# What to do after installation.
+# halt option is used as default
+# halt (optional, when installation has completed, displays a message and waits for to reboot.)
+# reboot (optional)
+# shutdown (optional)
+reboot
+
+
+## Uses the information provided in the ks file, but stops every step to allow you to accept or change
+# interactive (optional)
+
+# mediacheck (optional, disabled by default)
+
+
+##########
+### rootpw (required)
+##########
+
+# Using python: python -c 'import crypt; print(crypt.crypt("<passord>", "$6·
+# rootpw --iscrypted <password>
+# rootpw --plaintext <password>
+# rootpw --lock
+
+# python  import crypt; crypt.crypt('passw0rd', '$1$iPfAyQ2U')
+rootpw --iscrypted $1$iPfAyQ2U$o2fwrqa3r4s4dOBDyFjG40
+
+## System authorization information
+# authconfig (required)
+authconfig --useshadow --passalgo=sha512
+
+
+# Install os instead of upgrade
+# install (optional, default mode)
+# upgrade
+install
+
+
+##################
+### Install source
+##################
+
+# cdrom (Install from the frist CD-ROM drive on the system)
+# nfs --server=192.168.100.1 --dir=/var/lib/tftpboot/repo/images/centos6 [--opts=""]
+# url --url="ftp://172.30.0.131/pxe/images/centos6"
+url --url="http://{{ pxe_http_host }}/pxe/images/centos-6-x64"
+
+
+## Run the Setup Agent on first boot
+# Determine whether the Setup Agent starts the first time the system is booted.
+# If enabled, the firstboot package must be installed.
+# firstboot (optional)
+firstboot --disable
+
+
+# Network information
+
+# !! All static networking configuration information must be specified on one line
+# !! You CAN NOT wrap lines using a backslash.
+# network  --bootproto=static --device=eth0 --gateway=192.168.0.1 --ip=192.169.0.2 --nameserver=192.168.0.4 --netmask=255.255.255.0 --onboot=on --hostname=host1
+# network --device=eth1 --onboot yes --bootproto=dhcp
+# network --device=eth0 --onboot no --bootproto=dhcp
+network --device=bootif --onboot yes --bootproto=dhcp
+
+
+## --device= option accepts:
+# 1. the device name of the interface, for example, em1
+# 2. the MAC address of the interface, for example, 01:23:45:67:89:ab
+# 3. the keyword 'link', which specifies the first interface with its link in the up state
+# 4. the keyword 'bootif', which uses the MAC address that pxelinux set in the BOOTIF variable.
+#       Be sure to Set IPAPPEND 2 in your pxelinux.cfg/default like file to have pxelinux set the BOOTIF variable.
+
+## Force kickstart to ask for network configuration (just work in rhel5).
+# This might be useful when the ip got through dhcp is only used by pxe boot process,
+# but we want the the ip of the nic in the OS is a different address.
+# network --device=bootif --bootproto=query
+
+
+# Note: the network information here is not related to kickstart anaconda process.
+# When your system has more than one network interface anaconda asks you which one you'd like to use for the kickstart process.
+# To avoid this prompt, using one of the three method to add 'ksdevice' option to pxelinux.cfg/default file
+# 1. APPEND ksdevice=eth1
+# 3. APPEND ksdevice=01:23:45:67:89:ab
+# 2. APPEND ksdevice=link  # the first interface with its link in the up state.
+# 3. APPEND ksdevice=bootif # anaconda will use the interface that did the PXE boot.
+#       Be sure to Set IPAPPEND 2 in your pxelinux.cfg/default like file to have pxelinux set the BOOTIF variable.
+
+
+
+###########
+### fireall (optional)
+###########
+
+## Allows all traffic coming to and from a device.
+# firewall --trust eth0
+# firewall --trust eth1
+# firewall --trust eth0,eth1 # Do NOT use this format.
+
+## Allow the specified services.
+# firewall --enable --port=22:tcp
+# firewall --enable --port=123:udp
+
+## Do not configure any iptables rules.
+firewall --disabled
+
+
+###########
+### selinux (optional)
+###########
+# selinux (optional, defaults to enforcing)
+selinux --disabled
+
+
+# Installation logging level
+# logging (optional)
+logging --level=info
+
+
+#############
+### PARTITION
+#############
+
+## Ignore below drives and use all others.
+# (optional) ignoredisk --drives=drive1,drive2,...
+
+## Just use sda ignore all others
+# (optional) ignoredisk --only-use=sda  #just use sda ignore all others
+
+## Removes partitions from the system, prior to creation of new partitions.
+# clearpart (optional)
+# clearpart --none (by default on partitions are removed.)
+# clearpart --all (erase all partions from the system)
+# clearpart --drives=sda,sdb --all (clear all partitions on sda and sdb)
+# clearpart --linux (erase all linux partitions.)
+clearpart --drives=sda --all
+
+
+# autopart (optional)
+# autopart
+
+## Disk partitioning information
+# --size in megabytes
+# --grow (grow to fill available space)
+# part /boot --fstype="xfs" --size=500
+# part / --fstype=ext4 --size=60000 --asprimary
+# part swap --size=8000
+# part /web --fstype=xfs --grow --size=1
+
+part swap --fstype="swap" --size=2048
+part / --fstype="ext4" --grow --size=1
+
+
+# How the boot loader should be installed
+# bootloader (required)
+bootloader --location=mbr --driveorder=sda --append="crashkernel=auto rhgb quiet"
+# --location=mbr (the default)
+# --lcoation=partition (on the first sector of the partition containing the kernel),
+# --location=none (don't install)
+# --driver=sda,hda (specify which drive is first in the BIOS boot order)
+# --append="" (specify kernel parameters)
+
+
+## Destroys all of the contents of disks with invalid partition tables.
+# zerombr (optional)
+zerombr
+
+
+
+###########
+### Storage
+###########
+
+## Use to create a Logical Volume Management (LVM) group.
+# volgroup (optional)
+# volgroup <name> <partition> <options>
+
+## Create a logical volume for Logical Volume Management (LVM).
+# logvol (optional)
+# logvol <mntpoint> --vgname=<name> --size=<size> --name=<name> <options>
+
+## Assembles a software RAID device.
+# raid (optional)
+# raid <mntpoint> --level=<level> --device=<mddevice> <partitions*>
+
+
+#################
+### User, Serivce
+#################
+
+## Creates a new user on the system.
+# user (optional)
+# user --name=<username> [--groups=<list>] [--homedir=<home>]
+
+
+## Disable services.
+# services --disabled auditd,cups,smartd,nfslock
+
+
+## Configure additional yum repositories that may be used as sources for package installation.
+## repo (optional)
+# repo --name=<repoid> [--baseurl=<url>| --mirrorlist=<url>]
+
+
+#############
+### %packages
+#############
+
+%packages --ignoremissing
+
+# groups
+@base
+@core
+@debugging
+@basic-desktop
+@desktop-debugging
+@desktop-platform
+@development
+@directory-client
+@fonts
+@general-desktop
+@graphical-admin-tools
+@input-methods
+@internet-browser
+@java-platform
+@legacy-x
+@network-file-system-client
+@perl-runtime
+@remote-desktop-clients
+@system-management-snmp
+@server-platform
+@server-policy
+@x11
+@remote-desktop-clients
+
+# Include below packages
+rdesktop
+tigervnc
+tigervnc-server
+python-dmidecode
+wodim
+libXmu
+perl-DBD-SQLite
+
+# Exclude below packages
+-vim
+
+%end
+### %packages must end with %end
+###
+
+
+########
+### %pre
+########
+
+## You can use '%pre --interpreter /usr/bin/python' [make sure path is right]
+## to change the default shell context to python.
+
+## %pre can only be executed in anaconda environment.
+%pre  --log=/tmp/ks-pre.log
+echo "Switch to tty6"
+exec < /dev/tty6 > /dev/tty6 2> /dev/tty6
+chvt 6
+
+cd /root
+# wget http://172.30.0.3/pxe/utils/MegaCli64
+wget http://172.30.0.3/pxe/utils/MegaCli/MegaCli64
+chmod +x *
+# ./MegaCli -h
+# ./MegaCli64 -h
+./MegaCli64 -h
+
+#id=`/tmp/MegaCli -PDList -aALL | grep "Device ID" | awk -F': ' '{print $2}'| head -n1`
+#/tmp/MegaCli -cfgclr -a0
+#/tmp/MegaCli -cfgforeign -clear -a0
+#/tmp/MegaCli -cfgldadd -r0[${id}:0,${id}:1] -a0
+
+
+# Run python command use below method in shell context.
+python << EOF
+print "do-something-in-python"
+EOF
+
+echo "-- Passowrd configuration --"
+ROOTPW=""
+while [ "$ROOTPW" == "" ]; do
+
+    echo -n "Enter desired root password: "
+    read -s rootpw
+    echo -e -n "\nConfirm password: "
+    read -s rootpw2
+    if [ "$rootpw" == "$rootpw2" ]; then
+        ROOTPW=$rootpw
+        break
+    else
+        echo -e "\nPasswords do not match! Try again..."
+    fi
+done
+
+echo "$ROOTPW" > /tmp/answers.txt
+
+# Sitch back to Anaconda on the first console.
+echo "Switch back to tty1.."
+chvt 1
+exec < /dev/tty1 > /dev/tty1 2> /dev/tty1
+
+%end
+### %pre must end with %end
+
+## %include /tmp/pre.sh
+
+
+#########
+### %post
+#########
+
+## You can use '%post --interpreter /usr/bin/python' [make sure path is right]
+## to change the default shell context to python.
+
+## --nochroot will let post execute in Non-chrooted environment, that's THE anaconda's environment.
+## If you enter the os using ALT+CTRL+F2, you will see /root/ks-post.log.
+## But if you restart afther install, you can't see /root/ks-post.log in the INSTALLED OS.
+# %post --nochroot --log=/root/ks-post.log
+
+## Executed in 'Non-chrooted environment'
+%post --nochroot --log=/root/ks-post.log
+cat /tmp/answers.txt
+cp /tmp/answers.txt /mnt/sysimage/tmp/answers.txt
+%end
+### %post must end with %end
+
+
+## post default will be executed in chrooted environment, that's THE INSTALLED OS
+## THE INSTALLED OS resides in /mnt/sysimage/ of THE anaconda's environment.
+## so '/root/ks-post.log' will be in /mnt/sysimage/root/ directory
+## at the anaconda environtment, and ks-post.log will stay in /root/
+## when reboot after installation.
+
+## Executed in 'chrooted environment'
+%post --log=/root/ks-post.log
+echo "Switch to tty6"
+exec < /dev/tty6 > /dev/tty6 2> /dev/tty6
+chvt 6
+cat /tmp/answers.txt | passwd --stdin root
+rm -rf /tmp/answers.txt
+# Sitch back to Anaconda on the first console.
+echo "Switch back to tty1.."
+chvt 1
+exec < /dev/tty1 > /dev/tty1 2> /dev/tty1
+%end
+### %post must end with %end
+
+## You can have mutliple %post sections. One in chrooted (default), one with --nochroot.

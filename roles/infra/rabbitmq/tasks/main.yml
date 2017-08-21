@@ -1,0 +1,17 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: start.yml
+
+# configure rabbitmq cluster
+# both `rabbitmq_cluster_group_name` and `rabbitmq_master_addr` should be set.
+- include: setup-cluster.yml
+  when: rabbitmq_cluster_group_name
+        and rabbitmq_master_addr
+        and groups[rabbitmq_cluster_group_name]|length > 0
+  static: no
+
+- include: create-users.yml

@@ -1,0 +1,24 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: config.yml
+  tags:
+    - config
+
+- include: init-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-db
+
+- include: start.yml
+  tags:
+    - start
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-endpoint
+    

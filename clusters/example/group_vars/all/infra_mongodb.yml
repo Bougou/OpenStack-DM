@@ -1,0 +1,5 @@
+osdm_mongodb_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+#osdm_mongodb_mgmt_ip: 172.30.20.150
+osdm_mongodb_admin_user: "mongoadmin"
+osdm_mongodb_admin_pass: "mongoadmin"

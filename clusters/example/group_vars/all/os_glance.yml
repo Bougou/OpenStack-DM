@@ -1,0 +1,5 @@
+osdm_os_glance_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_glance_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_glance_db_user: "glancedb"
+osdm_os_glance_db_pass: "glancepass"

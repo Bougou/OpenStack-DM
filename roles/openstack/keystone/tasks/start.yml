@@ -1,0 +1,20 @@
+---
+
+- name: template wsgi-keystone.conf
+  template: src=wsgi-keystone.conf.j2 dest=/etc/httpd/conf.d/wsgi-keystone.conf
+
+- name: update memcached config
+  lineinfile:
+    backup: yes
+    dest: /etc/sysconfig/memcached
+    regexp: '.*OPTIONS='
+    line: OPTIONS="-l 0.0.0.0"
+    state: present
+  tags: update-memcached-config
+
+- name: start keystone service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - memcached
+    # - openstack-keystone
+    - httpd

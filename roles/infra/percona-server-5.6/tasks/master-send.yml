@@ -1,0 +1,8 @@
+---
+
+- name: send xbstream backup to all slaves
+  shell: "innobackupex --stream xbstream --host=127.0.0.1 /tmp | nc {{ item }} {{ ps56_stream_port }}"
+  #with_items: "{{ groups['mysql-slave'] }}"
+  with_items:
+    - "{{ ps56_mysql_slave_host }}"
+

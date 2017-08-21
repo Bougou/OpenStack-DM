@@ -1,0 +1,4 @@
+
+osdm_os_swift_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_swift_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+

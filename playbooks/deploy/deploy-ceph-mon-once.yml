@@ -1,0 +1,29 @@
+# This playbook SHOULD be executed only once.
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: make ceph packages installed on ceph monitors
+  hosts: ceph-mon
+  tags: ['ceph']
+  roles:
+    - role: ceph/ceph-10-pkg
+
+- name: Deploy a new ceph cluster - monitors
+  hosts:
+    - ceph-mon[0]
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+
+    - role: util/push_ssh_keys
+      ssh_keys_targets: "{{ groups['ceph-all'] }}"
+
+    - role: ceph/ceph-deploy-mon
+      ceph_deploy_dir: "{{ osdm_ceph_deploy_dir }}"
+      ceph_deploy_ceph_conf_params: "{{ osdm_ceph_conf_params }}"
+      ceph_deploy_ceph_cluster_network_dedicated: "{{ osdm_ceph_cluster_network_dedicated }}"

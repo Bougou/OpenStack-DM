@@ -1,0 +1,29 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Deploy Monitor Solution - influxdb
+  hosts:
+    - "{{ _hosts }}"
+  tags: ['play-influxdb']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: monitor/influxdb-1
+      tags: ['influxdb']
+      influxdb_admin_user: "{{ osdm_influxdb_admin_user }}"
+      influxdb_admin_pass: "{{ osdm_influxdb_admin_pass }}"
+      influxdb_data_dir: "{{ osdm_influxdb_data_dir }}"
+      influxdb_collectd_port: "{{ osdm_influxdb_collectd_port }}"
+    - role: monitor/kapacitor-1
+      tags: ['kapacitor']
+      kapacitor_admin_user: "{{ osdm_influxdb_admin_user }}"
+      kapacitor_admin_pass: "{{ osdm_influxdb_admin_pass }}"
+      kapacitor_data_dir: "{{ osdm_kapacitor_data_dir }}"
+
+

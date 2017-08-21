@@ -1,0 +1,25 @@
+---
+
+- name: install manila packages on controller
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-manila
+    - python-manilaclient
+    - openstack-manila-ui
+  tags:
+    - install
+  when: inventory_hostname in groups['os-controller']
+
+# - name: install manila-share packages on manila-share node
+#   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+#   with_items:
+#     - openstack-manila-share
+#     - python2-PyMySQL
+#     # - samba 
+#   when: inventory_hostname in groups['manila-share']
+
+
+- name: template malina.conf
+  template: src=manila.conf.j2 dest=/etc/manila/manila.conf backup=yes
+  tags:
+    - config

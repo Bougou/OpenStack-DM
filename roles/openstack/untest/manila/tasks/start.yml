@@ -1,0 +1,7 @@
+---
+
+- name: start openstack manila services on controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-manila-api
+    - openstack-manila-scheduler

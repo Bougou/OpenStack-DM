@@ -1,0 +1,12 @@
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: install ceph packages on hosts
+  hosts: ceph-all
+  tags: ['ceph']
+  roles:
+    - role: ceph/ceph-10-pkg

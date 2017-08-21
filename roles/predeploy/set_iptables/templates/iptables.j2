@@ -1,0 +1,155 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+## System Basic
+# snmpd 161 / snmptrapd 162 / ntp 123 / rsync 873 / rsyslogd 514 / tftp 69
+
+-A INPUT -p udp --dport 161 -j ACCEPT
+-A INPUT -p udp --dport 162 -j ACCEPT
+-A INPUT -p udp --dport 123 -j ACCEPT
+-A INPUT -p udp --dport 873 -j ACCEPT
+-A INPUT -p udp --dport 514 -j ACCEPT
+-A INPUT -p udp --dport 53 -j ACCEPT
+-A INPUT -p udp --dport 67 -j ACCEPT
+-A INPUT -p tcp --dport 69 -j ACCEPT
+-A INPUT -p udp --dport 69 -j ACCEPT
+
+{### Samba#}
+{##}
+{#-A INPUT -p tcp -m multiport --dports 139,445 -j ACCEPT#}
+
+## GlusterFS / NFS / Ganesha / SMB / ctdb
+# glusterd 24007,24008,24009 / glusterfsd 49152+
+# glusterfs built in nfs (mountv3 38465, mountv1 38466, nlm4 38468, acl3 38469)
+# nfs-server 2049 / rpcbind 111
+# rquotad 875, mountd 892
+# samba smb 139,445, nmb 137u,138u / ctdb 4379
+-A INPUT -p tcp -m multiport --dports 24007,24008,24009,49152:49162 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 38465:38469 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 2049,111,875,892 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 2049,111,875,892 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 139,445,4379 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 137,138 -j ACCEPT 
+
+## HA
+# keepalived vrrp / pacemaker corosync 2224,3121,21064,u5405
+
+-A INPUT -p vrrp -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 2224,3121,21064 -j ACCEPT
+-A INPUT -p udp --dport 5405 -j ACCEPT
+
+## Ceph
+# ceph-radosgw 7480 / ceph-mon 6789 / ceph-osd 6800:7300
+
+-A INPUT -p tcp -m multiport --dports 7480 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 6789 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 6800:7300 -j ACCEPT
+
+## Basic Services
+# httpd 80 443
+# memcached 11211
+# mysql 3306,4444,4567,4568,9999
+# rabbitmq 5672,15672,25672,4369
+# mongodb 27017,28017,27018(arbiter)
+# redis 6379,26379
+
+-A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 11211 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 3306,4444,4567,4568,9999 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 5672,15672,25672,4369 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 6379,26379 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 27017,28017,27018,28018 -j ACCEPT
+
+## OpenStack Services
+# keystone 5000,35357
+# glance 9292,9191
+# cinder 8776 / scsitarget 3260
+# nova-api 8774 / nova-metadata 8775 / novncproxy 6080 / xvpvncproxy 6081 / spice 6082
+# nova-placement 8778
+# neutron 9696 / vxlan 4789 / gre
+# ceilometer 8777 / gnocchi 8041 / statsd 8025 / aodh 8042
+# heat 8004 8000
+# swift proxy 8080 / swift ports 6000,6001,6002
+# manila 8786
+# ironic 6385 / shellinaboxd 4200
+# cloudkitty 8889
+# trove 8779
+
+-A INPUT -p tcp -m multiport --dports 5000,35357 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 9292,9191 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 3260,8776 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8774,8775,8778 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 6080,6081,6082 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 9696 -j ACCEPT
+-A INPUT -p udp --dport 4789 -j ACCEPT
+-A INPUT -p gre -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8777,8041,8025,8042 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8004,8000 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8080,6000,6001,6002 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8786 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 6385,4200 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8889 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8779 -j ACCEPT
+
+## Qemu
+# vnc 5900:5999 / libvirtd 16509 / live-migration 49152:49261
+
+-A INPUT -p tcp -m multiport --dports 5900:5999 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 16509 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 49152:49261 -j ACCEPT
+
+## Monitor
+# nagios 5666 / collectd 25826 / 
+# influxdb 8083,8086,8088 / chronograf 8888 / kapacitor 9092
+# grafana 3000 / grafana-nginx 8080
+# zabbix 10050,10051
+# udp collectd 25827
+
+-A INPUT -p tcp -m multiport --dports 5666 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 25826,25827 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8083,8086,8088,8888,9092 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 3000,8080 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 10050,10051 -j ACCEPT
+
+## Log
+# elasticsearch 9200,9300 / kibana 5601
+# logstash beat 5044
+
+-A INPUT -p tcp -m multiport --dports 9200,9300 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 5601 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 5044 -j ACCEPT
+
+## Others
+# iperf 5001
+# mysql streaming backup 9999
+-A INPUT -p tcp -m multiport --dports 5001 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 9999 -j ACCEPT
+
+## Docker
+-A INPUT -p tcp -m multiport --dports 2377,7946,4789 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 7946,4789 -j ACCEPT
+-A INPUT -p esp -j ACCEPT
+
+## Docker flocker
+-A INPUT -p tcp -m multiport --dports 4523,4524 -j ACCEPT
+
+## etcd client_port 2379 peer_port 2380
+-A INPUT -p tcp -m multiport --dports 2379,2380 -j ACCEPT
+
+# zookeeper
+-A INPUT -p tcp -m multiport --dports 2181,2888,3888 -j ACCEPT
+
+# jmx
+-A INPUT -p tcp -m multiport --dports 6666 -j ACCEPT
+
+
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+

@@ -1,0 +1,52 @@
+---
+
+- name: enable nova user login on compute node
+  user: name=nova shell=/bin/bash
+
+- name: modify libvirtd configuration
+  replace:
+    dest: /etc/libvirt/libvirtd.conf
+    regexp: "{{ item.pattern }}"
+    replace: "{{ item.sub }}"
+    backup: yes
+  with_items:
+    - { pattern: '^#listen_tls = .*', sub: 'listen_tls = 0' }
+    - { pattern: '^#listen_tcp = .*', sub: 'listen_tcp = 1' }
+    - { pattern: '^#auth_tcp = .*', sub: 'auth_tcp = "none"' }
+
+- name: enable libvirtd listen
+  replace:
+    dest: /etc/sysconfig/libvirtd
+    regexp: '^#LIBVIRTD_ARGS.*'
+    replace: LIBVIRTD_ARGS="--listen"
+
+- name: modify qemu conf
+  replace:
+    dest: /etc/libvirt/qemu.conf
+    regexp: "{{ item.pattern }}"
+    replace: "{{ item.sub }}"
+    backup: yes
+  with_items:
+    - { pattern: '^#user = .*', sub: 'user = "qemu"' }
+    - { pattern: '^#group = .*', sub: 'group = "qemu"' }
+    # - { pattern: '^#user = .*', sub: 'user = "nova"' }
+    # - { pattern: '^#group = .*', sub: 'group = "nova"' }
+
+- name: configure KVM nested feature
+  lineinfile:
+    dest: /etc/modprobe.d/{{ item.file }}
+    state: present
+    create: yes
+    line: "{{ item.content }}"
+  with_items:
+    - { file: 'kvm_intel.conf', content: 'options kvm_intel nested=1' }
+    - { file: 'kvm_amd.conf', content: 'options kvm_amd nested=1' }
+    
+- name: template nova.conf
+  template: src=nova.conf.j2 dest=/etc/nova/nova.conf backup=yes
+
+- name: touch dnsmasq.nova.conf
+  file: path=/etc/nova/dnsmasq.nova.conf state=touch
+
+- name: start libvirtd
+  service: name=libvirtd state=restarted enabled=yes

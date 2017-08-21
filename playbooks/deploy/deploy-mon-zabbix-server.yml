@@ -1,0 +1,24 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Deploy Monitor Solution - zabbix-server
+  hosts:
+    - zabbix-server
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: monitor/zabbix-server
+      tags: ['zabbix-server']
+      zabbix_db_host: "{{ osdm_zabbix_db_host }}"
+      zabbix_db_port: "{{ osdm_zabbix_db_port }}"
+      zabbix_db_name: "{{ osdm_zabbix_db_name }}"
+      zabbix_db_user: "{{ osdm_zabbix_db_user }}"
+      zabbix_db_pass: "{{ osdm_zabbix_db_pass }}"
+      zabbix_time_zone: "Asia/Shanghai"
+

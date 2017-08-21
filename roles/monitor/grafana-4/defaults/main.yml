@@ -1,0 +1,13 @@
+# default web login user/pass = admin/admin
+
+# these are settings for grafana database
+grafana_db_host: 127.0.0.1
+grafana_db_port: 3306
+grafana_db_name: grafana
+grafana_db_user: grafana
+grafana_db_pass: grafana
+
+# these are settings for data source - influxdb
+grafana_ds_influxdb_server_host: ''
+grafana_ds_influxdb_admin_user: ''
+grafana_ds_influxdb_admin_pass: ''

@@ -1,0 +1,9 @@
+---
+
+- include: init-rabbitmq.yml
+  tags:
+    - init-rabbitmq
+
+- include: set-cell-vip.yml
+  tags:
+    - set-cell-vip

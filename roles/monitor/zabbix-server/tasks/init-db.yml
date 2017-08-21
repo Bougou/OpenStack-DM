@@ -1,0 +1,28 @@
+# Ansible use root password stored in ~/.my.cnf to login mysql
+
+- name: create zabbix database
+  mysql_db:
+    name: "{{ zabbix_db_name }}"
+    state: present
+    login_host: "{{ zabbix_db_host }}"
+    login_port: "{{ zabbix_db_port }}"
+
+- name: create zabbix db user/pass
+  mysql_user:
+    name: "{{ zabbix_db_user }}"
+    host: '%'
+    password: "{{ zabbix_db_pass }}"
+    priv: "{{ zabbix_db_name }}.*:ALL PRIVILEGES"
+    state: present
+    login_host: "{{ zabbix_db_host }}"
+    login_port: "{{ zabbix_db_port }}"
+    
+#- name: unzip zabbix create.sql.gz
+#  unarchive: src=/usr/share/doc/zabbix-server-mysql-3.0.3/create.sql.gz dest=/tmp/create.sql
+
+- name: import zabbix tables
+  mysql_db:
+    state: import
+    name: "{{ zabbix_db_name }}"
+    target: "{{ zabbix_mysql_script_file }}"
+    

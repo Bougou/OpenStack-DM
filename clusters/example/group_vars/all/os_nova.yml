@@ -1,0 +1,8 @@
+osdm_os_nova_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_nova_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_ec2_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_ec2_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_nova_db_user: "novadb"
+osdm_os_nova_db_pass: "novapass"

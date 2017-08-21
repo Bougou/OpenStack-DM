@@ -1,0 +1,4 @@
+---
+
+- name: restart kapacitor
+  service: name=kapacitor state=restarted

@@ -1,0 +1,15 @@
+# IPMI DEVICE (iDRAC)
+
+# whether to set lan info for ipmi device
+osdm_configure_ipmi: true
+
+# ipmi nic is shared or dedicated
+osdm_ipmi_mode: "shared"
+osdm_ipmi_pass: "ipmipass"
+
+# Accepted values: 
+# 'off' means not enable vlan 
+# '<vlan_id_numer>'
+osdm_ipmi_lan_vlan: 16
+osdm_ipmi_lan_net: 172.30.16.0/24
+osdm_ipmi_lan_gw: 172.30.16.254

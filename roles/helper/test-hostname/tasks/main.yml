@@ -1,0 +1,7 @@
+---
+
+- name: check connetion to host, executing hostname
+  shell: hostname
+  register: hn
+
+- debug: msg={{ hn.stdout }}

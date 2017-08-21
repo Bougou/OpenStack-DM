@@ -1,0 +1,20 @@
+---
+
+- include: install.yml
+  tags: install
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags: init-endpoint
+
+- include: init-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags: init-db
+
+- include: start.yml
+  when: inventory_hostname in groups['os-controller']
+  tags: start
+
+- include: configure-share-node-lvm.yml
+  when: inventory_hostname in groups['manila-share']
+  tags: configure-share-node-lvm

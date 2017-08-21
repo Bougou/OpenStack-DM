@@ -1,0 +1,22 @@
+pxc56_release_file: percona-release-0.1-4.noarch.rpm 
+
+# some releases use 'mysql', some use 'mysqld'
+pxc56_mysql_service: mysql
+
+pxc56_mysql_root_pass: "mysql"
+pxc56_mysql_sst_user: "sst"
+pxc56_mysql_sst_pass: "sst"
+pxc56_datadir: /var/lib/mysql
+
+# pxc56_stream_port: 9999
+
+# using this fact name to derive the ip address 
+# for use of sst.
+pxc56_sst_ip_fact_name: 'ansible_default_ipv4'
+
+# all hosts under this ansible group will construct gcomm address list in my.cnf.j2.
+pxc56_cluster_group_name: ''
+
+pxc56_bootstrap_node: '127.0.0.1'
+
+db_listen_addr: 0.0.0.0

@@ -1,0 +1,7 @@
+---
+
+- name: enable nova user login on compute node
+  user: name=nova shell=/bin/bash
+
+- name: template nova.conf
+  template: src="nova.conf.j2" dest="/etc/nova/nova.conf" backup=yes

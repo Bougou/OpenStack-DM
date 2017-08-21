@@ -1,0 +1,9 @@
+osdm_mq_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+# for nova api cell and basic openstack components
+
+osdm_mq_admin_user: rabbitmqadmin
+osdm_mq_admin_pass: rabbitmqadmin
+
+# use 'cat /dev/urandom | tr -dc 'A-Z' | fold -w 20 | head -n1' to generate erlang cookie
+# override the default osdm_erlang_cookie of ansible rabbitmq role
+osdm_erlang_cookie: 'QALUQPZBFCRONSJJDLVE'

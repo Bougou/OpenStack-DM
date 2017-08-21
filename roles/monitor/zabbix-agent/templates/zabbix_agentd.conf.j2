@@ -1,0 +1,62 @@
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+
+LogType=file
+
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=10
+# DebugLevel=3
+
+# SourceIP=
+
+EnableRemoteCommands=1
+LogRemoteCommands=1
+
+# ListenPort=10050
+# ListenIP=0.0.0.0
+# StartAgents=3
+
+##### Passive checks related
+Server=localhost,127.0.0.1,{{ zabbix_server_host }}
+
+##### Active checks related
+ServerActive={{ zabbix_server_host }}
+
+# Hostname=
+# HostnameItem=system.hostname
+HostnameItem=system.run["cat /sys/class/dmi/id/product_uuid"]
+
+# HostMetadata=
+# HostMetadataItem=
+
+# RefreshActiveChecks=120
+
+# BufferSend=5
+# BufferSize=100
+# MaxLinesPerSecond=20
+
+############ ADVANCED PARAMETERS #################
+
+# Alias=
+# Timeout=3
+AllowRoot=1
+
+# User=zabbix
+
+Include=/etc/zabbix/zabbix_agentd.d/
+
+# UnsafeUserParameters=0
+# UserParameter=
+
+# LoadModulePath=${libdir}/modules
+# LoadModule=
+
+# TLSConnect=unencrypted
+# TLSAccept=unencrypted
+# TLSCAFile=
+# TLSCRLFile=
+# TLSServerCertIssuer=
+# TLSServerCertSubject=
+# TLSCertFile=
+# TLSKeyFile=
+# TLSPSKIdentity=
+# TLSPSKFile=

@@ -1,0 +1,67 @@
+---
+
+# libselinux-python
+# A trick, move file to an *absolute* file path on the ansible host
+- copy: src={{ zerostep_libselinux_python }} dest=/tmp/{{ zerostep_libselinux_python }}
+  delegate_to: 127.0.0.1
+
+# Must use ansible 'shell' module to run scp directly.
+# Because any other ansible modules can not run before libselinux-python
+# is installed on the remote machine.
+# Not using rsync commmand because rsync might not be installed
+- name: transfer libselinux-python package
+  shell: scp -F "{{ inventory_dir }}/ssh.cfg" /tmp/{{ zerostep_libselinux_python }} {{ inventory_hostname }}:/tmp/
+  delegate_to: 127.0.0.1
+
+- name: install liselinux-python package
+  yum: name=/tmp/{{ zerostep_libselinux_python }} state=present disablerepo=*
+
+- name: delete temporary file
+  file: path=/tmp/{{ zerostep_libselinux_python }} state=absent
+
+# Install other packages.
+- name: transfer packages
+  copy: src={{ item }} dest=/tmp/{{ item }}
+  with_items:
+    - "{{ zerostep_pkg_list }}"
+
+- name: install package
+  yum: name=/tmp/{{ item }} state=present disablerepo=*
+  with_items:
+    - "{{ zerostep_pkg_list }}"
+
+- name: delete temporay file
+  file: path=/tmp/{{ item }} state=absent
+  with_items:
+    - "{{ zerostep_pkg_list }}"
+
+# yum errors will cause ansible to exit.
+# Errors like: "There are unfinished transactions remaining."
+# You might need running yum-complete-transaction first to finish those unifished transactions.
+- name: clean up yum transaction journal files to avoid yum errors
+  shell: yum-complete-transaction --cleanup-only --disablerepo=*
+
+- name: add a nameserver if no nameserver exists
+  shell: test -f /etc/resolv.conf && \
+         grep -sq -v -e '^$' -e '^#' /etc/resolv.conf | grep -sq '^nameserver' || \
+         echo 'nameserver 114.114.114.114' > /etc/resolv.conf
+
+# enable yum cache, the sooner the better.
+- name: enable yum cache
+  ini_file: dest=/etc/yum.conf section=main option=keepcache value=1
+
+- name: modify sshd configuration
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.content }}"
+    state: present
+  with_items:
+    - { "regexp": 'UseDNS ', "content": "UseDNS no" }
+    - { "regexp": 'GSSAPIAuthentication ', "content": "GSSAPIAuthentication no" }
+    - { "regexp": 'PasswordAuthentication ', "content": "PasswordAuthentication {{ osdm_sshd_enable_password }}" }
+  notify:
+    - restart sshd
+
+- name: touch /root/.zerostep.finished file
+  file: path=/root/.zerostep.finished state=touch

@@ -1,0 +1,32 @@
+---
+
+# for gnocchi to store index
+- name: add gnocchi database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - gnocchi
+
+- name: create gnocchi db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_gnocchi_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_gnocchi_db_pass }}"
+    priv: "gnocchi.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate gnocchi database
+  shell: su gnocchi -s /bin/sh -c "gnocchi-upgrade"
+  tags:
+    - db_sync

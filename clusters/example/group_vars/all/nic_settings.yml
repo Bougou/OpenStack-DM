@@ -1,0 +1,208 @@
+# Hostvars may override `osdm_node_nics_*` variables.
+
+# Configure Flag - `osdm_configure_<func>_if
+# Networks - `osdm_os_<func>_net`
+# Gateway - `osdm_os_<func>_gw`
+# RouteMetric - `osdm_os_<func>_metric`
+# NetworkVLAN - `osdm_os_<func>_vlan`
+# NICS - `osdm_node_nics_<func>_if`
+# NICS Flag - `osdm_node_nics_<func>_dedicated`
+# DerivedNIC Name - `osdm_os_<func>_if`
+
+
+# Configure Flag - `osdm_configure_<func>_if
+# 
+# Whether to configure this network.
+
+
+# Networks - `osdm_os_<func>_net`
+#
+# Network Subnet.
+
+
+# Gateway - `osdm_os_<func>_gw`
+#
+# value 0.0.0.0 means you dont want to configure gateway
+# For both nodes, some nodes have external nic, some do not, but both have mgmt nic.
+# So I strongly recommend set `osdm_os_ext_metric` to 1 which makes `osdm_os_ext_gw` as default gateway.
+# And set `osdm_os_mgmt_metric` to 2.
+# And leave all other `osdm_os_<func>_gw` as 0.0.0.0 which disables the gateway.
+# Thus: ---->
+# On nodes who have external nic, the `osdm_os_ext_gw` is the default gw.
+# On nodes who don't have external nic, the `osdm_os_mgmt_gw` is the default gw.
+
+
+# RouteMetric - `osdm_os_<func>_metric`
+#
+# metric is used as ipv4.route-metric, value -1 means the metric is auto selected
+# by nm(NetworkManager) according to device type.
+# If you want a gateway address to be the deterministic gateway for default route,
+# you can specify the metric value to an interger lower than 100 and leave all other
+# metric values to be default -1.
+# Because the metrics auto selectd by nm are all >= 100.
+
+
+# NetworkVLAN - `osdm_os_<func>_vlan`
+#
+
+
+# NICS - `osdm_node_nics_<func>_if`
+#
+# accepted values are "eth0" or "eth0 eth1"
+# Note! Currently [eth0, eth1] is not accepted.
+# Warning: All network interface cards MUST NOT be used in a mixed way.
+# It means for a specific nic, it is either be an alone nic
+# or a slave nic in a virtual team/bond interface.
+
+
+# NICS Flag - `osdm_node_nics_<func>_dedicated`
+#
+
+
+# DerivedNIC Name - `osdm_os_<func>_if`
+#
+# ip address will be set on `osdm_os_<func>_if` device
+# its value will like 'vlan17' or 'eth0' or 'bond-eth1-eth2' depends on 
+# 1. `osdm_node_nics_<func>_dedicated` (true or false)
+# 2. `osdm_node_nics_<func>_if` (nic names, one nic or more than one nics)
+# 3. `osdm_os_<func>_vlan` (vlan number).
+
+
+# Below type of variables are facts which will be setup by ansible role `calc_ipaddr` in playbooks.
+# osdm_os_<func>_if_addr
+# osdm_os_<func>_if_ip
+# osdm_os_<func>_if_prefix
+
+
+# bond or team or ovsbond
+#osdm_team_type: bond
+osdm_team_type: ovsbond
+# for bond: balance-rr, 802.3ad
+# for team: roundrobin, activebackup, lacp
+# for ovsbond: active-backup, balance-slb, balance-tcp(lacp)
+#osdm_team_mode: balance-rr
+osdm_team_mode: balance-slb
+
+
+
+
+osdm_node_dns1: 219.141.140.10
+osdm_node_dns2: 8.8.8.8
+
+# ADMIN
+osdm_node_nics_admin_if: "eth0"
+osdm_node_nics_admin_dedicated: false
+# used to fetch ip address of the interface from ansible facts
+
+# We Use IP address on `osdm_os_admin_if` to determine IP addresses 
+# of all other Interfaces.
+#osdm_os_admin_if: vlan15
+osdm_os_admin_if: vlan15
+# this is the fact name used to fetch ip address.
+osdm_ansible_os_admin_if: "ansible_{{ osdm_os_admin_if|replace('-', '_') }}"
+
+
+# MANAGEMENT
+osdm_configure_mgmt_if: true
+osdm_os_mgmt_name: "management"
+osdm_os_mgmt_net: 172.30.17.0/24
+osdm_os_mgmt_gw: 172.30.17.254
+osdm_os_mgmt_metric: 2
+osdm_os_mgmt_vlan: 17
+osdm_node_nics_mgmt_if: "eth0"
+osdm_node_nics_mgmt_dedicated: false
+osdm_os_mgmt_if: "{% if osdm_network_mode == 'neutron' %}br-mgmt
+                  {%- else %}
+                  {%- if not osdm_node_nics_mgmt_dedicated %}vlan{{ osdm_os_mgmt_vlan }}
+                  {%- elif osdm_node_nics_mgmt_if.split()|length > 1 %}bond-{{ osdm_node_nics_mgmt_if.split()|join('-') }}
+                  {%- else %}{{ osdm_node_nics_mgmt_if }}
+                  {%- endif %}
+                  {%- endif %}"
+
+
+# EXTERNAL
+osdm_configure_ext_if: true
+osdm_os_ext_name: "external"
+osdm_os_ext_net: 10.5.252.0/24
+# MUST specify gateway of external net
+osdm_os_ext_gw: 10.5.252.254
+# Make EXTERNAL the default gateway
+osdm_os_ext_metric: 1
+osdm_os_ext_vlan: 886
+osdm_node_nics_ext_if: "eth0"
+osdm_node_nics_ext_dedicated: false
+osdm_os_ext_if: "{% if osdm_network_mode == 'neutron' %}br-ex
+                 {%- else %}
+                 {%- if not osdm_node_nics_ext_dedicated %}vlan{{ osdm_os_ext_vlan }}
+                 {%- elif osdm_node_nics_ext_if.split()|length > 1 %}bond-{{ osdm_node_nics_ext_if.split()|join('-') }}
+                 {%- else %}{{ osdm_node_nics_ext_if }}
+                 {%- endif %}
+                 {%- endif %}"
+
+
+# nova-network : DATA
+osdm_configure_data_if: false
+osdm_os_data_name: "data"
+osdm_os_data_net: 172.30.19.0/24
+osdm_os_data_gw: 0.0.0.0
+osdm_os_data_metric: -1
+osdm_os_data_vlan: 19
+osdm_node_nics_data_if: "eth0"
+osdm_node_nics_data_dedicated: false
+osdm_os_data_if: "{% if osdm_network_mode == 'neutron' %}none
+                  {%- else %}
+                  {%- if osdm_node_nics_data_if.split()|length > 1 %}bond-{{ osdm_node_nics_data_if.split()|join('-') }}
+                  {%- else %}{{ osdm_node_nics_data_if }}
+                  {%- endif %}
+                  {%- endif %}"
+
+
+# Ceph : STORAGE
+osdm_ceph_cluster_network_dedicated: true
+osdm_configure_stor_if: true
+osdm_os_stor_name: "storage"
+osdm_os_stor_net: 172.30.22.0/24
+osdm_os_stor_gw: 0.0.0.0
+osdm_os_stor_metric: -1
+osdm_os_stor_vlan: 22
+osdm_node_nics_stor_if: "eth0"
+osdm_node_nics_stor_dedicated: false
+osdm_os_stor_if: "{% if osdm_network_mode == 'neutron' %}br-stor
+                  {%- else %}
+                  {%- if not osdm_node_nics_stor_dedicated %}vlan{{ osdm_os_stor_vlan }}
+                  {%- elif osdm_node_nics_stor_if.split()|length > 1 %}bond-{{ osdm_node_nics_stor_if.split()|join('-') }}
+                  {%- else %}{{ osdm_node_nics_stor_if }}
+                  {%- endif %}
+                  {%- endif %}"
+
+
+# neutron : TENANT
+osdm_configure_ten_if: true
+osdm_os_ten_name: "tenant"
+osdm_os_ten_net: 172.30.20.0/24
+osdm_os_ten_gw: 0.0.0.0
+osdm_os_ten_metric: -1
+osdm_os_ten_vlan: 20
+osdm_node_nics_ten_if: "eth0"
+osdm_node_nics_ten_dedicated: false
+osdm_os_ten_if: "{% if osdm_network_mode == 'neutron' %}br-ten
+                  {%- else %}none
+                  {%- endif %}"
+
+
+# neutron : PROVIDER
+osdm_configure_pro_if: true
+osdm_os_pro_name: "provider"
+osdm_os_pro_net: 172.30.21.0/24
+#osdm_os_pro_net: none
+osdm_os_pro_gw: none
+osdm_os_pro_metric: none
+# Note: this vlan information here is not used at all, but we leave it here just for explanation.
+# the vlan must be set on the physical switch as native vlan, this vlan is the Provider Flat Network.
+osdm_os_pro_vlan: none
+osdm_node_nics_pro_if: "eth0"
+osdm_node_nics_pro_dedicated: false
+osdm_os_pro_if: "{% if osdm_network_mode == 'neutron' %}br-pro
+                 {%- else %}none
+                 {%- endif %}"
+

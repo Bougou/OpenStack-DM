@@ -1,0 +1,14 @@
+---
+
+- name: enable nova user login on compute node
+  user: name=nova shell=/bin/bash
+
+- name: template nova.conf
+  template: src="nova.conf.j2" dest="/etc/nova/nova.conf" backup=yes
+
+- name: touch dnsmasq.nova.conf
+  file: path=/etc/nova/dnsmasq.nova.conf state=touch
+
+- name: copy nova-placement-api.conf http
+  copy: src=00-nova-placement-api.conf dest=/etc/httpd/conf.d/00-nova-placement-api.conf
+  

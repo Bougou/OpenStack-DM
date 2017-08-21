@@ -1,0 +1,23 @@
+---
+
+# for idempotence
+- name: stop influxdb service if exists
+  service: name=influxdb state=stopped
+
+- name: clear datadir
+  file: path={{ influxdb_data_dir }} state=absent
+
+- name: make sure datadir exist
+  file: path={{ influxdb_data_dir }} state=directory mode=0755 owner=influxdb group=influxdb
+
+- name: template influxdb.conf
+  template: src=influxdb.conf.j2 dest=/etc/influxdb/influxdb.conf
+  notify:
+    - restart influxdb
+
+- name: start influxdb service
+  service: name=influxdb state=started enabled=yes
+
+- name: create the influxadmin user
+  shell: /usr/bin/influx -execute "create user {{ influxdb_admin_user }} with password '{{ influxdb_admin_pass }}' with all privileges"
+

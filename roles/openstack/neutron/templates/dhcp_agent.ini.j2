@@ -1,0 +1,28 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+
+{% if osdm_ml2_agent == 'br' %}
+# interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
+interface_driver = linuxbridge
+{% else %}
+# Example of interface_driver option for OVS based plugins(OVS, Ryu, NEC, NVP, BigSwitch/Floodlight)
+# interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+interface_driver = openvswitch
+{% endif %}
+
+ovs_integration_bridge = {{ osdm_ovsbr_intergration }}
+dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+
+# By default, the metadata agent is running where the L3 agent is running, and depends on it.
+# This means that if you don't have a neutron router, you don't have a metadata agent running,
+# which is the one you use to give access to VMs instance information (including keypairs).
+# However, you can ask the dhcp agent to allow access to the metadata agent.
+# This is done by ensuring enable_isolated_metadata is set to True.
+enable_isolated_metadata = true
+
+force_metadata = false
+enable_metadata_network = false
+
+dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf
+dnsmasq_dns_servers = {{ osdm_dns_servers }}
+dhcp_domain = {{ osdm_dhcp_domain }}

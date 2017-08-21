@@ -1,0 +1,76 @@
+---
+
+# - include: install-nova-controller.yml
+#   when: inventory_hostname in groups['os-controller']
+#   tags:
+#     - install-nova-controller
+
+# - include: config-nova-controller.yml
+#   when: inventory_hostname in groups['os-controller']
+#   tags:
+#     - config-nova-controller
+
+# - include: install-cell-controller.yml
+#   when: inventory_hostname in groups['os-cell-controller']
+#   tags:
+#     - install-cell-controller
+
+# - include: config-cell-controller.yml
+#   when: inventory_hostname in groups['os-cell-controlelr']
+#   tags:
+#     - config-cell-controller
+
+# - include: install-nova-compute.yml
+#   when: inventory_hostname in groups['os-compute']
+#   tags:
+#     - install-nova-compute
+
+# - include: config-nova-compute.yml
+#   when: inventory_hostname in groups['os-compute']
+#   tags:
+#     - config-nova-compute
+
+# - include: generate-nova-key.yml
+#   when: inventory_hostname == groups['os-controller'][0]
+#   tags:
+#     - generate-nova-key
+
+# - include: fetch-nova-key.yml
+#   when: inventory_hostname != groups['os-controller'][0]
+#   tags:
+#     - fetch-nova-key
+
+# - include: define-libvirt-secret.yml
+#   when: inventory_hostname in groups['os-compute']
+#   tags:
+#     - define-libvirt-secret
+
+# - include: init-api-db.yml
+#   when: inventory_hostname == groups['os-controller'][0]
+#   tags:
+#     - init-api-db
+
+- include: add-cell-info.yml
+  when: inventory_hostname == groups['os-cell-controller'][0]
+  tags:
+    - add-cell-info
+
+- include: init-cell-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-cell-db
+
+# - include: init-endpoint.yml
+#   when: inventory_hostname == groups['os-controller'][0]
+#   tags:
+#     - init-endpoint
+
+- include: start-nova-controller.yml
+  when: inventory_hostname in groups['os-controller']
+  tags:
+    - start-nova-controller
+
+- include: start-nova-compute.yml
+  when: inventory_hostname in groups['os-compute']
+  tags:
+    - start-nova-compute

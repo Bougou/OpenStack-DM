@@ -1,0 +1,15 @@
+---
+
+- name: prepare InfluxDB repo file
+  copy: src={{ item }} dest=/etc/yum.repos.d/{{ item }}
+  with_items:
+    - influxdb.repo
+    - influxdb.key
+
+- name: import influxdb key
+  rpm_key: state=present key=/etc/yum.repos.d/influxdb.key
+
+- name: install kapacitor packages
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - kapacitor

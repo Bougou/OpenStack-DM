@@ -1,0 +1,34 @@
+---
+
+- name: add ironic database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - ironic
+
+- name: create ironic db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_ironic_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_ironic_db_pass }}"
+    priv: "ironic.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: make sure /var/log/ironic/ owner
+  file: path=/var/log/ironic/ owner=ironic group=ironic recurse=yes
+
+
+- name: populate ironic database
+  shell: su ironic -s /bin/sh -c "ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema"
+

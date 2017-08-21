@@ -1,0 +1,4 @@
+---
+
+- name: start ceph-radosgw
+  service: name=ceph-radosgw@rgw.{{ hostvars[inventory_hostname]['ansible_hostname'] }}.service state=started enabled=yes

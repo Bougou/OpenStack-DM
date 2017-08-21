@@ -1,0 +1,31 @@
+---
+
+- name: add glance database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - glance
+
+- name: create glance db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_glance_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_glance_db_pass }}"
+    priv: "glance.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate glance database
+  shell: su glance -s /bin/sh -c "glance-manage db_sync"
+  tags:
+    - db_sync

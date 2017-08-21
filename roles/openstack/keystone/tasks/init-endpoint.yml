@@ -1,0 +1,21 @@
+---
+
+- name: transfer the endpoint initialization script
+  copy: src=init-endpoint_keystone.sh dest=/tmp/init-endpoint_keystone.sh mode=755
+
+# Note: the provided envrionment variables will be used by the script.
+- name: add identity endpoint in keystone
+  shell: bash /tmp/init-endpoint_keystone.sh
+  environment:
+    OS_TOKEN: "{{ osdm_admin_token }}"
+    OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+    osdm_user_admin_pass: "{{ osdm_user_admin_pass }}"
+    osdm_user_demo_pass: "{{ osdm_user_demo_pass }}"
+    osdm_os_keystone_api_ip: "{{ osdm_os_keystone_api_ip }}"
+    osdm_os_keystone_mgmt_ip: "{{ osdm_os_keystone_mgmt_ip }}"
+
+# Just on the host of os-controller[0]
+- name: remove the temporary script file
+  file: path=/tmp/init-endpoint_keystone.sh state=absent
+

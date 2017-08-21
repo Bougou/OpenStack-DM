@@ -1,0 +1,17 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-endpoint
+
+## mongodb
+# - include: init-mongodb.yml
+#   when: inventory_hostname == groups['os-controller'][0]
+
+# - include: start.yml
+

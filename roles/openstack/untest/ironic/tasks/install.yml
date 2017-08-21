@@ -1,0 +1,34 @@
+---
+
+- name: install openstack ironic on controller
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-ironic-api
+    - openstack-ironic-conductor
+    - python-ironicclient
+
+- name: install some packages for ironic conductor
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - qemu-img-ev
+    - iscsi-initiator-utils
+
+# qemu-img package from base repo
+# qemu-img-ev package from centos-qemu-ev repo
+# iscsi-initiator-utils provides iscsiadm command which is needed by iscsi-deploy driver.
+
+- name: install some packages for ironic conductor
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - shellinabox
+    - socat
+    - openssl
+    - ipmitool
+
+
+- name: install openstack-inspector 
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-ironic-inspector
+    - openstack-ironic-python-agent
+    - python2-ironic-python-agent

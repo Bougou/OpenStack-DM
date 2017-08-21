@@ -1,0 +1,8 @@
+LoadPlugin network
+<Plugin network>
+  <Listen "0.0.0.0" "{{ collectd_server_listen_port }}">
+    SecurityLevel None
+  </Listen>
+  Forward true
+  ReportStats true
+</Plugin>

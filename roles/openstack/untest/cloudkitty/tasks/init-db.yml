@@ -1,0 +1,32 @@
+---
+
+- name: add cloudkitty database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - cloudkitty
+
+- name: create cloudkitty db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_cloudkitty_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_cloudkitty_db_pass }}"
+    priv: "cloudkitty.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate cloudkitty database
+  shell: su cloudkitty -s /bin/sh -c "cloudkitty-dbsync upgrade";
+         su cloudkitty -s /bin/sh -c "cloudkitty-storage-init"
+  tags:
+    - db_sync

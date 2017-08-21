@@ -1,0 +1,12 @@
+---
+
+- include: install.yml
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0]
+
+- include: init-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+
+- include: start.yml
+

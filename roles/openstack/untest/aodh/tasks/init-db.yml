@@ -1,0 +1,31 @@
+---
+
+- name: add aodh database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - aodh
+
+- name: create aodh db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_aodh_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_aodh_db_pass }}"
+    priv: "aodh.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate aodh database
+  shell: su aodh -s /bin/sh -c "aodh-dbsync"
+  tags:
+    - db_sync

@@ -1,0 +1,14 @@
+---
+
+# set cell vip
+
+- name: transfer add_vip script
+  copy: src=add_vip.sh dest=/tmp/add_vip.sh
+
+- name: configure vip
+  shell: source /tmp/add_vip.sh;
+         add_vip {{ osdm_os_mgmt_if }} {{ osdm_cell_access_mgmt_vip }};
+
+- name: remove temporary add_vip script
+  file: path=/tmp/add_vip.sh state=absent
+

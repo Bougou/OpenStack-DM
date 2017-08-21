@@ -1,0 +1,32 @@
+---
+
+- name: add heat database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - heat
+
+- name: create heat db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_heat_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_heat_db_pass }}"
+    priv: "heat.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate heat database
+  shell: su heat -s /bin/sh -c "heat-manage db_sync"
+  tags:
+    - db_sync
+

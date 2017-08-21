@@ -1,0 +1,61 @@
+## Provider Network
+
+# osdm_ft_pro_flat='1'
+# osdm_ft_pro_flat_range
+# osdm_ft_pro_flat_gateway
+# osdm_ft_pro_flat_pool_start
+# osdm_ft_pro_flat_pool_end
+# osdm_ft_pro_vlan1='51'
+# osdm_ft_pro_vlan1_range
+# osdm_ft_pro_vlan1_gateway
+# osdm_ft_pro_vlan1_pool_start
+# osdm_ft_pro_vlan1_pool_end
+# osdm_ft_pro_vlan2='51'
+# osdm_ft_pro_vlan2_range
+# osdm_ft_pro_vlan2_gateway
+# osdm_ft_pro_vlan2_pool_start
+# osdm_ft_pro_vlan2_pool_end
+
+osdm_ft_pro_flat: 1
+osdm_ft_pro_flat_range: 172.30.21.0/24
+osdm_ft_pro_flat_gateway: 172.30.21.101
+osdm_ft_pro_flat_pool_start: 172.30.21.200
+osdm_ft_pro_flat_pool_end: 172.30.21.240
+
+osdm_ft_pro_vlan1: 51
+osdm_ft_pro_vlan1_range: 51.0.0.0/24
+osdm_ft_pro_vlan1_gateway: 51.0.0.101
+osdm_ft_pro_vlan1_pool_start:  51.0.0.200
+osdm_ft_pro_vlan1_pool_end: 51.0.0.240
+
+osdm_ft_pro_vlan2: 61
+osdm_ft_pro_vlan2_range: 61.0.0.0/24
+osdm_ft_pro_vlan2_gateway: 61.0.0.101
+osdm_ft_pro_vlan2_pool_start:  61.0.0.200
+osdm_ft_pro_vlan2_pool_end: 61.0.0.240
+
+## External Network + Tenant Network
+
+# osdm_ft_ext_range
+# osdm_ft_ext_gateway
+# osdm_ft_ext_pool_start
+# osdm_ft_ext_pool_end
+# osdm_ft_dns1
+# osdm_ft_dns2
+# osdm_ft_admin_net1_range
+# osdm_ft_admin_net1_gateway
+# osdm_ft_admin_net2_range
+# osdm_ft_admin_net2_gateway
+
+
+osdm_ft_ext_range: 10.5.252.0/24
+osdm_ft_ext_gateway: 10.5.252.254
+osdm_ft_ext_pool_start: 10.5.252.210
+osdm_ft_ext_pool_end: 10.5.252.219
+osdm_ft_dns1: 114.114.114.114
+osdm_ft_dns2: 8.8.8.8
+osdm_ft_admin_net1_range: 192.168.11.0/24
+osdm_ft_admin_net1_gateway: 192.168.11.254
+osdm_ft_admin_net2_range: 192.168.12.0/24
+osdm_ft_admin_net2_gateway: 192.168.12.254
+

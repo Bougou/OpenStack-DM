@@ -1,0 +1,35 @@
+---
+
+- name: transfer script
+  copy: src={{ item }} dest=/tmp/{{ item }} mode=755
+  with_items:
+    - inf_utils.sh
+    - clear-inf.sh
+
+# Note: the provided envrionment variables will be used by the script.
+- name: clear interfaces
+  shell: source /tmp/inf_utils.sh;
+         bash -x /tmp/clear-inf.sh >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    # We MUST NOT clear the Interfaces osdm_node_nics_admin_if Used for Admin purpose.
+    osdm_node_nics_admin_if: "{{ osdm_node_nics_admin_if }}"
+    osdm_node_nics_admin_dedicated: "{{ osdm_node_nics_admin_dedicated }}"
+    osdm_node_nics_ext_if: "{{ osdm_node_nics_ext_if }}"
+    osdm_os_ext_vlan: "{{ osdm_os_ext_vlan }}"
+    osdm_node_nics_mgmt_if: "{{ osdm_node_nics_mgmt_if }}"
+    osdm_os_mgmt_vlan: "{{ osdm_os_mgmt_vlan }}"
+    osdm_node_nics_ten_if: "{{ osdm_node_nics_ten_if }}"
+    osdm_os_ten_vlan: "{{ osdm_os_ten_vlan }}"
+    osdm_node_nics_stor_if: "{{ osdm_node_nics_stor_if }}"
+    osdm_os_stor_vlan: "{{ osdm_os_stor_vlan }}"
+    osdm_node_nics_data_if: "{{ osdm_node_nics_data_if }}"
+    osdm_os_data_vlan: "{{ osdm_os_data_vlan }}"
+    osdm_node_nics_pro_if: "{{ osdm_node_nics_pro_if }}"
+    osdm_os_pro_vlan: "{{ osdm_os_pro_vlan }}"
+
+- name: remove the temporary script
+  file: path=/tmp/{{ item }} state=absent
+  with_items:
+    - inf_utils.sh
+    - clear-inf.sh
+

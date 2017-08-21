@@ -1,0 +1,63 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+
+[agent]
+l2_population = True
+arp_responder = True
+
+## This can be set to either 'gre' or 'vxlan' or both.
+## If this is unset, it will default to [] and disable tunneling support in the agent.
+tunnel_types = vxlan,gre
+
+# vxlan_udp_port 8472
+
+## This option has no effect if use_veth_interconnection is False
+veth_mtu = 1504
+
+{% if osdm_ml2_agent == 'ovs' and osdm_l3_router_mode == 'dvr' %}
+enable_distributed_routing = True
+{% else %}
+enable_distributed_routing = False
+{% endif %}
+
+
+extensions = qos
+
+
+[ovs]
+{% if osdm_ovs_enable_dpdk %}
+datapath_type = netdev
+vhostuser_socket_dir = /var/run/openvswitch
+{% endif %}
+integration_bridge = {{ osdm_ovsbr_intergration }}
+tunnel_bridge = {{ osdm_ovsbr_tunnel }}
+local_ip = {{ osdm_os_ten_if_ip }}
+use_veth_interconnection = False
+of_interface = native 
+# native or ovs-ofctl
+of_listen_address = 127.0.0.1
+of_listen_port = 6633
+
+ovsdb_interface = native
+ovsdb_connection = tcp:127.0.0.1:6640
+
+
+
+bridge_mappings = {%- if osdm_enable_external_network and osdm_enable_provider_network -%}
+{{ osdm_external_physnet_label }}:{{ osdm_ovsbr_external }},{{ osdm_provider_physnet_label }}:{{ osdm_ovsbr_provider }}
+                {%- elif osdm_enable_external_network -%}
+{{ osdm_external_physnet_label }}:{{ osdm_ovsbr_external }}             
+                {%- elif osdm_enable_provider_network -%}
+{{ osdm_provider_physnet_label }}:{{ osdm_ovsbr_provider }}
+                {%- endif %}
+
+[securitygroup]
+enable_security_group = True
+enable_ipset = True
+# firewall_driver = iptables_hybrid
+firewall_driver = {% if osdm_ml2_agent == 'br' -%}
+                  neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+                  {%- else -%}
+                  neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+                  {% endif %}
+

@@ -1,0 +1,51 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+
+{% if osdm_ml2_agent == 'br' %}
+# interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
+interface_driver = linuxbridge
+{% else %}
+# Example of interface_driver option for OVS based plugins(OVS, Ryu, NEC, NVP, BigSwitch/Floodlight)
+# interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+interface_driver = openvswitch
+{% endif %}
+
+# L3 metadata proxy
+enable_metadata_proxy = true
+
+# These two options are intentionally contains no value.
+gateway_external_network_id =
+external_network_bridge =
+
+{% if osdm_ml2_agent == 'ovs' and osdm_l3_router_mode == 'dvr' %}
+  {%- if inventory_hostname in groups['os-controller'] and
+         inventory_hostname in groups['os-network'] and
+         inventory_hostname in groups['os-compute'] %}
+agent_mode = dvr_snat
+  {%- elif inventory_hostname in groups['os-controller'] and
+          inventory_hostname in groups['os-network'] %}
+agent_mode = dvr_snat
+  {%- elif inventory_hostname in groups['os-compute'] and
+          inventory_hostname in groups['os-network'] %}
+agent_mode = dvr_snat
+  {%- elif inventory_hostname in groups['os-network'] %}
+agent_mode = dvr_snat
+  {%- elif inventory_hostname in groups['os-compute'] %}
+agent_mode = dvr
+  {%- else %}
+agent_mode = legacy
+  {%- endif %}
+{% else %}
+agent_mode = legacy
+{% endif %}
+
+[AGENT]
+# specifying that we are using the fwaas agent extension in L3Agent
+extensions = fwaas
+
+[fwaas]
+# stating that it is the v1 agent that we are using
+agent_version = v1
+driver = iptables
+enabled = True
+

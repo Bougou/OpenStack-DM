@@ -1,0 +1,33 @@
+rabbitmq_listen_addr: '0.0.0.0'
+
+# If this variable is not empty, then the target will check whether its 
+# inventory_hostname is equal to this variable value.
+# If not equal, the target will join rabbitmq cluster with this node.
+rabbitmq_master_addr: ''
+
+# all hosts under this ansible group will join a rabbitmq cluster
+rabbitmq_cluster_group_name: ''
+
+# use 'cat /dev/urandom | tr -dc 'A-Z' | fold -w 20 | head -n1' to generate erlang cookie
+# define erlang cookie for cluster
+# define here or in group_vars/
+rabbitmq_erlang_cookie_str: 'ONXGCDNRXJCGDSLWJGDI'
+rabbitmq_erlang_cookie_file: '/var/lib/rabbitmq/.erlang.cookie'
+
+rabbitmq_ha_policy:
+  - pattern: '.*'
+    tags: 'ha-mode=all,ha-sync-mode=automatic'
+
+# admin user to create in order to login to WebUI
+# default guest user will be deleted
+rabbitmq_users:
+  - name: rabbitmqadmin
+    password: rabbitmqadmin
+    vhost: /
+    configure_priv: '.*'
+    read_priv: '.*'
+    write_priv: '.*'
+    tags: 'administrator'
+
+rabbitmq_plugins:
+  - { name: "rabbitmq_management", state: enabled }

@@ -1,0 +1,18 @@
+[Unit]
+Description=ceph-rest-api
+
+[Service]
+LimitNOFILE=1048576
+LimitNPROC=1048576
+EnvironmentFile=-/etc/sysconfig/ceph
+Environment=CLUSTER=ceph
+User=ceph
+Group=ceph
+ExecStart=/usr/bin/ceph-rest-api -c /etc/ceph/ceph.conf -i admin
+TasksMax=infinity
+Restart=on-failure
+StartLimitInterval=30s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

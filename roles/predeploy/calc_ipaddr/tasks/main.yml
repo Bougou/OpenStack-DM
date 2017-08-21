@@ -1,0 +1,10 @@
+---
+
+# The caculate process can be executed on the ansible host.
+- include: install.yml
+  tags:
+    - install
+
+- include: set-facts-ip.yml
+  tags:
+    - set-facts-ip

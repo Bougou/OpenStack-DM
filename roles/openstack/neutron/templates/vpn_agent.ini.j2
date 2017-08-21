@@ -1,0 +1,27 @@
+[DEFAULT]
+
+[ipsec]
+
+[pluto]
+
+[strongswan]
+
+[csico_csr_ipsec]
+
+[openswan]
+
+[vpnagent]
+# strongSwan and Openswan cannot both be installed and enabled at the same time. The vpn_device_driver configuration option in the vpnaas_agent.ini file is an option that lists the VPN device drivers that the Networking service will use. 
+
+# You must choose either strongSwan or Openswan as part of the list.
+
+# The vpn device drivers Neutron will use (multi valued)
+#vpn_device_driver = 
+# neutron_vpnaas.services.vpn.device_drivers.ipsec.OpenSwanDriver, 
+# neutron_vpnaas.services.vpn.device_drivers.cisco_ipsec.CiscoCsrIPsecDriver, 
+# neutron_vpnaas.services.vpn.device_drivers.vyatta_ipsec.VyattaIPSecDriver, 
+# neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver, 
+# neutron_vpnaas.services.vpn.device_drivers.fedora_strongswan_ipsec.FedoraStrongSwanDriver,
+# neutron_vpnaas.services.vpn.device_drivers.libreswan_ipsec.LibreSwanDriver
+
+vpn_device_driver = neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver

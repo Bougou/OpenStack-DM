@@ -1,0 +1,98 @@
+#ssh_user: root
+
+## Cluster Inventroy Proxy
+# This option is not used, cluster proxy is always enabled.
+# osdm_cluster_proxy_enable: true
+
+# Whether to use the cluster proxy as an intermediate place to store local repo packages.
+# In this case, we firstly sync packages from ansible host to the cluster proxy node, and
+# then sync packages from cluster proxy node to targets.
+#
+# If `osdm_cluster_proxy_sync` set to false, the cluster proxy stills plays a ssh proxy to targets
+# but the process of syncing packages to targets is initiated from the ansible host not from the proxy node.
+# To decrease the traffic, you should always enable this option.
+osdm_cluster_proxy_sync: true
+
+# cluster proxy outer address is used by ansible host to connect to the proxy.
+osdm_cluster_proxy_addr_outer: 10.5.252.80
+
+# cluster proxy inner address is used between the proxy and the targets.
+osdm_cluster_proxy_addr_inner: 172.30.15.80
+
+# This option will be used in `synchronize` module.
+osdm_ansible_rsync_opts: "--rsh 'ssh -S none -o StrictHostKeyChecking=no -F {{ inventory_dir }}/ssh.cfg -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'"
+# For a specific inventory file, there is a corresponding `ssh.cfg` (man ssh_config).
+# The content here is ALMOST same as `ssh_args` in ansible.cfg, but there is a tiny difference:
+# Here, we use the ABSOLUTE path for ssh.cfg (taken from inventory_dir)
+# `ssh_args` in ansible.cfg use RELATIVE path for ssh.cfg
+# Because ssh.cfg is put in inventory_dir, parallel with ansible.cfg.
+# The working directory for `synchronize` module in `tasks` of playbooks is: 
+# `{{ playbook_dir }}` in ansible version 2.2
+# `{{ inventory_dir }}` in ansible version 2.1
+# If we use `use_ssh_args` for `synchronize` module, it will not found ssh.cfg in ansible version 2.2
+# So we use `rsync_opts` for `synchronize` module, and we pass this variable to `rsync_opts`.
+# thus we get absolute path to ssh.cfg.
+
+
+## Installaction Mode
+# yum or local  (online or offline)
+osdm_install_mode: 'offline'
+
+# use official repo or custom repo source'
+osdm_install_repo_source: 'official'
+
+# Define the directory on the Ansible Host to store the provideded local repo packages.
+# Ususally you download a osdm_local_repo_packages.tar.gz from a website, and untar it
+# to this directory.
+# If ansible host is Linux
+#osdm_local_repo_packages: '/opt/local_repo_packages'
+# If ansible host is MacOS
+osdm_local_repo_packages: '/Users/pan/local_repo_packages/'
+
+# Define the directory on the Proxy Node to store the local repo packages.
+osdm_local_repo_packages_proxy: '/opt/local_repo_packages/'
+
+# Define the directoy on the Targets to store the local repo packages.
+osdm_local_repo_packages_target: '/opt/osdm_local_repo/'
+
+# Pass as ansible yum module's parameters
+osdm_disable_repo: "{% if osdm_install_mode == 'offline' %}*{% else %}local{% endif %}"
+osdm_enable_repo: "{% if osdm_install_mode == 'offline' %}local{% else %}{% endif %}"
+
+# osdm_install_mode: online
+# yum --disablerepo=local install
+
+# osdm_install_mode: offine
+# yum --disablerepo=* --enablerepo=local install
+
+
+# To resolve problem in os_prepare role.
+osdm_disable_repo_python_setuptools: "{% if osdm_install_mode == 'offline' %}*{% else %}*{% endif %}"
+osdm_enable_repo_python_setuptools: "{% if osdm_install_mode == 'offline' %}local{% else %}base{% endif %}"
+
+
+osdm_enable_final_test: false
+osdm_log_debug: true
+osdm_ostack_version: "ocata"
+osdm_virt_type: "kvm"
+osdm_enable_kvm_nested: true
+osdm_time_zone: "Asia/Shanghai"
+osdm_sshd_enable_password: "no"
+
+# webserver: nginx or httpd
+osdm_webserver: httpd
+
+# vnc or spice
+# osdm_console_type: "vnc"
+osdm_console_type: "vnc"
+
+# HA and LB of controller
+osdm_enable_haproxy: true
+osdm_haproxy_integrate: true
+
+# default to false, you should reset this to true for specific nova-compute nodes.
+osdm_ovs_enable_dpdk: false
+osdm_ovs_datapath_type: "{% if osdm_ovs_enable_dpdk %}netdev{% else %}system{% endif %}"
+
+
+

@@ -1,0 +1,13 @@
+---
+
+- include: init-ceph.yml
+  tags: 
+    - init-ceph
+
+- include: init-rabbitmq.yml
+  tags:
+    - init-rabbitmq
+
+- include: set-openstack-vip.yml
+  tags:
+    - set-openstack-vip

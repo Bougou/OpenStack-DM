@@ -1,0 +1,30 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Install OpenStack Cell-Controller Nodes
+  vars:
+    nova_deploy_nova_cell: true
+    _cell_name: "{{ cell_name }}"
+    cell_controller_group_name: "os-cell-controller_{{ _cell_name }}"
+    cell_compute_group_name: "os-cell-compute_{{ _cell_name }}"
+    cell_all_group_name: "os-cell-all_{{ _cell_name }}"
+  hosts: "{{ cell_controller_group_name }}"
+  tags: ['play-os-cell-controller']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+
+    # only run on the first cell controller node.
+    # In the init role, this may be ignored if this node is also in os-controller group.
+    - role: openstack/cell_init
+      tags: ['os-cell-init']
+      when: "inventory_hostname == groups[cell_controller_group_name][0]"
+
+    - role: openstack/nova
+      tags: ['os-nova']

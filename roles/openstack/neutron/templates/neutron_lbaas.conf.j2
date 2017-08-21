@@ -1,0 +1,35 @@
+[DEFAULT]
+#loadbalancer_scheduler_driver = neutron_lbaas.agent_scheduler.ChanceScheduler
+
+[certificates]
+#cert_manager_type = barbican
+#barbican_auth = barbican_acl_auth
+#storage_path = /var/lib/neutron-lbaas/certificates/
+
+[quotas]
+#quota_loadbalancer = 10
+#quota_listener = -1
+#quota_pool = 10
+#quota_member = -1
+#quota_healthmonitor = -1
+
+[service_auth]
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+#auth_version = 2
+endpoint_type = public
+admin_user = admin
+admin_tenant_name = admin
+admin_password = admin
+admin_user_domain = admin
+admin_project_domain = admin
+region = RegionOne
+service_name = lbaas
+insecure = false
+
+
+
+[service_providers]
+# <service_type>:<name>:<driver>[:default] (multi valued)
+service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+
+# service_provider = LOADBALANCERV2:Octavia:neutron_lbaas.drivers.octavia.driver.OctaviaDriver:default

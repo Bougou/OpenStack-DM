@@ -1,0 +1,34 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+# start NetworkManager and transfer inf_utils.sh script
+- include: start.yml
+  tags:
+    - start
+
+# clear interface connection configuration
+- include: clear-inf.yml
+  when: inventory_hostname != osdm_cluster_proxy_addr_inner
+  tags:
+    - clear-inf
+
+
+# set/configure interface
+- include: set-inf.yml
+  when: inventory_hostname != osdm_cluster_proxy_addr_inner
+  tags:
+    - set-inf
+
+- include: set-dns.yml
+  tags:
+    - set-dns
+
+- name: restart network service
+  service: name=network state=restarted
+
+- name: touch /root/.set_ipaddr.finished file
+  file: path=/root/.set_ipaddr.finished state=touch
+  

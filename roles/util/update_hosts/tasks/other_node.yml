@@ -1,0 +1,30 @@
+---
+
+- name: transfer generate_new_addr.py
+  copy: src=generate_new_addr.py dest=/usr/bin/generate_new_addr.py mode=755
+
+- name: generate host entry for /etc/hosts
+  shell: admin_ip={{ item }};
+         mgmt_ip=$(/usr/bin/generate_new_addr.py $admin_ip {{ osdm_os_mgmt_net }} | awk -F'/' '{print $1}');         
+         echo "$mgmt_ip {{ hostvars[item]['ansible_hostname'] }}"
+  with_items:
+    - "{{ groups['all']|reject('match', osdm_cluster_proxy_addr_inner)|list }}"
+  when: hostvars[item]['ansible_hostname'] is defined
+  register: _etc_hosts
+  no_log: true
+
+- name: translate etc_hosts to a dictionary
+  set_fact:
+    etc_hosts: "{{ etc_hosts | default({}) | combine({item.stdout.split()[1]: item.stdout.split()[0]}) }}"
+  with_items: "{{ _etc_hosts.results }}"
+  when: item.stdout is defined and item.stdout
+  no_log: true
+
+- name: update /etc/hosts on targets
+  lineinfile:
+    backup: yes
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ etc_hosts[item] }} {{ item }}"
+    state: present
+  with_items: "{{ etc_hosts.keys() }}"

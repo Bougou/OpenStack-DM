@@ -1,0 +1,53 @@
+---
+
+- name: add nova_cell* database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - nova_{{ osdm_os_nova_cell_name }}
+# database name likes: nova_cell2.
+
+# specifically for cell1.
+- name: create nova db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_nova_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_nova_db_pass }}"
+    priv: "nova_api.*:ALL PRIVILEGES/nova_cell0.*:ALL PRIVILEGES/nova_placement.*:ALL PRIVILEGES/nova_cell1.*:ALL PRIVILEGES"
+    state: present
+  when: osdm_os_nova_cell_name == 'cell1'
+  with_items:
+    - 'localhost'
+    - '%'
+
+- name: create nova db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_nova_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_nova_db_pass }}"
+    priv: "nova_{{ osdm_os_nova_cell_name }}.*:ALL PRIVILEGES"
+    state: present
+  when: osdm_os_nova_cell_name != 'cell1'
+  with_items:
+    - 'localhost'
+    - '%'
+
+- name: make sure /var/log/nova/ owner
+  file: path=/var/log/nova/ owner=nova group=nova recurse=yes
+
+# use the database/connection info in nova.conf
+- name: populate nova_cell* and nova_cell0 database
+  shell: su nova -s /bin/sh -c "nova-manage db sync"
+
+## `nova-manage cell_v2 <subcommand>` operate on `nova-api/cell_mappings` database table.

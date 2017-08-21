@@ -1,0 +1,5 @@
+osdm_os_manila_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_manila_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_manila_db_user: "maniladb"
+osdm_os_manila_db_pass: "manilapass"

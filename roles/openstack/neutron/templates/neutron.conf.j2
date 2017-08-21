@@ -1,0 +1,96 @@
+[DEFAULT]
+# Logging
+debug = {{ osdm_log_debug }}
+use_syslog = False
+use_stderr = True
+log_dir = /var/log/neutron
+my_ip = {{ osdm_os_mgmt_if_ip }}
+auth_strategy = keystone
+dns_domain = {{ osdm_dhcp_domain }}
+allow_overlapping_ips = True
+
+advertise_mtu = True
+core_plugin = ml2
+service_plugins = router,metering,qos
+    {%- if osdm_enable_neutron_lbaas %},neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2{% endif %}
+    {%- if osdm_enable_neutron_vpnaas %},vpnaas{% endif %}
+    {%- if osdm_enable_neutron_fwaas %},firewall{% endif %}
+
+# service_plugins = router,firewall,lbaas,vpnaas,metering,qos
+
+
+## L3 Router Mode.
+{% if osdm_ml2_agent == 'ovs' and osdm_l3_router_mode == 'dvr' %}
+router_distributed = True
+{% else %}
+router_distributed = False
+{% endif %}
+
+{% if osdm_l3_router_mode == 'l3ha' %}
+l3_ha = True
+max_l3_agents_per_router = 3
+min_l3_agents_per_router = 2
+dhcp_agents_per_network = 2
+{% endif %}
+#
+notification_topics = notifications
+control_exchange = neutron
+rpc_backend = rabbit
+
+## Configure Network to notify Compute of network topology changes.
+notify_nova_on_port_status_changes = true
+notify_nova_on_port_data_changes = true
+nova_url = http://{{ osdm_os_nova_mgmt_ip }}:8774/v2
+
+[oslo_concurrency]
+lock_path = /var/lib/neutron/tmp
+
+[database]
+connection = mysql://{{ osdm_os_neutron_db_user }}:{{ osdm_os_neutron_db_pass }}@{{ osdm_mysql_mgmt_ip }}/neutron
+
+[oslo_messaging_notifications]
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ osdm_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass }}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true
+rabbit_durable_queues = true
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ osdm_user_service_pass }}
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+[nova]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = {{ osdm_user_service_pass }}
+
+
+[service_providers]
+service_provider = FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default
+
+## 

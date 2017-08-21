@@ -1,0 +1,21 @@
+---
+
+# collectd ceph conf
+- name: get script - {{ script_file }}
+  vars:
+    script_file: configure-collectd-ceph-conf.sh
+  copy: src={{ script_file }} dest=/etc/collectd.d/{{ script_file }} mode=0755
+  when: collectd_ceph_enable
+
+- name: generate collectd ceph plugin file
+  vars:
+    script_file: configure-collectd-ceph-conf.sh
+  shell: bash /etc/collectd.d/{{ script_file }}
+  notify: restart collectd
+  when: collectd_ceph_enable
+
+# collectd virt conf
+- name: template collectd virt.conf
+  template: src=virt.conf.j2 dest=/etc/collectd.d/virt.conf
+  notify: restart collectd
+  when: collectd_virt_enable

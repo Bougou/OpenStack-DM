@@ -1,0 +1,35 @@
+influxdb_admin_user: "influxadmin"
+influxdb_admin_pass: 'influxadmin'
+influxdb_data_dir: '/data/influxdb/'
+influxdb_collectd_port: 25826
+
+influxdb_databases:
+  - telegraf
+  - collectd
+  - sflowrt
+
+influxdb_users:
+  - username: telegraf
+    password: telegraf
+    database: telegraf
+    privilege: 'ALL'
+  - username: telegraf_read
+    password: telegraf_read
+    database: telegraf
+    privilege: 'READ'
+  - username: collectd
+    password: collectd
+    database: collectd
+    privilege: 'ALL'
+  - username: collectd_read
+    password: collectd_read
+    database: collectd
+    privilege: 'READ'
+  - username: sflowrt
+    password: sflowrt
+    database: sflowrt
+    privilege: 'ALL'
+  - username: sflowrt_read
+    password: sflowrt_read
+    database: sflowrt
+    privilege: 'READ'

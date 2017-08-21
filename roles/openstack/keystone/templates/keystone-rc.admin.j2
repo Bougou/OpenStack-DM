@@ -1,0 +1,40 @@
+function desourcerc() {
+  unset OS_REGION_NAME
+
+  unset OS_PROJECT_DOMAIN_ID
+  unset OS_PROJECT_DOMAIN_NAME
+  unset OS_PROJECT_NAME
+
+  unset OS_USER_DOMAIN_ID
+  unset OS_USER_DOMAIN_NAME
+  unset OS_USERNAME
+
+  unset OS_PASSWORD
+
+  unset OS_IDENTITY_API_VERSION
+  unset OS_AUTH_URL
+
+  unset OS_TOKEN
+  unset OS_URL
+  export PS1='[\u@\h \w]# '
+}
+
+desourcerc
+
+export OS_NETWORK_API_VERSION=2
+export OS_COMPUTE_API_VERSION=2
+export OS_IMAGE_API_VERSION=2
+export OS_VOLUME_API_VERSION=2
+export OS_IDENTITY_API_VERSION=3
+
+export OS_PROJECT_DOMAIN_NAME=default
+export OS_USER_DOMAIN_NAME=default
+
+export OS_PROJECT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD={{ osdm_user_admin_pass }}
+
+# Port 35357 is used for administrative functions only.
+export OS_AUTH_URL="http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3/"
+export OS_REGION_NAME=RegionOne
+export PS1='[\u@\h \w(keystone_admin)]\$ '

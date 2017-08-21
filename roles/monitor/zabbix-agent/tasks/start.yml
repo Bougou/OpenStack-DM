@@ -1,0 +1,12 @@
+---
+
+- name: create zabbix_agentd.d directory
+  file: path=/etc/zabbix/zabbix_agentd.d/ state=directory
+
+- name: template zabbix_agentd.conf
+  template: src=zabbix_agentd.conf.j2 dest=/etc/zabbix/zabbix_agentd.conf backup=yes
+  notify:
+    - restart zabbix-agent
+
+- name: start zabbix-agent
+  service: name=zabbix-agent state=restarted enabled=yes

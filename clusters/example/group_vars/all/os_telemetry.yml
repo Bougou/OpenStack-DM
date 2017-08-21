@@ -1,0 +1,31 @@
+osdm_os_ceilometer_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_ceilometer_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_gnocchi_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_gnocchi_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_aodh_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_aodh_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+
+osdm_os_gnocchi_db_user: "gnocchidb"
+osdm_os_gnocchi_db_pass: "gnocchipass"
+osdm_os_aodh_db_user: "aodhdb"
+osdm_os_aodh_db_pass: "aodhpass"
+
+# MongoDB
+osdm_os_ceilometer_db_user: "ceilometerdb"
+osdm_os_ceilometer_db_pass: "ceilometerpass"
+
+# Resource UUID to use to identify statsd in Gnocchi
+osdm_os_gnocchi_statsd_resource_id: aa0f9392-601c-4862-a8ff-1d87e5595b72
+
+
+# Gnocchi Storage Backend
+
+# file/ceph/swift/s3
+osdm_os_gnocchi_storage_backend: ceph
+osdm_os_gnocchi_storage_backend_ceph:
+
+# Gnocchi Index Backend
+osdm_os_gnocchi_index_backend: mysql

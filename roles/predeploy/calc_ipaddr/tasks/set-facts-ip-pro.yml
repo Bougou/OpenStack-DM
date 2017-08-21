@@ -1,0 +1,27 @@
+---
+
+- name: caculate out osdm_os_pro_if_addr
+  shell: /usr/bin/generate_new_addr.py {{ osdm_os_admin_if_addr }} {{ osdm_os_pro_net }}
+  register: pro_addr_ip_info
+
+- name: set fact osdm_os_pro_if_addr
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_os_pro_if_addr', value: "{{ pro_addr_ip_info.stdout_lines[0] }}" }
+
+- name: set fact osdm_os_pro_if_ip
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_os_pro_if_ip', value: "{{ osdm_os_pro_if_addr | ipaddr('address') }}" }
+    - { name: 'osdm_os_pro_if_prefix', value: "{{ osdm_os_pro_if_addr | ipaddr('prefix') }}" }
+    - { name: 'osdm_os_pro_if_netmask', value: "{{ osdm_os_pro_if_addr | ipaddr('netmask') }}" }
+
+- name: set fact osdm_os_pro_if_ipv4 dict
+  set_fact:
+    osdm_os_pro_if_ipv4: "{{ osdm_os_pro_if_ipv4 | default({}) | combine({item.key: item.value}) }}"
+  with_items:
+    - { key: 'address', value: "{{ osdm_os_pro_if_addr | ipaddr('address') }}" }
+    - { key: 'prefix', value: "{{ osdm_os_pro_if_addr | ipaddr('prefix') }}" }
+    - { key: 'netmask', value: "{{ osdm_os_pro_if_addr | ipaddr('netmask') }}" }
+  no_log: true
+  

@@ -1,0 +1,17 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: start.yml
+  tags:
+    - start
+
+- include: create-database.yml
+  tags:
+    - create-database
+
+- include: create-users.yml
+  tags:
+    - create-users

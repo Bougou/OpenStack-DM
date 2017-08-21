@@ -1,0 +1,14 @@
+# domain name for S3 API access
+ceph_deploy_radosgw_access_domain: ''
+
+ceph_deploy_dir: '/root/ceph-deploy'
+
+# set a web server frontend to proxy pass to radosgw api.
+# value is `httpd` or `nginx`, default to `httpd`.
+ceph_deploy_radosgw_webserver: 'httpd'
+
+# radosgw vip for external access
+ceph_deploy_radosgw_access_ext_vip: ''
+
+# radosgw vip for internal access
+ceph_deploy_radosgw_access_mgmt_vip: ''

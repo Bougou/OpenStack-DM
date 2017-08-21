@@ -1,0 +1,12 @@
+Alias /pxe /var/lib/tftpboot/repo
+
+<Directory /var/lib/tftpboot/repo>
+    Options Indexes FollowSymLinks
+    <IfVersion >= 2.4>
+        Require all granted
+    </IfVersion>
+    <IfVersion < 2.4>
+        Order allow,deny
+        Allow from all
+    </IfVersion>
+</Directory>

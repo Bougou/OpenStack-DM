@@ -1,0 +1,69 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+use_syslog = False
+syslog_log_facility = LOG_USER
+use_stderr = False
+osapi_volume_listen = {{ osdm_cinder_listen_addr }}
+notification_driver = messagingv2
+control_exchange = cinder
+rpc_backend = rabbit
+storage_availability_zone = nova
+default_availability_zone = nova
+nova_catalog_info = compute:Compute = Service:internalURL
+nova_catalog_admin_info = compute:Compute = Service:adminURL
+my_ip = {{ osdm_os_mgmt_if_ip }}
+glance_host = {{ osdm_os_glance_mgmt_ip }}
+auth_strategy = keystone
+host = cinder
+enabled_backends = {{ osdm_cinder_backend.name }}
+default_volume_type = {{ osdm_cinder_backend.type }}
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ osdm_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass }}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true
+rabbit_durable_queues = true
+
+[oslo_concurrency]
+lock_path = /var/lib/cinder/tmp
+
+[database]
+connection = mysql://{{ osdm_os_cinder_db_user }}:{{ osdm_os_cinder_db_pass }}@{{ osdm_mysql_mgmt_ip }}/cinder
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = cinder
+password = {{ osdm_user_service_pass }}
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+{%  if osdm_use_ceph %}
+[{{ osdm_cinder_backend.name }}]
+volume_backend_name = {{ osdm_cinder_backend.type }}
+volume_driver = cinder.volume.drivers.rbd.RBDDriver
+rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_pool = {{ osdm_cinder_backend.pool }}
+glance_api_version = 2
+rbd_user = {{ osdm_ceph_cinder_user }}
+rbd_secret_uuid = {{ osdm_ceph_libvirt_uuid_secret }}
+rbd_flatten_volume_from_snapshot = false
+rbd_max_clone_depth = 5
+rbd_store_chunk_size = 8
+rados_connect_timeout = -1
+
+{% endif %}
+
+

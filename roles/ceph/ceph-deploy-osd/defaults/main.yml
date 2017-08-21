@@ -1,0 +1,10 @@
+ceph_deploy_dir: /root/ceph-deploy
+
+# should be provided by playbook or environment vars
+ceph_deploy_ceph_osd_disks: []
+
+# examples:
+#ceph_deploy_ceph_osd_disks:
+#  - ceph-16-2-1:sdb:sda5
+#  - ceph-16-2-1:sdc:sda6
+#  - ceph-16-2-1:sdd:sda7

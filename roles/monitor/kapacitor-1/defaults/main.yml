@@ -1,0 +1,4 @@
+kapacitor_admin_user: "influxadmin"
+kapacitor_admin_pass: 'influxadmin'
+kapacitor_data_dir: '/data/kapacitor/'
+kapacitor_collectd_port: 25826

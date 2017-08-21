@@ -1,0 +1,43 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+use_syslog = False
+syslog_log_facility = LOG_USER
+auth_strategy = keystone
+
+notification_driver = messagingv2
+
+transport_url = rabbit://{{ osdm_mq_os_user }}:{{ osdm_mq_os_pass }}@{{ osdm_mq_mgmt_ip }}:5672/
+
+[database]
+connection = mysql://{{ osdm_os_aodh_db_user }}:{{ osdm_os_aodh_db_pass }}@{{ osdm_mysql_mgmt_ip }}/aodh
+
+[paste_deploy]
+flavor = keystone
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = aodh
+password = {{ osdm_user_service_pass }}
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+
+[service_credentials]
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = aodh
+password = {{ osdm_user_service_pass }}
+interface = internalURL
+

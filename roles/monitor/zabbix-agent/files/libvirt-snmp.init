@@ -1,0 +1,48 @@
+#!/bin/bash
+# chkconfig: 345 95 20
+# description: Starts libvirtMib SNMP subagent
+# Make sure that snmpd is running with the correct agentX-options
+# processname: libvirtMib_subagent
+ 
+. /etc/init.d/functions
+ 
+start() {
+        echo -n "Starting libvirt-snmp: "
+        echo -e "\n"
+        LIBVIRT_DEFAULT_URI="qemu:///system"
+        /usr/bin/libvirtMib_subagent
+        touch /var/lock/subsys/libvirt-snmp
+        return 0
+}
+ 
+stop() {
+        echo -n "Shutting down libvirt-snmp: "
+        killproc libvirtMib_subagent
+        echo -e "\n"
+        rm -f /var/lock/subsys/libvirt-snmp
+        return 0
+}
+ 
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    reload)
+        reload
+        ;;
+    *)
+        echo "Usage: libvirt-snmp {start|stop|status|restart"
+        exit 1
+        ;;
+esac
+exit $?

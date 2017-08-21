@@ -1,0 +1,23 @@
+# Percona Server template configuration
+
+[mysqld]
+bind-address = {{ db_listen_addr }}
+server-id = {{ server_id|int }}
+max-connections=5000
+datadir= {{ ps57_datadir }}
+socket=/var/lib/mysql/mysql.sock
+
+symbolic-links=0
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+
+{% for key, value in mysqld.iteritems() %}
+{% if value == None %}
+{{ key }}
+{% else %}
+{{ key }} = {{ value }}
+{% endif %}
+{% endfor %}
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid

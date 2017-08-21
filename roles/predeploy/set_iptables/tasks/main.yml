@@ -1,0 +1,13 @@
+---
+
+- name: template /etc/sysconfig/iptables
+  template: src="iptables.j2" dest="/etc/sysconfig/iptables" backup=yes
+  notify:
+    - restart iptables
+  tags:
+    - iptables
+
+- name: make sure iptables started
+  service: name=iptables state=started enabled=yes
+
+  

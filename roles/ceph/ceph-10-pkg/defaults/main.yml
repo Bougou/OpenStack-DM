@@ -1,0 +1,5 @@
+# always install ceph basic packages
+#ceph_pkg_base: true
+
+ceph_pkg_radosgw: false
+ceph_pkg_fs: false

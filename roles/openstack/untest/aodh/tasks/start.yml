@@ -1,0 +1,9 @@
+---
+
+- name: start openstack aodh services on controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-aodh-api
+    - openstack-aodh-evaluator
+    - openstack-aodh-notifier
+    - openstack-aodh-listener

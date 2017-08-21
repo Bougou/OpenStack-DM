@@ -1,0 +1,6 @@
+---
+
+- name: Initialize on all nodes
+  hosts: "{{ _hosts }}"
+  tasks:
+    - debug: var=hostvars[inventory_hostname]

@@ -1,0 +1,16 @@
+---
+
+- name: start openstack ceilometer services on controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    #- openstack-ceilometer-api
+    - openstack-ceilometer-notification
+    - openstack-ceilometer-central
+    #- openstack-ceilometer-collector
+  when: inventory_hostname in groups['os-controller']
+
+- name: start openstack ceilometer services on compute
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-ceilometer-compute
+  when: inventory_hostname in groups['os-compute']

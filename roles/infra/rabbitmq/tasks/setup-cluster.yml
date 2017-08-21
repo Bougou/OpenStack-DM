@@ -1,0 +1,16 @@
+---
+
+- include: cluster-cookie.yml
+
+- include: master-start.yml
+  when: inventory_hostname in groups[rabbitmq_cluster_group_name]
+        and inventory_hostname == rabbitmq_master_addr
+
+- include: slave-start.yml
+  when: inventory_hostname in groups[rabbitmq_cluster_group_name]
+        and inventory_hostname != rabbitmq_master_addr
+
+- include: ha-config.yml
+  when: inventory_hostname in groups[rabbitmq_cluster_group_name]
+        and inventory_hostname != rabbitmq_master_addr
+

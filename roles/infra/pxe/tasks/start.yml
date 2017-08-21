@@ -1,0 +1,51 @@
+---
+
+- name: prepare tftpboot directories
+  file: path={{ pxe_tftp_boot }}/{{ item }} state=directory recurse=yes
+  with_items:
+    - pxelinux.cfg
+    - repo
+    - repo/images
+    - repo/ks
+    - repo/utils
+    - repo/iso
+    - EFI
+    - EFI/centos
+
+- name: template httpd pxe-repo.conf
+  template: src=httpd-pxe-repo.conf.j2 dest=/etc/httpd/conf.d/pxe-repo.conf
+
+
+# packages `syslinux` provides `library modules` in /usr/share/syslinux/
+# packages` syslinux-tftpboot` also provides `library modules` in /var/lib/tftpboot/
+
+
+# pxe image: pxelinux.0
+# pxe netboot chain: chain.c32
+# ipxe image: 
+
+
+## UEFI
+
+- name: prepare grub and shim boot loader images
+  shell: /usr/bin/cp /boot/efi/EFI/centos/shim.efi {{ pxe_tftp_boot }}/bootx64.efi;
+         /usr/bin/cp /boot/efi/EFI/centos/grubx64.efi {{ pxe_tftp_boot }}/grubx64.efi;
+
+- name: template EFI grub.cfg
+  template: src=efi-grub.cfg.j2 dest={{ pxe_tftp_boot }}/EFI/centos/grub.cfg
+
+- name: make sure permission
+  file: path={{ pxe_tftp_boot }}/EFI/centos/grub.cfg mode=0644
+
+
+## iPXE
+
+- name: prepare iPXE boot images
+  shell: /usr/bin/cp /usr/share/ipxe/undionly.kpxe {{ pxe_tftp_boot }}/undionly.kpxe;
+         /usr/bin/cp /usr/share/ipxe/ipxe.efi {{ pxe_tftp_boot }}/ipxe.efi;
+
+
+### iPXE dhcp setup
+
+- name: template dnsmasq
+  f

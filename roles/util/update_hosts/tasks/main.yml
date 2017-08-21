@@ -1,0 +1,11 @@
+---
+
+- include: proxy_node.yml
+  when: inventory_hostname == osdm_cluster_proxy_addr_inner
+  static: no
+  tags: update_hosts_proxy_node
+
+- include: other_node.yml
+  when: inventory_hostname != osdm_cluster_proxy_addr_inner
+  static: no
+  tags: update_hosts_other_node

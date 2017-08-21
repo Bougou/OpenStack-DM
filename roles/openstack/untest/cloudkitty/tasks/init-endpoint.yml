@@ -1,0 +1,41 @@
+---
+
+- name: transfer the endpoint initialization script
+  copy: src=init-endpoint_cloudkitty.sh dest=/tmp/init-endpoint_cloudkitty.sh mode=755
+
+# Note: the provided envrionment variables will be used by the script.
+- name: add volume endpoint in keystone
+  shell: bash /tmp/init-endpoint_cloudkitty.sh
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+    osdm_user_service_pass: "{{ osdm_user_service_pass }}"
+    osdm_os_cloudkitty_api_ip: "{{ osdm_os_cloudkitty_api_ip }}"
+    osdm_os_cloudkitty_mgmt_ip: "{{ osdm_os_cloudkitty_mgmt_ip }}"
+
+# Just on the host of os-controller[0]
+- name: remove the temporary script file
+  file: path=/tmp/init-endpoint_cloudkitty.sh state=absent  
+
+
+# assign user[cloudkitty] to project[some-project] with role[rating]
+- name: assign user cloudkitty to project with role rating
+  shell: openstack role add --project admin --user cloudkitty rating;
+         openstack role add --project demo --user cloudkitty rating
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+

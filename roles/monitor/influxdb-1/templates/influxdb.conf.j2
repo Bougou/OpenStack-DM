@@ -1,0 +1,100 @@
+reporting-disabled = false
+hostname = "{{ ansible_hostname }}"
+[meta]
+  dir = "{{ influxdb_data_dir }}/meta"
+  retention-autocreate = true
+  logging-enabled = true
+
+[data]
+  enabled = true
+  dir = "{{ influxdb_data_dir }}/data"
+  wal-dir = "{{ influxdb_data_dir }}/wal"
+  wal-logging-enabled = true
+
+  trace-logging-enabled = false
+  query-log-enabled = true
+
+  cache-max-memory-size = 524288000
+  cache-snapshot-memory-size = 26214400
+  cache-snapshot-write-cold-duration = "10m"
+  compact-full-write-cold-duration = "4h"
+  max-series-per-database = 1000000
+  max-values-per-tag = 100000
+
+[coordinator]
+  write-timeout = "10s"
+  max-concurrent-queries = 0
+  query-timeout = "0"
+  log-queries-after = "0"
+  max-select-point = 0
+  max-select-series = 0
+  max-select-buckets = 0
+
+[retention]
+  enabled = true
+  check-interval = "30m"
+
+[shard-precreation]
+  enabled = true
+  check-interval = "10m"
+  advance-period = "30m"
+
+[monitor]
+  store-enabled = true
+  store-database = "_internal"
+  store-interval = "10s"
+
+[admin]
+  enabled = true
+  bind-address = ":8083"
+  https-enabled = false
+  https-certificate = "/etc/ssl/influxdb.pem"
+
+[http]
+  enabled = true
+  bind-address = ":8086"
+  auth-enabled = true
+  realm = "InfluxDB"
+  log-enabled = true
+  write-tracing = false
+  pprof-enabled = true
+  https-enabled = false
+  https-certificate = "/etc/ssl/influxdb.pem"
+  https-private-key = ""
+  max-row-limit = 10000
+  max-connection-limit = 0
+  unix-socket-enabled = false
+  bind-socket = "/var/run/influxdb.sock"
+
+[subsciber]
+  enabled = true
+  http-timeout = "30s"
+  insecure-skip-verify = false
+  ca-certs = ""
+  write-concurrency = 40
+  write-buffer-size = 1000
+
+[[graphite]]
+  enabled = false
+
+[[collectd]]
+  enabled = true
+  bind-address = ":{{ influxdb_collectd_port }}"
+  database = "collectd"
+  rentention-policy = ""
+  typesdb = "/usr/share/collectd/types.db"
+  batch-size = 5000
+  batch-pending = 10
+  batch-timeout = "10s"
+  read-buffer = 0
+
+[[opentsdb]]
+  enabled = false
+
+[[udp]]
+  enabled = false
+
+[continuous_queries]
+  log-enabled = true
+  enabled = true
+  run-interval = "1s"

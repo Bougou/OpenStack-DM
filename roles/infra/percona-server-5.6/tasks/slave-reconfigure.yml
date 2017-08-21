@@ -1,0 +1,49 @@
+## Reconfigure mysql slaves
+
+# The last file master sends is 'xtrabackup_info'
+- name: wait for receiving files from master completed
+  wait_for: path={{ ps56_datadir }}/xtrabackup_logfile state=present timeout=120
+
+- name: run apply log
+  shell: "sleep 2 && innobackupex --apply-log {{ ps56_datadir }}"
+
+- name: fix {{ ps56_datadir }} permissions
+  file:
+    path: "{{ ps56_datadir }}"
+    owner: mysql
+    group: mysql
+    recurse: yes
+
+- name: start mysql service
+  service: name={{ ps56_mysql_service }} state=running
+
+- name: get ip address of master host
+  shell: "echo {{ hostvars[ps56_mysql_master_host][ps56_ms_ip_fact_name]['address'] }}"
+  register: master_host_ip
+
+- debug: var=master_host_ip
+
+- name: get master log file
+  shell: "cat {{ ps56_datadir }}/xtrabackup_binlog_info | awk '{print $1}'"
+  register: master_log_file
+
+- debug: var=master_log_file
+
+- name: get master log position
+  shell: "cat {{ ps56_datadir }}/xtrabackup_binlog_info | awk '{print $2}'"
+  register: master_log_position
+
+- debug: var=master_log_position
+
+- name: configure slave replication
+  shell: mysql -e "change master to
+        master_host='{{ master_host_ip.stdout_lines[0] }}',
+        master_user='{{ ps56_mysql_repl_user }}',
+        master_password='{{ ps56_mysql_repl_pass }}',
+        master_port=3306,
+        master_log_file='{{ master_log_file.stdout_lines[0] }}',
+        master_log_pos={{ master_log_position.stdout_lines[0] }};"
+
+- name: start slave replication
+  shell: mysql -e "start slave;"
+

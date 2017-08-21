@@ -1,0 +1,10 @@
+---
+
+- name: start openstack cloudkitty services on controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - cloudkitty-api
+    - cloudkitty-processor
+    - httpd
+  when: inventory_hostname in groups['os-controller']
+

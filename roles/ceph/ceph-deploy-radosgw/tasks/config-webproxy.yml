@@ -1,0 +1,13 @@
+---
+
+- name: template httpd - rgw.conf
+  template: src=httpd-rgw.conf.j2 dest=/etc/httpd/conf.d/rgw.conf
+  notify:
+    - restart httpd
+  when: ceph_deploy_radosgw_webserver == 'httpd'
+
+- name: template nginx - rgw.conf
+  template: src=nginx-rgw.conf.j2 dest=/etc/nginx/conf.d/rgw.conf
+  notify:
+    - restart nginx
+  when: ceph_deploy_radosgw_webserver == 'nginx'

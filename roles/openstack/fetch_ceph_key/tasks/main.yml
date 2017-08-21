@@ -1,0 +1,22 @@
+---
+
+- name: synchronize ceph configuration and admin key from monitor to target
+  synchronize: src=/etc/ceph/{{ item }} dest=/etc/ceph/{{ item}}
+  with_items:
+    - ceph.conf
+    - ceph.client.admin.keyring
+  delegate_to: "{{ groups['ceph-mon'][0] }}"
+
+
+# Using the ceph conf and admin key to get all other ceph client keys.
+- name: ceph client keys
+  shell: ceph auth get-or-create client.{{ osdm_ceph_glance_user }} > /etc/ceph/ceph.client.{{ osdm_ceph_glance_user }}.keyring;
+         ceph auth get-or-create client.{{ osdm_ceph_cinder_user }} > /etc/ceph/ceph.client.{{ osdm_ceph_cinder_user }}.keyring;
+         ceph auth get-or-create client.{{ osdm_ceph_cinder_backup_user }} > /etc/ceph/ceph.client.{{ osdm_ceph_cinder_backup_user }}.keyring;
+         ceph auth get-key client.{{ osdm_ceph_cinder_user }} > /etc/ceph/ceph.client.{{ osdm_ceph_cinder_user }}.key;
+         ceph auth get-or-create client.{{ osdm_ceph_gnocchi_user }} > /etc/ceph/ceph.client.{{ osdm_ceph_gnocchi_user }}.keyring
+  no_log: true
+
+# Generate a libvirt secret xml for later use.
+- name: ceph nova secret
+  template: src=secret.xml.j2 dest=/etc/ceph/secret.xml

@@ -1,0 +1,51 @@
+## for all collectd client
+#
+# collectd server should be specified in group collectd-server from inventory
+# this var is derived from inventory
+#
+# osdm_collectd_server_host: '172.17.102.101'
+
+osdm_collectd_interval: 10
+
+# reset to true for group `collectd-server`
+osdm_collectd_server_enable: false
+osdm_collectd_server_listen_port: 25826
+         
+
+# reset to true for group `os-compute`
+osdm_collectd_virt_enable: false
+
+# reset to true for group `ceph-all`
+osdm_collectd_ceph_enable: false
+
+
+# for collectd server
+osdm_collectd_server_forward_riemann_enable: false
+osdm_collectd_server_forward_influxdb_enable: true
+osdm_collectd_server_forward_logstash_enable: true
+
+# influxdb
+osdm_influxdb_admin_user: "influxadmin"
+osdm_influxdb_admin_pass: 'influxadmin!@#$'
+osdm_influxdb_data_dir: '/data/influxdb'
+osdm_influxdb_collectd_port: 25828
+# this var is derived from inventory
+# osdm_influxdb_server_host: "{{ osdm_collectd_server_host }}"
+osdm_kapacitor_data_dir: '/data/kapacitor'
+
+# logstash
+# this var is derived from inventory
+# osdm_logstash_server_host: "{{ osdm_collectd_server_host }}"
+osdm_logstash_collectd_port: 25827
+
+# this var is derived from inventory
+# osdm_zabbix_server_host: '172.30.20.57'
+
+osdm_zabbix_db_name: zabbix
+osdm_zabbix_db_user: zabbix
+osdm_zabbix_db_pass: zabbix
+
+osdm_grafana_db_name: grafana
+osdm_grafana_db_user: grafana
+osdm_grafana_db_pass: grafana
+

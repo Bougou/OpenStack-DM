@@ -1,0 +1,27 @@
+---
+
+- name: caculate out osdm_os_stor_if_addr
+  shell: /usr/bin/generate_new_addr.py {{ osdm_os_admin_if_addr }} {{ osdm_os_stor_net }}
+  register: stor_addr_ip_info
+
+- name: set fact osdm_os_stor_if_addr
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_os_stor_if_addr', value: "{{ stor_addr_ip_info.stdout_lines[0] | default('') }}" }
+
+- name: set fact osdm_os_stor_if_<ip,prefix,netmask>
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_os_stor_if_ip', value: "{{ osdm_os_stor_if_addr | ipaddr('address') | default('') }}" }
+    - { name: 'osdm_os_stor_if_prefix', value: "{{ osdm_os_stor_if_addr | ipaddr('prefix') | default('') }}" }
+    - { name: 'osdm_os_stor_if_netmask', value: "{{ osdm_os_stor_if_addr | ipaddr('netmask') | default('') }}" }
+
+- name: set fact osdm_os_stor_if_ipv4 dict
+  set_fact:
+    osdm_os_stor_if_ipv4: "{{ osdm_os_stor_if_ipv4 | default({}) | combine({item.key: item.value}) }}"
+  with_items:
+    - { key: 'address', value: "{{ osdm_os_stor_if_addr | ipaddr('address') }}" }
+    - { key: 'prefix', value: "{{ osdm_os_stor_if_addr | ipaddr('prefix') }}" }
+    - { key: 'netmask', value: "{{ osdm_os_stor_if_addr | ipaddr('netmask') }}" }
+  no_log: true
+  

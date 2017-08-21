@@ -1,0 +1,31 @@
+[paths]
+[server]
+[database]
+type = mysql
+host = {{ grafana_db_host }}:{{ grafana_db_port }}
+user = {{ grafana_db_user }}
+password = {{ grafana_db_pass }}
+[session]
+[analytics]
+check_for_updates = true
+[security]
+[snapshots]
+[users]
+allow_sign_up = false
+allow_org_create = false
+[auth.anonymous]
+[auth.github]
+[auth.google]
+[auth.proxy]
+[auth.basic]
+enabled = true
+[auth.ldap]
+enabled = false
+config_file = /etc/grafana/ldap.toml
+[smtp]
+[emails]
+[log]
+[log.console]
+[log.file]
+[event_publisher]
+[dashboards.json]

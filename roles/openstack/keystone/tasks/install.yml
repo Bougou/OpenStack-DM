@@ -1,0 +1,15 @@
+---
+
+- name: install keystone
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-keystone
+    - python-keystone
+    - python-keystoneclient
+    - httpd
+    - mod_ssl
+    - mod_wsgi
+    - memcached
+    - python-memcached
+  tags:
+    - install

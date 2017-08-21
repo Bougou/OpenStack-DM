@@ -1,0 +1,27 @@
+server {
+    listen 80;
+    server_name opensatck
+    access_log /var/log/nginx/horizon-access.log;
+    error_log /var/log/nginx/horizon-error.log;
+    underscores_in_headers on;
+
+    # root /usr/share/openstack-dashboard/openstack-dashboard;
+
+    location @horizon {
+        uwsgi_pass  unix:/var/run/uwsgi/horizon.sock;
+        include     uwsgi_params;
+        uwsgi_pass_request_headers on;
+    }
+
+    location /dashboard {
+        try_files $uri @horizon;
+    }
+
+    location /static {
+        alias /usr/share/openstack-dashboard/static/;
+    }
+
+    location ~* \.(conf|bak|rar|zip|gz|tar|old|origin|sql|log|swp|inc|svn|git)$ {
+        return 404;
+    }
+}

@@ -1,0 +1,37 @@
+
+haproxy_bind_on_local: true
+
+# Haproxy stats
+
+haproxy_stats_enabled: true
+haproxy_stats_bind_addr: 0.0.0.0
+haproxy_stats_bind_port: 29000
+haproxy_stats_user: haproxy
+haproxy_stats_pass: haproxy
+
+# Haproxy services
+
+# These default haproxy parameters can be override in each dependent service in `haproxy_config_services`.
+haproxy_service_default:
+  srv_balance: roundrobin
+  srv_options:
+    - 'option httpchk'
+    - 'option tcpka'
+    - 'option tcplog'
+  srv_server_option: 'check inter 2000 rise 2 fall 5'
+  srv_frontend_binds: []
+  srv_backend_role: ''
+  # the 'role' equals to the term 'group' in ansible inventory.
+  # all hosts under this group will be served as the backend servers.
+  srv_backend_ip_fact_name: 'ansible_default_ipv4'
+  # the fact name to derive the ip addr of each host.
+  # in most cases, 'ansbile_default_ipv4' is what you needs, but for special cases, you should specify your own name.
+
+haproxy_config_services: []
+# - srv_name: http
+#   srv_port: 80
+# - srv_name: https
+#   srv_port: 443
+#   srv_balance: source
+#   srv_frontend_binds: ['192.168.1.100', '10.2.1.100']
+#   srv_backend_servers: ['192.168.1.1', '192.168.1.2', '192.168.1.3']

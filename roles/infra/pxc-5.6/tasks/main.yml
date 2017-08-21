@@ -1,0 +1,9 @@
+---
+
+- include: install.yml
+
+- include: bootstrap.yml
+  when: inventory_hostname == pxc56_bootstrap_node
+
+- include: join-cluster.yml
+  when: inventory_hostname != pxc56_bootstrap_node

@@ -1,0 +1,13 @@
+---
+
+# fernet key must be setup on one of the controller nodes and sync to all other controller nodes.
+
+# setup a fernet key repository for token
+# fernet keys here are used to encrypt and decrypt tokens.
+- name: initialize fernet keys - fernet_setup
+  shell: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+
+# setup a fernet key repository for credential
+# fernet keys here are used to encrypt and decrypt credentials.
+- name: initialize fernet keys - credential_setup
+  shell: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone

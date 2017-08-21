@@ -1,0 +1,11 @@
+---
+
+- name: setting up ha on queue(s)
+  rabbitmq_policy:
+    name: "ha-all"
+    pattern: "{{ item.pattern }}"
+    tags: "{{ item.tags }}"
+    state: present
+  run_once: true
+  with_items: "{{ rabbitmq_ha_policy }}"
+

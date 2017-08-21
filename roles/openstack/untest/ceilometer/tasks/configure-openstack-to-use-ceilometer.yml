@@ -1,0 +1,31 @@
+---
+
+- name: configure the Image service to use Telemetry
+  ini_file:
+    dest: "{{ item }}"
+    section: oslo_messaging_notifications
+    option: driver
+    value: messagingv2
+    backup: yes
+  with_items:
+    - /etc/glance/glance-api.conf
+    - /etc/glance/glance-registry.conf
+
+- name: restart glance-api glance-registry
+  service: name={{ item }}
+  with_items:
+    - openstack-glance-api
+    - openstack-glance-registry
+
+- name: configure the Nova to use Telemetry
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: "{{ item.section}}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { "section": "DEFAULT", option: "instance_usage_audit", value: True }
+    - { "section": "DEFAULT", option: "instance_usage_audit_period", value: True }
+    - { "section": "DEFAULT", option: "notify_on_state_change", value: "vm_and_task_state" }
+    - { "section": "DEFAULT", option: "notification_driver", value: "messagingv2" }

@@ -1,0 +1,16 @@
+---
+
+
+- name: add security group rule for default
+  shell: openstack security group rule create --proto icmp default;
+      openstack security group rule create --proto tcp --dst-port 22 default;
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"

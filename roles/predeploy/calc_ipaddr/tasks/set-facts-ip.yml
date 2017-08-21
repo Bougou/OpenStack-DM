@@ -1,0 +1,60 @@
+---
+
+# ADMIN Network
+# This should be put BEFORE all the other set-facts-ip-<Net>
+# because they all rely on the fact of osdm_os_admin_if_addr which is set in this step.
+- name: set facts - ADMIN
+  include: set-facts-ip-admin.yml
+
+# IPMI Network
+- name: set facts - IPMI
+  include: set-facts-ip-ipmi.yml
+  when: osdm_configure_ipmi
+  static: no
+
+# EXTERNAL Network
+- name: set facts - EXT
+  include: set-facts-ip-ext.yml
+  #when: osdm_configure_ext_if
+  static: no
+
+# MANAGEMENT Network
+- name: set facts - MGMT
+  include: set-facts-ip-mgmt.yml
+  #when: osdm_configure_mgmt_if
+  static: no
+
+# DATA NETWORK (nova-network)
+# There's no need to caculate/configure IP address on interfaces used for nova-network DATA Network.
+- name: set facts - DATA
+  include: set-facts-ip-data.yml
+  #when: osdm_configure_data_if
+  #      and osdm_network_mode != 'neutron'
+  static: no
+
+# STORAGE Network
+- name: set facts - STOR
+  include: set-facts-ip-stor.yml
+  #when: osdm_configure_stor_if
+  #      and osdm_ceph_cluster_network_dedicated 
+  #      and inventory_hostname in groups['ceph-all']
+  static: no
+
+# TENNANT Network (neutron)
+- name: set facts - TEN
+  include: set-facts-ip-ten.yml
+  #when: osdm_configure_ten_if
+  #      and osdm_network_mode == 'neutron'
+  static: no
+
+# PROVIDER NETWORK (neutron)
+# There's no need to caculate/configure IP address on interfaces used for neutron PROVIDER Network.
+- debug: var=osdm_configure_pro_if
+- name: set facts - PRO
+  include: set-facts-ip-pro.yml
+  #when: osdm_configure_pro_if
+  #      and osdm_network_mode == 'neutron'
+  #      and osdm_os_pro_net != 'none'
+  static: no
+       
+- template: src=calc_ip.txt.j2 dest=/tmp/calc_ip.txt

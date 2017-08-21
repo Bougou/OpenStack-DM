@@ -1,0 +1,12 @@
+[Unit]
+Description=libvirtMib SNMP subagent Daemon.
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Environment="LIBVIRT_DEFAULT_URI=qemu:///system"
+ExecStart=/usr/bin/libvirtMib_subagent -f -L
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

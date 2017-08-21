@@ -1,0 +1,24 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+
+- name: Deploy Monitor Solution - collectd-client
+  hosts:
+    - "{{ _hosts }}"
+  tags: ['play-all-collectd-client']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: monitor/collectd-5
+      collectd_client_send_host: "{% set _collectd_server=groups['collectd-server'][0] %}{{ hostvars[_collectd_server]['osdm_os_mgmt_if_ip'] | default('127.0.0.1') }}"
+      collectd_client_send_port: 25826
+      collectd_interval: "{{ osdm_collectd_interval }}"
+      #collectd_server_enable: "{{ osdm_collectd_server_enable }}"
+      collectd_ceph_enable: "{{ osdm_collectd_ceph_enable }}"
+      collectd_virt_enable: "{{ osdm_collectd_virt_enable }}"

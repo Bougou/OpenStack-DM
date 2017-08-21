@@ -1,0 +1,20 @@
+- include: install-nova-compute.yml
+  tags:
+    - install-nova-compute
+
+- include: config-nova-compute.yml
+  tags:
+    - config-nova-compute
+
+- include: fetch-nova-key.yml
+  when: inventory_hostname != groups['os-controller'][0]
+  tags:
+    - fetch-nova-key
+
+- include: define-libvirt-secret.yml
+  tags:
+    - define-libvirt-secret
+
+- include: start-nova-compute.yml
+  tags:
+    - start-nova-compute

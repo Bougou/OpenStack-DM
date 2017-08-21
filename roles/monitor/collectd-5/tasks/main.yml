@@ -1,0 +1,28 @@
+---
+
+- debug: var=collectd_client_send_host
+
+- include: install.yml
+  tags:
+    - install
+
+- include: conf-base.yml
+  tags:
+    - conf-base
+
+- include: conf-server.yml
+  tags:
+    - conf-server
+  when: collectd_server_enable
+
+- include: install-plugins.yml
+  tags:
+    - install-plugins.yml
+
+- include: conf-plugins.yml
+  tags:
+    - conf-plugins
+
+- include: start.yml
+  tags:
+    - start-collectd

@@ -1,0 +1,51 @@
+---
+
+- include: install-nova-controller.yml
+  #when: inventory_hostname in groups['os-controller']
+  tags:
+    - install-nova-controller
+
+- include: config-nova-controller.yml
+  #when: inventory_hostname in groups['os-controller']
+  tags:
+    - config-nova-controller
+
+- include: generate-nova-key.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - generate-nova-key
+
+- include: fetch-nova-key.yml
+  when: inventory_hostname != groups['os-controller'][0]
+  tags:
+    - fetch-nova-key
+
+- include: init-api-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-api-db
+
+### Adding cell1 follow init-api-db
+# add-cell-info should run on cell-controller, for cell1, the os-controller is the cell-controller
+# delegate to groups['os-controller'][0]
+- include: add-cell-info.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - add-cell-info
+
+- include: init-cell-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-cell-db
+
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-endpoint
+
+- include: start-nova-controller.yml
+  when: inventory_hostname in groups['os-controller']
+  tags:
+    - start-nova-controller
+

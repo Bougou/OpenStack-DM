@@ -1,0 +1,23 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+
+- name: Install RabbitMQ on controller nodes
+  vars:
+    rabbitmq_erlang_cookie: "KINGERFGNDLFLNQJQYVT"
+  hosts:
+    - os-controller
+  tags: ['play-rabbitmq']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: infra/rabbitmq
+      tags: ['rabbitmq']
+      rabbitmq_cluster_group_name: "os-controller"
+      rabbitmq_master_addr: "{{ groups['os-controller'][0] }}"

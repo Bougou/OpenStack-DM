@@ -1,0 +1,51 @@
+---
+
+- name: caculate out osdm_os_mgmt_if_addr
+  shell: /usr/bin/generate_new_addr.py {{ osdm_os_admin_if_addr }} {{ osdm_os_mgmt_net }}
+  register: mgmt_addr_ip_info
+
+- name: set fact osdm_os_mgmt_if_addr
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_os_mgmt_if_addr', value: "{{ mgmt_addr_ip_info.stdout_lines[0] }}" }
+
+- name: set fact osdm_os_mgmt_if_<ip,prefix,netmask>
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_os_mgmt_if_ip', value: "{{ osdm_os_mgmt_if_addr | ipaddr('address') }}" }
+    - { name: 'osdm_os_mgmt_if_prefix', value: "{{ osdm_os_mgmt_if_addr | ipaddr('prefix') }}" }
+    - { name: 'osdm_os_mgmt_if_netmask', value: "{{ osdm_os_mgmt_if_addr | ipaddr('netmask') }}" }
+
+- name: set fact osdm_os_mgmt_if_ipv4 dict
+  set_fact:
+    osdm_os_mgmt_if_ipv4: "{{ osdm_os_mgmt_if_ipv4 | default({}) | combine({item.key: item.value}) }}"
+  with_items:
+    - { key: 'address', value: "{{ osdm_os_mgmt_if_addr | ipaddr('address') }}" }
+    - { key: 'prefix', value: "{{ osdm_os_mgmt_if_addr | ipaddr('prefix') }}" }
+    - { key: 'netmask', value: "{{ osdm_os_mgmt_if_addr | ipaddr('netmask') }}" }
+  no_log: true
+
+# listen/bind address for
+# - openstack-*-api services
+# - rabbitmq-server
+# - mysql
+#
+# If not using haproxy or the node running haproxy is not the same one on which those services are running,
+# 0.0.0.0 MUST not be quoted by single quote or double quote.
+- name: set_fact osdm_listen_addr
+  set_fact:
+    osdm_listen_addr: "{%- if osdm_enable_haproxy and osdm_haproxy_colocate -%}{{ osdm_os_mgmt_if_ip }}{%- else -%}0.0.0.0{%- endif -%}"
+
+- name: set fact osdm_<service>_listen_addr
+  set_fact: "{{ item.name }}={{ item.value }}"
+  with_items:
+    - { name: 'osdm_keystone_listen_addr', value: "{{ osdm_listen_addr }}" }
+    - { name: 'osdm_glance_listen_addr', value: "{{ osdm_listen_addr }}" }
+    - { name: 'osdm_cinder_listen_addr', value: "{{ osdm_listen_addr }}" }
+    - { name: 'osdm_nova_listen_addr', value: "{{ osdm_listen_addr }}" }
+    - { name: 'osdm_horizon_listen_addr', value: "{{ osdm_listen_addr }}" }
+    - { name: 'rabbitmq_listen_addr', value: "{{ osdm_listen_addr }}" }
+
+- name: set_fact db_listen_addr
+  set_fact:
+    db_listen_addr: "{%-if osdm_enable_haproxy and osdm_haproxy_pxc -%}{{ osdm_os_mgmt_if_ip }}{%- else -%}0.0.0.0{%- endif -%}"

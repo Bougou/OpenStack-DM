@@ -1,0 +1,19 @@
+## network base configuration
+
+#  osdm_network_mode: "neutron" or "nova-network"
+#osdm_network_mode: "nova-network"
+osdm_network_mode: "neutron"
+
+# nova-network sepcific configuration
+osdm_use_multihost: true
+
+# whether to use foreign gateway for network
+osdm_use_foreign_gateway: false
+
+# other information when creating network/subnet used by instances
+osdm_dhcp_domain: intra.test.com
+osdm_dnsmasq_dns1: 8.8.8.8
+osdm_dnsmasq_dns2: 114.114.114.114
+
+osdm_dns_servers: "8.8.8.8,114.114.114.114"
+

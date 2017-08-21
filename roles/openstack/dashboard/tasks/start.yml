@@ -1,0 +1,34 @@
+---
+
+- name: template local_settings
+  template: src=local_settings.j2 dest=/etc/openstack-dashboard/local_settings
+
+#- seboolean: name=httpd_can_network_connect state=yes persistent=yes
+
+
+# httpd default listen to 0.0.0.0:80 (Listen 80)
+# if haproxy is used, the address should be altered.
+- name: change httpd listen address
+  lineinfile:
+    dest: /etc/httpd/conf/httpd.conf
+    regexp: "^Listen "
+    line: "Listen {{ osdm_horizon_listen_addr }}:80"
+
+- template: src=test.j2 dest=/tmp/test
+
+- name: update memcached config
+  lineinfile:
+    backup: yes
+    dest: /etc/sysconfig/memcached
+    regexp: '^OPTIONS='
+    line: OPTIONS="-l 0.0.0.0"
+    state: present
+  tags: update-memcached-config
+
+# openstack-dashboard store a systemd service file in
+# /usr/lib/systemd/system/httpd.service.d/openstack-dashboard.conf
+- name: start httpd service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - httpd
+    - memcached

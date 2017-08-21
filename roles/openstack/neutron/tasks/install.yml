@@ -1,0 +1,39 @@
+---
+
+- name: install neutron packages
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - ebtables
+    - ipset
+    - conntrack-tools
+    - openvswitch
+    - python-openvswitch
+    - openstack-neutron
+    - openstack-neutron-ml2
+    - python-neutronclient
+    - openstack-neutron-openvswitch
+    - openstack-neutron-linuxbridge
+
+#- name: install neutron ml2 agent
+#  yum: name={{ item }} state=present
+#  with_items:
+
+- name: install neutron packages - lbaas
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-neutron-lbaas
+    - openstack-neutron-lbaas-ui
+  
+
+- name: install neutron packages - vpnaas
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-neutron-vpnaas
+    - python-neutron-vpnaas
+
+
+- name: install neutron packages - fwaas
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-neutron-fwaas
+ 

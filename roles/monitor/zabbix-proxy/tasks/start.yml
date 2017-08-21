@@ -1,0 +1,12 @@
+---
+
+- name: create zabbix_proxy.d directory
+  file: path=/etc/zabbix/zabbix_proxy.d/ state=directory
+
+- name: template zabbix_proxy.conf
+  template: src=zabbix_proxy.conf.j2 dest=/etc/zabbix/zabbix_proxy.conf backup=yes
+  notify:
+    - restart zabbix-proxy
+
+- name: start zabbix-proxy service
+  service: name=zabbix-proxy state=restarted enabled=yes

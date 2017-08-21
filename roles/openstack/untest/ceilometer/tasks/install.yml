@@ -1,0 +1,29 @@
+---
+
+- name: install ceilometer packages on controller
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-ceilometer-api
+    - openstack-ceilometer-collector
+    - openstack-ceilometer-notification
+    - openstack-ceilometer-central
+    - python-ceilometerclient
+  when: inventory_hostname in groups['os-controller']
+  tags:
+    - install
+
+- name: install ceilometer packages on compute
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-ceilometer-compute
+    - python-ceilometerclient
+    - python-pecan
+  when: inventory_hostname in groups['os-compute']
+  tags:
+    - install
+
+- name: template ceilometer.conf
+  template: src=ceilometer.conf.j2 dest=/etc/ceilometer/ceilometer.conf backup=yes
+  tags:
+    - config
+

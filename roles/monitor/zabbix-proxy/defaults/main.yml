@@ -1,0 +1,2 @@
+zabbix_release: "zabbix-release-3.0-1.el7.noarch.rpm"
+zabbix_server_host: '127.0.0.1'

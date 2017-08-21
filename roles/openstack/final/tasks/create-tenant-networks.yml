@@ -1,0 +1,35 @@
+---
+
+- name: transfer script
+  copy: src=create-tenant-networks.sh dest=/tmp/create-tenant-networks.sh
+
+# Note: the provided envrionment variables will be used by the script.
+- name: create tenant networks
+  shell: bash /tmp/create-tenant-networks.sh
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+    osdm_ft_ext_range: "{{ osdm_ft_ext_range }}"
+    osdm_ft_ext_gateway: "{{ osdm_ft_ext_gateway }}"
+    osdm_ft_ext_pool_start: "{{ osdm_ft_ext_pool_start }}"
+    osdm_ft_ext_pool_end: "{{ osdm_ft_ext_pool_end }}"
+    osdm_ft_dns1: "{{ osdm_ft_dns1 }}"
+    osdm_ft_dns2: "{{ osdm_ft_dns2 }}"
+    osdm_ft_admin_net1_range: "{{ osdm_ft_admin_net1_range }}"
+    osdm_ft_admin_net1_gateway: "{{ osdm_ft_admin_net1_gateway }}"
+    osdm_ft_admin_net2_range: "{{ osdm_ft_admin_net2_range }}"
+    osdm_ft_admin_net2_gateway: "{{ osdm_ft_admin_net2_gateway }}"
+
+
+- name: remove the temporary file
+  file: path=/tmp/create-tenant-networks.sh state=absent
+
+

@@ -1,0 +1,25 @@
+---
+
+- name: install nova on compute
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - sysfsutils
+    #- qemu-system-x86
+    - qemu-kvm-ev
+    - libvirt
+    - libvirt-daemon-config-network
+    - libvirt-daemon-config-nwfilter
+    - openstack-nova-compute
+    - openstack-ceilometer-compute
+
+
+# don't install qemu-kvm package.
+
+- name: install nova-network on compute
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - conntrack-tools
+    - openstack-nova-network
+    - openstack-nova-api
+  when: osdm_network_mode == 'nova-network' and osdm_use_multihost
+

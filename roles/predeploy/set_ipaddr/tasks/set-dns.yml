@@ -1,0 +1,22 @@
+---
+
+# DNS Can set to many or any connections, after re-up the connection
+# dns value will appear on /etc/resolv.conf
+
+- name: set dns
+  shell: nmcli con mod {{ osdm_os_admin_if }} ipv4.dns "{{ osdm_node_dns1 }},{{ osdm_node_dns2}}";
+         nmcli con up {{ osdm_os_admin_if }};
+
+# for team lacp problems
+# after nmcli con up team master interface, you must re-up all the slave interfaces.
+# so, we avoid to modify dns on these interfaces.
+
+#- name: set dns
+#  shell: nmcli con mod {{ osdm_os_ext_if }} ipv4.dns "{{ osdm_node_dns1 }},{{ osdm_node_dns2}}";
+#         nmcli con up {{ osdm_os_ext_if }};
+#  when: osdm_configure_ext_if
+#
+#- name: set dns
+#  shell: nmcli con mod {{ osdm_os_mgmt_if }} ipv4.dns "{{ osdm_node_dns1 }},{{ osdm_node_dns2}}";
+#         nmcli con up {{ osdm_os_mgmt_if }};
+#  when: osdm_configure_mgmt_if

@@ -1,0 +1,22 @@
+- name: transfer script
+  copy: src=create-tenant-vms.sh dest=/tmp/create-tenant-vms.sh
+
+# Note: the provided envrionment variables will be used by the script.
+- name: create tenant vms
+  shell: bash /tmp/create-tenant-vms.sh
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+
+- name: remove the temporary file
+  file: path=/tmp/create-tenant-vms.sh state=absent
+
+

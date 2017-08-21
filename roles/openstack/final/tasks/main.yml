@@ -1,0 +1,45 @@
+---
+
+- include: upload-image-cirros.yml
+  tags: upload-image-cirros
+
+- include: upload-image-ubuntu.yml
+  tags: upload-image-ubuntu
+
+# - include: upload-image-httpd.yml
+#   tags: upload-image-httpd
+#   when: osdm_install_mode == 'offline'
+# # Just upload httpd image in offline mode.
+
+- include: create-keypair.yml
+  tags: create-keypair
+
+- include: add-sgrule-default.yml
+  tags: add-sgrule-default
+
+- include: create-flavor-test.yml
+  tags: create-flavor-test
+
+- include: create-provider-networks.yml
+  tags: create-provider-networks
+
+- include: create-provider-vms.yml
+  tags: create-provider-vms
+
+- include: create-tenant-networks.yml
+  tags: create-tenant-networks
+
+- include: create-tenant-vms.yml
+  tags: create-tenant-vms
+
+# create ubuntu vms for other tests
+- include: create-tenant-vms-ubuntu.yml
+  tags: create-tenant-vms-ubuntu
+
+# create httpd vms for lbaas tests
+# - include: create-tenant-vms-httpd.yml
+#   tags: create-tenant-vms-httpd
+
+- include: create-volumes.yml
+  tags: create-volumes
+  

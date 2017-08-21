@@ -1,0 +1,25 @@
+
+# VIP address for OpenStack Cluster
+osdm_os_access_ext_vip: "10.5.252.198"
+osdm_os_access_mgmt_vip: "172.30.17.198"
+osdm_os_access_console_ip: "10.5.252.198"
+
+#
+# osdm_os_nova_cells.cell1.cell_use_os_controllers
+
+
+# the default cell name.
+osdm_os_nova_cell_name: "cell0"
+
+# # cell name is the key.
+# osdm_os_nova_cells:
+#   cell0:
+#     standalone_cell_controllers: false
+#   # cell0 has no meaning here, just for consistency.
+#   cell1:
+#     standalone_cell_controllers: false
+#   cell2:
+#     standalone_cell_controllers: true
+
+# #osdm_os_nova_cells[osdm_os_nova_cell_name]['standalone_cell_controllers']
+

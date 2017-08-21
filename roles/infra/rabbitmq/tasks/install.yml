@@ -1,0 +1,12 @@
+---
+
+- name: install selinux bindings
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - libselinux-python
+
+- name: install rabbitmq-server package
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - epel-release
+    - rabbitmq-server

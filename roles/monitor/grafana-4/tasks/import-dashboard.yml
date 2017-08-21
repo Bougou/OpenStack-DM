@@ -1,0 +1,28 @@
+---
+
+# transfer dashboard
+- name: clear dir
+  file: path=/tmp/grafana state=absent
+
+- name: transfer dashboard
+  copy: src=dashboard dest=/tmp/grafana 
+
+- name: print dashboard
+  shell: cd /tmp/grafana/dashboard && ls
+  register: ls_grafana_dashboard
+
+- debug: var=ls_grafana_dashboard
+
+- name: modify dashboard
+  shell: sed -i 's/${DS_INFLUXDB}/ds_influxdb/g' /tmp/grafana/dashboard/{{ item }}
+  with_items: "{{ ls_grafana_dashboard.stdout_lines }}"
+  
+- name: import dashboard
+  shell: cd /tmp/grafana/dashboard;
+        /usr/bin/http --auth admin:admin get http://127.0.0.1:3000/api/search | jq -r .[].title | grep -sq "^{{ item | replace('.json', '') }}$" \
+        && [[ $? -eq 0 ]] && /usr/bin/http --auth admin:admin delete http://127.0.0.1:3000/api/dashboards/db/{{ item | replace(".json", "") | lower }} \
+        || :;
+        /usr/bin/http --auth admin:admin post http://127.0.0.1:3000/api/dashboards/db Dashboard:=@/tmp/grafana/dashboard/{{ item }} </dev/tty
+  with_items: "{{ ls_grafana_dashboard.stdout_lines }}"
+# http </dev/tty
+# see: https://github.com/jkbrzt/httpie/issues/150

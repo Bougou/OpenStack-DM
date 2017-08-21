@@ -1,0 +1,31 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Install Openstack Compute Nodes
+  hosts: "{{ _hosts }}"
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+
+    - role: ceph/ceph-10-pkg
+      tags: ['ceph-pkg']
+      when: osdm_use_ceph
+
+    - role: openstack/fetch_ceph_key
+      when: osdm_use_ceph
+      tags: ['ceph-key']
+
+    - role: openstack/nova
+      nova_deploy_nova_compute: true
+      tags: ['os-nova']
+
+    - role: openstack/neutron
+      neutron_deploy_compute: true
+      tags: ['os-neutron']
+      when: osdm_network_mode == 'neutron'

@@ -1,0 +1,47 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: config.yml
+  tags:
+    - config
+
+# must init-db before start keystone
+- include: init-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-db
+
+- include: init-fernet-key.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - fernet-key
+
+- include: fetch-fernet-key.yml
+  when: inventory_hostname != groups['os-controller'][0]
+  tags:
+    - fernet-key
+
+# must start keystone before init-keystone endpoint
+- include: start.yml
+  tags:
+    - start
+
+# init identity endponit
+# - include: init-endpoint.yml
+#   when: inventory_hostname == groups['os-controller'][0]
+#   tags:
+#     - init-endpoint
+
+# bootstrap identity endpoint
+- include: bootstrap.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - bootstrap
+
+- include: init-keystone.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - init-keystone

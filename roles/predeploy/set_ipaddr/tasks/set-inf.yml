@@ -1,0 +1,125 @@
+---
+
+- name: transfer script
+  copy: src={{ item }} dest=/tmp/{{ item }} mode=755
+  with_items:
+    - inf_utils.sh
+
+# override osdm_os_ext_if
+- name: os_controller coexist with os_network in neutron
+  set_fact:
+    osdm_os_ext_if: "{{ osdm_ovsbr_external }}"
+  when: osdm_network_mode == 'neutron'
+        #and inventory_hostname in groups['os-network'] + groups['os-compute']
+
+- name: prepare interfaces - EXT
+  shell:  source /tmp/inf_utils.sh;
+          prepare_os_if \
+              "{{ osdm_node_nics_ext_if }}" \
+              {{ osdm_node_nics_ext_dedicated }} \
+              {{ osdm_os_ext_vlan }} \
+              {{ osdm_os_ext_if_addr }} \
+              {{ osdm_os_ext_gw }} \
+              {{ osdm_os_ext_metric }} \
+              {{ osdm_os_ext_if }} >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    osdm_network_mode: "{{ osdm_network_mode }}"
+    osdm_team_type: "{{ osdm_team_type }}"
+    osdm_team_mode: "{{ osdm_team_mode }}"
+    osdm_ovs_datapath_type: "{{ osdm_ovs_datapath_type }}"
+  when: osdm_configure_ext_if
+
+
+- name: prepare interfaces - MGMT
+  shell:  source /tmp/inf_utils.sh;
+          prepare_os_if \
+              "{{ osdm_node_nics_mgmt_if }}" \
+              {{ osdm_node_nics_mgmt_dedicated }} \
+              {{ osdm_os_mgmt_vlan }} \
+              {{ osdm_os_mgmt_if_addr }} \
+              {{ osdm_os_mgmt_gw }} \
+              {{ osdm_os_mgmt_metric }} \
+              {{ osdm_os_mgmt_if }} >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    osdm_network_mode: "{{ osdm_network_mode }}"
+    osdm_team_type: "{{ osdm_team_type }}"
+    osdm_team_mode: "{{ osdm_team_mode }}"
+    osdm_ovs_datapath_type: "{{ osdm_ovs_datapath_type }}"
+  when: osdm_configure_mgmt_if
+
+
+- name: prepare interfaces - DATA
+  shell:  source /tmp/inf_utils.sh;
+          prepare_os_if \
+              "{{ osdm_node_nics_data_if }}" >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    osdm_network_mode: "{{ osdm_network_mode }}"
+    osdm_team_type: "{{ osdm_team_type }}"
+    osdm_team_mode: "{{ osdm_team_mode }}"
+    osdm_ovs_datapath_type: "{{ osdm_ovs_datapath_type }}"
+  when: osdm_configure_data_if
+        and osdm_network_mode != 'neutron'
+
+
+- name: prepare interfaces - STOR
+  shell:  set -x; source /tmp/inf_utils.sh;
+          prepare_os_if \
+              "{{ osdm_node_nics_stor_if }}" \
+              {{ osdm_node_nics_stor_dedicated }} \
+              {{ osdm_os_stor_vlan }} \
+              {{ osdm_os_stor_if_addr }} \
+              {{ osdm_os_stor_gw }} \
+              {{ osdm_os_stor_metric }} \
+              {{ osdm_os_stor_if }} >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    osdm_network_mode: "{{ osdm_network_mode }}"
+    osdm_team_type: "{{ osdm_team_type }}"
+    osdm_team_mode: "{{ osdm_team_mode }}"
+    osdm_ovs_datapath_type: "{{ osdm_ovs_datapath_type }}"
+  when: osdm_configure_stor_if
+        and osdm_ceph_cluster_network_dedicated
+        #and inventory_hostname in groups['ceph-all']
+
+
+- name: prepare interfaces - TEN
+  shell: set -x; source /tmp/inf_utils.sh;
+         prepare_os_if \
+              "{{ osdm_node_nics_ten_if }}" \
+              {{ osdm_node_nics_ten_dedicated }} \
+              {{ osdm_os_ten_vlan }} \
+              {{ osdm_os_ten_if_addr }} \
+              {{ osdm_os_ten_gw }} \
+              {{ osdm_os_ten_metric }} \
+              {{ osdm_os_ten_if }} >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    osdm_network_mode: "{{ osdm_network_mode }}"
+    osdm_team_type: "{{ osdm_team_type }}"
+    osdm_team_mode: "{{ osdm_team_mode }}"
+    osdm_ovs_datapath_type: "{{ osdm_ovs_datapath_type }}"
+  when: osdm_configure_ten_if
+        and osdm_network_mode == 'neutron'
+
+
+# must specify the vlan as "none" here for PROVIDER interfaces.
+- name: prepare interfaces - PRO
+  shell: set -x; source /tmp/inf_utils.sh;
+         prepare_os_if \
+              "{{ osdm_node_nics_pro_if }}" \
+              {{ osdm_node_nics_pro_dedicated }} \
+              "none" \
+              "none" \
+              "none" \
+              "none" \
+              {{ osdm_os_pro_if }} >> /var/log/set_ipaddr.log 2>&1
+  environment:
+    osdm_network_mode: "{{ osdm_network_mode }}"
+    osdm_team_type: "{{ osdm_team_type }}"
+    osdm_team_mode: "{{ osdm_team_mode }}"
+    osdm_ovs_datapath_type: "{{ osdm_ovs_datapath_type }}"
+  when: osdm_configure_pro_if
+        and osdm_network_mode == 'neutron'
+
+- name: remove the temporary script
+  file: path=/tmp/{{ item }} state=absent
+  with_items:
+    - inf_utils.sh

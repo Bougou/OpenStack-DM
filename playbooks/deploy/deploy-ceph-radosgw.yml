@@ -1,0 +1,32 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Push ssh keys from ceph monitor
+  hosts: ceph-mon[0]
+  roles:
+    - role: util/push_ssh_keys
+      ssh_keys_targets: "{{ groups['ceph-radosgw'] }}"
+
+- name: Install and start ceph radosgw
+  hosts: ceph-radosgw
+  roles:
+    - predeploy/predeploy
+
+    - role: ceph/ceph-10-pkg
+      ceph_pkg_radosgw: true
+    
+    - role: infra/nginx
+      when: osdm_webserver == 'nginx'
+
+    - role: ceph/ceph-deploy-radosgw
+      ceph_deploy_dir: "{{ osdm_ceph_deploy_dir }}"
+      ceph_deploy_radosgw_webproxy: "{{ osdm_radosgw_webproxy }}"
+      ceph_deploy_radosgw_webserver: "{{ osdm_webserver }}"
+      ceph_deploy_radosgw_access_ext_vip: "{{ osdm_radosgw_access_ext_vip }}"
+      ceph_deploy_radosgw_access_mgmt_vip: "{{ osdm_radosgw_access_mgmt_vip }}"

@@ -1,0 +1,21 @@
+---
+
+- name: start NetworkManager service
+  service: name=NetworkManager state=started enabled=yes
+
+# restart NetworkManager service to load team plugin
+- name: load NetworkManager plugin for team
+  service: name=NetworkManager state=restarted
+  when: osdm_team_type == 'team'
+
+- name: start openvswitch
+  service: name=openvswitch state=restarted enabled=yes
+  # when: osdm_network_mode == 'neutron' and inventory_hostname in groups['os-all']
+  when: osdm_network_mode == 'neutron'
+
+- name: transfer inf_utils.sh
+  copy: src=inf_utils.sh dest=/tmp/inf_utils.sh mode=755
+
+- name: clear log file
+  file: path=/var/log/set_ipaddr.log state=absent
+  

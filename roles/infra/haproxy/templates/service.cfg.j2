@@ -1,0 +1,28 @@
+{% for srv in haproxy_config_services %}
+
+{% set srvcfg = haproxy_service_default|combine(srv) %}
+
+{% if srvcfg.srv_frontend_binds %}
+listen {{ srvcfg.srv_name }}
+  {% for bind in srvcfg.srv_frontend_binds %}
+  bind {{ bind }}:{{ srv.srv_port }}
+  {% endfor %}
+
+  {% if srvcfg.srv_balance %}
+  balance {% srvcfg.srv_balance -%}
+  {% endif %}
+
+  {% if srvcfg.srv_options %}
+    {% for opt in service.srv_optons %}
+    {{ opt }}
+    {% endfor %}
+  {% endif %}
+
+  {% if srvcfg.srv_backend_role %}
+    {% for host in groups[srvcfg.srv_backend_role] %}
+  server {{ hostvars[host][srvcfg.srv_backend_ip_fact_name]['address'] }}:{{ srvcfg.srv_port }} {{ srvcfg.srv_server_options }}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% endfor %}

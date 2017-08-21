@@ -1,0 +1,233 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+state_path = /var/lib/nova
+my_ip = {{ osdm_os_mgmt_if_ip }}
+osapi_compute_listen = {{ osdm_nova_listen_addr }}
+metadata_listen = {{ osdm_nova_listen_addr }}
+{#s3_listen = 0.0.0.0#}
+enabled_apis = osapi_compute,metadata
+control_exchange = nova
+rpc_backend  = rabbit
+auth_strategy = keystone
+scheduler_default_filters = RetryFilter,AggregateInstanceExtraSpecsFilter,AggregateMultiTenancyIsolation,AggregateImagePropertiesIsolation,AvailabilityZoneFilter,RamFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter
+instance_usage_audit = true
+instance_usage_audit_period = hour
+notify_on_state_change = vm_and_task_state
+multi_instance_display_name_template = "%(name)s-%(count)s"
+# automatically confirm resize after 1s.
+resize_confirm_window = 1
+compute_driver = libvirt.LibvirtDriver
+transport_url = rabbit://{{ osdm_mq_os_user }}:{{ osdm_mq_os_pass }}@{{ osdm_cell_mq_mgmt_ip }}:5672/
+
+{% if osdm_network_mode == 'nova-network' %}
+use_neutron = False
+{% else %}
+use_neutron = True
+{% endif %}
+
+{% if osdm_network_mode == 'nova-network' %}
+network_api_class = nova.network.api.API
+security_group_api = nova
+firewall_driver = nova.virt.libvirt.firewall.IptablesFirewallDriver
+network_manager = nova.network.manager.VlanManager
+vlan_interface = {{ osdm_os_data_if }}
+vlan_start = 100
+public_interface = {{ osdm_os_ext_if }}
+routing_source_ip = {{ osdm_os_ext_if_ip }}
+# see bug: https://review.openstack.org/#/c/130488/
+force_snat_range = 0.0.0.0/0
+flat_injected = false
+force_dhcp_release = true
+dhcpbridge = /usr/bin/nova-dhcpbridge
+dnsmasq_config_file = /etc/nova/dnsmasq.nova.conf
+
+# influence vm's dhcp /etc/resolv.conf search option.
+dhcp_domain = {{ osdm_dhcp_domain }}
+use_network_dns_servers = true
+dns_server= {{ osdm_dnsmasq_dns1 | default('8.8.8.8') }}
+dns_server= {{ osdm_dnsmasq_dns2 | default('114.114.114.114') }}
+
+## share_dhcp_address default false, and this option is deprecated.
+## THIS VALUE SHOULD BE SET WHEN CREATING THE NETWORK (nova network-create --share-address 'T')
+share_dhcp_address = false
+send_arp_for_ha = true
+
+{% if osdm_use_multihost %}
+metadata_host = {{ osdm_os_mgmt_if_ip }}
+{% else %}
+metadata_host = {{ osdm_os_access_mgmt_vip }}
+{% endif %}
+
+{% endif %}
+
+
+{% if osdm_network_mode == 'neutron' %}
+network_api_class = nova.network.neutronv2.api.API
+security_group_api = neutron
+linuxnet_interface_driver = nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+{% endif %}
+
+{% if osdm_network_mode == 'neutron' %}
+[neutron]
+service_metadata_proxy = True
+metadata_proxy_shared_secret = {{ osdm_neutron_nova_secret }}
+url = http://{{ osdm_os_neutron_mgmt_ip }}:9696
+region_name = RegionOne
+{#auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/#}
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ osdm_user_service_pass }}
+{% endif %}
+
+[oslo_messaging_notifications]
+driver = messagingv2
+
+[oslo_concurrency]
+lock_path = /var/lib/nova/tmp
+
+[cache]
+{# nova-consoleauth use this to save and auth a token #}
+enabled = True
+backend = oslo_cache.memcache_pool
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+# Database
+# nova-scheduler
+[database]
+# nova cell mysql
+connection = mysql://{{ osdm_os_nova_db_user }}:{{ osdm_os_nova_db_pass }}@{{ osdm_cell_mysql_mgmt_ip }}/nova_{{ osdm_os_nova_cell_name }}
+
+[api_database]
+# api cell mysql
+connection = mysql://{{ osdm_os_nova_db_user }}:{{ osdm_os_nova_db_pass }}@{{ osdm_mysql_mgmt_ip }}/nova_api
+
+[oslo_messaging_notifications]
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+# api cell mq or nova cell mq
+rabbit_host = {{ osdm_cell_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass }}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true
+rabbit_durable_queues = true
+
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = {{ osdm_user_service_pass }}
+signing_dir = /tmp/keystone-signing-nova
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+[vnc]
+enabled = {% if osdm_console_type == 'vnc' %}true{% else %}false{% endif %}
+
+novncproxy_base_url = http://{{ osdm_os_access_console_ip  }}:6080/vnc_auto.html
+vncserver_proxyclient_address = {{ osdm_os_mgmt_if_ip  }}
+vncserver_listen = 0.0.0.0
+novncproxy_host = {{ osdm_nova_listen_addr }}
+
+[spice]
+enabled = {% if osdm_console_type != 'vnc' %}true{% else %}false{% endif %}
+
+agent_enabled = true
+html5proxy_host = 0.0.0.0
+html5proxy_port = 6082
+html5proxy_base_url = http://{{ osdm_os_access_console_ip  }}:6082/spice_auto.html
+server_listen = 0.0.0.0
+server_proxyclient_address = {{ osdm_os_mgmt_if_ip  }}
+keymap = en-us 
+
+
+[cinder]
+catalog_info = volumev2:cinderv2:internalURL
+
+[glance]
+api_servers = http://{{ osdm_os_glance_mgmt_ip }}:9292
+
+[libvirt]
+virt_type = {{ osdm_virt_type }}
+
+# libvirt support for disk discard, will pass to qemu command.
+# discard option, libvirt (1, 0, 6) or later is required, qemu (1, 6, 0) or later is required.
+# hw_disk_discard = unmap
+
+{% if osdm_use_ceph %}
+rbd_user = {{ osdm_ceph_nova_user }}
+rbd_secret_uuid = {{ osdm_ceph_libvirt_uuid_secret }}
+# Store ephemeral disk into ceph.
+images_type = rbd
+images_rbd_pool = {{ osdm_ceph_nova_pool }}
+images_rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_user = {{ osdm_ceph_nova_user }}
+rbd_secret_uuid = {{ osdm_ceph_libvirt_uuid_secret }}
+disk_cachemodes = network=writeback
+
+inject_password = False
+inject_key =  False
+inject_partition = -2
+{% endif %}
+
+
+[placement]
+os_region_name = RegionOne
+os_interface = internal
+auth_type = password
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+#domain_name = default
+#default_domain_name = default
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = placement
+password = {{ osdm_user_service_pass }}
+
+
+
+[placement_database]
+# still use the nova user.
+connection = mysql://{{ osdm_os_nova_db_user }}:{{ osdm_os_nova_db_pass }}@{{ osdm_mysql_mgmt_ip }}/nova_placement
+
+
+[scheduler]
+discover_hosts_in_cells_interval = -1
+
+[quota]
+# per projcet
+instances = 10
+cores = 20
+ram = 51200
+floating_ips = 10
+fixed_ips = -1
+metadata_items = 128
+injected_files = 5
+injected_file_content_bytes = 10240
+injected_file_path_length = 255
+security_groups = 10
+security_group_rules = 20
+key_pairs = 100
+server_groups = 10
+server_group_members = 10

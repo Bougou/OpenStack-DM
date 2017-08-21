@@ -1,0 +1,9 @@
+---
+
+- name: start gnocchi service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-gnocchi-api
+    - openstack-gnocchi-statsd
+    - openstack-gnocchi-metricd
+

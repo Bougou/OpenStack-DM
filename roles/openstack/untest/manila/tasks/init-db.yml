@@ -1,0 +1,31 @@
+---
+
+- name: add manila database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - manila
+
+- name: create manila db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_manila_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_manila_db_pass }}"
+    priv: "manila.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate manila database
+  shell: su manila -s /bin/sh -c "manila-manage db sync"
+  tags:
+    - db_sync

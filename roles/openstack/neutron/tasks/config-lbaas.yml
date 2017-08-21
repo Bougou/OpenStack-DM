@@ -1,0 +1,9 @@
+
+- name: template neutron_lbaas.conf
+  template: src=neutron_lbaas.conf.j2 dest=/etc/neutron/neutron_lbaas.conf backup=yes
+
+- name: template services_lbaas.conf
+  template: src=services_lbaas.conf.j2 dest=/etc/neutron/services_lbaas.conf backup=yes
+
+- name: template lbaas_agent.ini
+  template: src=lbaas_agent.ini.j2 dest=/etc/neutron/lbaas_agent.ini backup=yes

@@ -1,0 +1,5 @@
+osdm_os_cinder_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_cinder_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_cinder_db_user: "cinderdb"
+osdm_os_cinder_db_pass: "cinderpass"

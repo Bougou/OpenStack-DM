@@ -1,0 +1,33 @@
+# LoadPlugin uuid
+# This plugin, if loaded, causes the Hostname to be taken from the machine's UUID.
+
+#Hostname    "localhost"
+#FQDNLookup   true
+#BaseDir     "/var/lib/collectd"
+#PIDFile     "/var/run/collectd.pid"
+#PluginDir   "/usr/lib64/collectd"
+#TypesDB     "/usr/share/collectd/types.db"
+
+
+AutoLoadPlugin false
+CollectInternalStats false
+Interval     10
+
+#----------------------------------------------------------------------------#
+# Interval at which to query values. This may be overwritten on a per-plugin #
+# base by using the 'Interval' option of the LoadPlugin block:               #
+#   <LoadPlugin foo>                                                         #
+#       Interval 60                                                          #
+#   </LoadPlugin>                                                            #
+#----------------------------------------------------------------------------#
+
+
+#MaxReadInterval 86400
+#Timeout         2
+#ReadThreads     5
+#WriteThreads    5
+
+# Limit the size of the write queue. Default is no limit. Setting up a limit is
+# recommended for servers handling a high volume of traffic.
+#WriteQueueLimitHigh 1000000
+#WriteQueueLimitLow   800000

@@ -1,0 +1,20 @@
+---
+
+- name: install aodh packages on controller
+  yum: name={{ item }} state=present
+  with_items:
+    - openstack-aodh-api
+    - openstack-aodh-evaluator
+    - openstack-aodh-notifier
+    - openstack-aodh-listener
+    - openstack-aodh-expirer
+    - python-ceilometerclient
+    - python-aodhclient
+  tags:
+    - install
+
+
+- name: template aodh.conf
+  template: src=aodh.conf.j2 dest=/etc/aodh/aodh.conf backup=yes
+  tags:
+    - config

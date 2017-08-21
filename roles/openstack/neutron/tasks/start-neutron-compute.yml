@@ -1,0 +1,31 @@
+---
+
+- name: start neutron-linuxbridge-agent
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - neutron-linuxbridge-agent
+  when: osdm_ml2_agent == 'br'
+
+- name: start neutron-openvswitch-agent
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openvswitch
+    - neutron-openvswitch-agent
+    - neutron-ovs-cleanup
+  when: osdm_ml2_agent == 'ovs'
+
+- name: start neutron on network
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - neutron-netns-cleanup
+#    - neutron-dhcp-agent
+    - neutron-l3-agent
+    - neutron-metadata-agent
+  when: osdm_l3_router_mode == 'dvr'
+
+# The lbaas agent should start on Compute Node not on Network Node
+# The lbaas agent just create qlbaas-* namespaces whose behaviour is same to a VM.
+- name: start neutron-lbaasv2-agent on compute
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - neutron-lbaasv2-agent

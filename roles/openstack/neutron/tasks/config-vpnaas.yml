@@ -1,0 +1,6 @@
+
+- name: template neutron_vpnaas.conf
+  template: src=neutron_vpnaas.conf.j2 dest=/etc/neutron/neutron_vpnaas.conf backup=yes
+
+- name: template vpnaas_agent.ini
+  template: src=vpn_agent.ini.j2 dest=/etc/neutron/vpn_agent.ini backup=yes

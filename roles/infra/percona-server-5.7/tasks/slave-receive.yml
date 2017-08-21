@@ -1,0 +1,11 @@
+---
+
+- name: make sure mysql service stopped
+  service: name={{ ps57_mysql_service }} state=stopped
+
+- name: remove data in {{ ps57_datadir }}
+  shell:  "[[ -d {{ ps57_datadir }} ]] && rm -rf {{ ps57_datadir }}/*"
+
+- name: start streaming listener
+  shell: "cd {{ ps57_datadir }} && nc -l {{ ps57_stream_port }} | xbstream -xv ."
+  async: 3600

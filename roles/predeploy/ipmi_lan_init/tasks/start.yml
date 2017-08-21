@@ -1,0 +1,32 @@
+---
+
+- name: whether there exist a IPMI device
+  shell: IPMI_EXIST=$(dmidecode -t 38 | grep -s IPMI); echo $IPMI_EXIST
+  register: _ipmi_exist
+
+#- debug: var=_ipmi_exist
+
+- name: set fact ipmi_exist
+  set_fact:
+    ipmi_exist: '{{ _ipmi_exist.stdout != "" }}'
+
+# start ipmi service to load ipmi modules
+- name: start ipmi service to load ipmi module
+  service: name=ipmi state=started
+  when: ipmi_exist
+
+# the script will contain ipmi password, so keep it accessed only by root user.
+- name: template the script and transfer the script
+  template: src=ipmi_lan_init.sh.j2 dest=/tmp/ipmi_lan_init.sh owner=root group=root mode=700
+  when: ipmi_exist
+
+- name: execute script to setup lan settings
+  shell: bash -x /tmp/ipmi_lan_init.sh > /var/log/ipmi_lan_init.log
+  when: ipmi_exist
+
+- name: remove script
+  file: path=/tmp/ipmi_lan_init.sh state=absent
+
+- name: touch /root/.ipmi_lan_init.finished file
+  file: path=/root/.ipmi_lan_init.finished state=touch
+

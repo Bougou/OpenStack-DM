@@ -1,0 +1,12 @@
+---
+
+- name: install cloudkitty
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-cloudkitty-api
+    - openstack-cloudkitty-processor
+    - openstack-cloudkitty-ui
+
+- name: template cloudkitty.conf
+  template: src="cloudkitty.conf.j2" dest="/etc/cloudkitty/cloudkitty.conf" backup=yes
+

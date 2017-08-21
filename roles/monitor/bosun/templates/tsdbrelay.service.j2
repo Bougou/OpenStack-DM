@@ -1,0 +1,14 @@
+[Unit]
+Description=tsdbrelay Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/opt/tsdbrelay/tsdbrelay -b localhost:8070 -t localhost:4242 -l 0.0.0.0:5252  -r localhost:4243 #Local tsdb/bosun and influxdb opentsdb endpoint at 4243
+#For external counters add: -redis redishostname:6379 -db 0
+#For denormalized metrics: -denormalize=os.cpu__host,os.mem.used__host,os.net.bytes__host,os.net.bond.bytes__host,os.net.other.bytes__host,os.net.tunnel.bytes__host,os.net.virtual.bytes__host
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

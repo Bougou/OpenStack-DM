@@ -1,0 +1,10 @@
+---
+
+- name: Initialize on all nodes
+  hosts: "{{ _hosts }}"
+  tags: ['always']
+  roles:
+    - role: util/zerostep
+    - role: util/update_hosts
+    - role: predeploy/predeploy
+

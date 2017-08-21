@@ -1,0 +1,12 @@
+---
+
+- include: rgw-create.yml
+  delegate_to: "{{ groups['ceph-mon'][0] }}"
+
+- include: start.yml
+
+- include: set-radosgw-vip.yml
+  when: groups['ceph-radosgw']
+        and inventory_hostname == groups['ceph-radosgw'][0]
+
+- include: config-webproxy.yml

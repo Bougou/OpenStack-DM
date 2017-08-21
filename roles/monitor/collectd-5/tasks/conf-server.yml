@@ -1,0 +1,22 @@
+---
+
+# collectd server conf
+- name: template collectd server.conf
+  template: src=server.conf.j2 dest=/etc/collectd.d/server.conf
+  notify: restart collectd
+  when: collectd_server_enable
+
+- name: template collectd server forward_influxdb.conf
+  template: src=forward_influxdb.conf.j2 dest=/etc/collectd.d/forward_influxdb.conf
+  notify: restart collectd
+  when: collectd_server_forward_influxdb_enable
+
+- name: template collectd server forward_logstash.conf
+  template: src=forward_logstash.conf.j2 dest=/etc/collectd.d/forward_logstash.conf
+  notify: restart collectd
+  when: collectd_server_forward_logstash_enable
+
+- name: template collectd server forward_riemann.conf
+  template: src=forward_riemann.conf.j2 dest=/etc/collectd.d/forward_riemann.conf
+  notify: restart collectd
+  when: collectd_server_forward_riemann_enable

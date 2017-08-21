@@ -1,0 +1,10 @@
+---
+
+dependencies:
+  #- predeploy/zerostep
+  - predeploy/calc_ipaddr
+  - predeploy/local_repo
+  - predeploy/set_ipaddr
+  - predeploy/os_prepare
+  - predeploy/ipmi_lan_init
+  - predeploy/set_iptables

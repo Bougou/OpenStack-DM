@@ -1,0 +1,59 @@
+---
+
+- name: disable SELinux
+  selinux: policy=targeted state=permissive
+
+- name: set Timezone and Locale
+  shell: "{{ item }}"
+  with_items:
+    - timedatectl set-timezone {{ os_prepare_timezone }}
+    - localectl set-locale LANG=en_US.UTF-8
+    - localectl set-keymap us
+  changed_when: False
+
+- name: start NTP
+  service: name=ntpd state=started enabled=yes
+
+- name: modify sshd configuration
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.content }}"
+    state: present
+  with_items:
+    - { "regexp": 'UseDNS ', "content": "UseDNS no" }
+    - { "regexp": 'GSSAPIAuthentication ', "content": "GSSAPIAuthentication no" }
+    - { "regexp": 'PasswordAuthentication ', "content": "PasswordAuthentication {{ osdm_sshd_enable_password }}" }
+  notify:
+    - restart sshd
+
+- name: start iptables
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - iptables
+    - ip6tables
+
+- name: setup Sysctl Variables
+  sysctl: name={{ item.entry }} value={{ item.value}} state=present reload=yes
+  with_items: "{{ os_prepare_sysctl_entries }}"
+
+- name: setup limits.conf
+  pam_limits: 
+    domain: "{{ item.split()[0] }}"
+    limit_type: "{{ item.split()[1] }}"
+    limit_item: "{{ item.split()[2] }}"
+    value: "{{ item.split()[3] }}"
+  with_items: "{{ os_prepare_pam_limits }}"
+
+- name: set rsyslog listen to udp 127.0.0.1:514 
+  blockinfile:
+    dest: /etc/rsyslog.conf
+    insertbefore: BOF
+    block: |
+      $ModLoad imudp
+      $UDPServerAddress 127.0.0.1
+      $UDPServerRun 514
+    backup: yes
+
+- name: touch /root/.os_prepare.finished file
+  file: path=/root/.os_prepare.finished state=touch

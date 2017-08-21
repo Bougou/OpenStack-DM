@@ -1,0 +1,19 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Install Openstack Compute Nodes
+  hosts: os-network
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+
+    - role: openstack/neutron
+      neutron_deploy_network: true
+      tags: ['os-neutron']
+      when: osdm_network_mode == 'neutron'

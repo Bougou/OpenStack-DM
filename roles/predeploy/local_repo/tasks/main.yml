@@ -1,0 +1,12 @@
+---
+
+# touch the local.repo file regardless of the mode of install
+- name: template local.repo
+  template: src=local.repo.j2 dest=/etc/yum.repos.d/local.repo
+
+- include: build_proxy.yml
+  when: osdm_install_mode == 'offline'
+
+- include: build_local_repo.yml
+  when: osdm_install_mode == 'offline'
+  

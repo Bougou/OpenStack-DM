@@ -1,0 +1,21 @@
+---
+
+- name: stopping rabbitmq-server
+  service:
+    name: rabbitmq-server
+    state: stopped
+
+# for idempotence
+- name: clear mnesia directory
+  file: path=/var/lib/rabbitmq/mnesia/ state=absent
+
+- name: copy erlang cookie
+  template:
+    src: erlang.cookie.j2
+    dest: "{{ rabbitmq_erlang_cookie_file }}"
+    owner: rabbitmq
+    group: rabbitmq
+    mode: 0400
+    backup: yes
+
+

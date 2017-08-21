@@ -1,0 +1,13 @@
+osdm_os_nova_cell_name: "cell1"
+
+osdm_cell_access_mgmt_vip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_cell_mysql_mgmt_ip: "{{ osdm_cell_access_mgmt_vip }}"
+osdm_cell_mq_mgmt_ip: "{{ osdm_cell_access_mgmt_vip }}"
+
+# osdm_erlang_cookie: 'YUXDZFBMMLEZEMRTYUMB'
+
+# if not use the same controller nodes
+# you should 
+# 1. add nodes under group: os-cell-controller_cell1
+# 2. set the access vip address.

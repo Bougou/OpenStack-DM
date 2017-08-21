@@ -1,0 +1,6 @@
+mysqld:
+  log-bin: mysql-bin
+  # must enable sync_binlog, cause it's required to configure master slave synchronization
+  sync_binlog: 1
+  relay-log: relay-bin
+  relay-log-purge: 0

@@ -1,0 +1,11 @@
+---
+
+- name: check the existence of file .os_prepare.finished
+  stat: path=/root/.os_prepare.finished
+  register: os_prepare_finished
+  tags:
+    - always
+
+# run.yml will create `.os_prepare.finished` finally
+- include: run.yml
+  when: not os_prepare_finished.stat.exists 

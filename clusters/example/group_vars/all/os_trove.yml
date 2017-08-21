@@ -1,0 +1,6 @@
+osdm_os_trove_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_trove_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_trove_db_user: "trovedb"
+osdm_os_trove_db_pass: "trovepass"
+

@@ -1,0 +1,34 @@
+---
+
+- name: install trove packages on controller
+  yum: name={{ item }} state=present
+  with_items:
+    - openstack-trove
+    - openstack-trove-api
+    - openstack-trove-conductor
+    - openstack-trove-taskmanager
+    - openstack-trove-guestagent
+    - python-troveclient
+  tags:
+    - install
+
+
+- name: template trove.conf
+  template: src=trove.conf.j2 dest=/etc/trove/trove.conf backup=yes
+  tags:
+    - config
+
+- name: template trove-taskmanager.conf
+  template: src=trove-taskmanager.conf.j2 dest=/etc/trove/trove-taskmanager.conf backup=yes
+  tags:
+    - config
+
+- name: template trove-conductor.conf
+  template: src=trove-conductor.conf.j2 dest=/etc/trove/trove-conductor.conf backup=yes
+  tags:
+    - config
+
+- name: template trove-guestagent.conf
+  template: src=trove-guestagent.conf.j2 dest=/etc/trove/trove-guestagent.conf backup=yes
+  tags:
+    - config

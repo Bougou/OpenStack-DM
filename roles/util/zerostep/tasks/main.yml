@@ -1,0 +1,11 @@
+---
+
+- name: check the existence of file .zerostep.finished
+  stat: path=/root/.zerostep.finished
+  register: zerostep_finished
+  tags:
+    - always
+
+# run.yml will create `.zerostep.finished` finally
+- include: run.yml
+  when: not zerostep_finished.stat.exists 

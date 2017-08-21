@@ -1,0 +1,8 @@
+pacemaker_cluster_name: 'cluster1'
+
+# all nodes under this group name in ansible inventory would be created as pacemaker cluster nodes.
+pacemaker_cluster_node_group: ''
+
+pacemaker_hacluster_password: 'hacluster'
+# PFXGIFSKEYBUVEZDJRZB
+

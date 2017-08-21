@@ -1,0 +1,39 @@
+---
+
+# - name: touch dnsmasq-neutron.conf
+#   file: path=/etc/neutron/dnsmasq-neutron.conf state=touch
+
+# # Reduce MTU for VXLAN/GRE project networks.
+# - shell: echo 'dhcp-option-force=26,1450' > /etc/neutron/dnsmasq-neutron.conf
+
+- name: copy dnsmasq-neutron conf
+  copy: src=dnsmasq-neutron.conf dest=/etc/neutron/dnsmasq-neutron.conf
+
+- name: template neutron.conf
+  template: src=neutron.conf.j2 dest=/etc/neutron/neutron.conf backup=yes
+
+- name: template ml2_conf.ini
+  template: src=plugins/ml2/ml2_conf.ini.j2 dest=/etc/neutron/plugins/ml2/ml2_conf.ini backup=yes
+
+- name: link plugin.ini to ml2_conf.ini
+  file: src=/etc/neutron/plugins/ml2/ml2_conf.ini dest=/etc/neutron/plugin.ini state=link
+
+- name: template openvswitch_agent.ini
+  template: src=plugins/ml2/openvswitch_agent.ini.j2 dest=/etc/neutron/plugins/ml2/openvswitch_agent.ini backup=yes
+  when: osdm_ml2_agent == 'ovs'
+
+- name: template linuxbridge_agent.ini
+  template: src=plugins/ml2/linuxbridge_agent.ini.j2 dest=/etc/neutron/plugins/ml2/linuxbridge_agent.ini backup=yes
+  when: osdm_ml2_agent == 'br'
+
+- name: template dhcp_agent.ini
+  template: src=dhcp_agent.ini.j2 dest=/etc/neutron/dhcp_agent.ini backup=yes
+
+- name: template l3_agent.ini
+  template: src=l3_agent.ini.j2 dest=/etc/neutron/l3_agent.ini backup=yes
+  tags:
+    - config-neutron-l3-agent
+
+- name: template metadata_agent.ini
+  template: src=metadata_agent.ini.j2 dest=/etc/neutron/metadata_agent.ini backup=yes
+

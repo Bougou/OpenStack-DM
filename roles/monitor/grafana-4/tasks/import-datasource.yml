@@ -1,0 +1,11 @@
+---
+
+- name: transfer create-ds.sh
+  template: src=create-ds.sh.j2 dest=/tmp/create-ds.sh mode=755
+
+- name: wait for port 3000
+  wait_for: host=127.0.0.1 port=3000 timeout=60
+
+- name: execute script to create grafana datasource
+  shell: (</dev/tcp/127.0.0.1/3000) 2>/dev/null && bash /tmp/create-ds.sh
+

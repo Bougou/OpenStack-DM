@@ -1,0 +1,63 @@
+osdm_os_neutron_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_neutron_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_neutron_db_user: "neutrondb"
+osdm_os_neutron_db_pass: "neutronpass"
+
+## neutron specific configuration
+# Extra Neutron Services
+osdm_enable_neutron_fwaas: true
+osdm_enable_neutron_lbaas: true
+osdm_enable_neutron_vpnaas: true
+
+# Three Network Types in Neutron
+osdm_enable_tenant_network: true
+osdm_enable_external_network: true
+osdm_enable_provider_network: true
+
+# Neturon L2: br (linux bridge) or ovs
+osdm_ml2_agent: "ovs"
+
+# Neutron L3: dvr or l3ha
+osdm_l3_router_mode: "dvr"
+
+## Just for OpenvSwitch Plugin, Linuxbridge Plugin does not use them.
+osdm_ovsbr_intergration: "br-int"
+# osdm_ovsbr_tunnel use {{ osdm_os_ten_if_ip }}
+osdm_ovsbr_tunnel: "br-tun"
+# osdm_ovsbr_external bridge to {{ osdm_node_nics_ext_if }}
+# osdm_ovsbr_provider bridge to {{ osdm_node_nics_pro_if }}
+osdm_ovsbr_external: "br-ex"
+osdm_ovsbr_provider: "br-pro"
+
+# TENANT NETWORK
+osdm_tunnel_types: "vxlan,gre"
+
+# The first item has special meaning.
+# It will be used as the default network type when tenant create a network by themselves
+# and when creating the HA network for an HA router.
+
+osdm_allowed_tenant_network_types: "vxlan,gre,vlan"
+
+# EXTERNAL NETWORK AND PROVIDER NETWORK
+osdm_external_physnet_label: "physnet-ext"
+osdm_external_net_type: "flat"
+osdm_external_net_name: "net-ext"
+
+osdm_provider_physnet_label: "physnet-pro"
+osdm_provider_net_type: "vlan"
+osdm_provider_net_name: "net-pro"
+
+osdm_vlan_min_id: 1000
+osdm_vlan_max_id: 4000
+
+osdm_gre_min_id: 65537
+osdm_gre_max_id: 69999
+
+osdm_vxlan_min_id: 65537
+osdm_vxlan_max_id: 69999
+osdm_vxlan_group: 239.0.0.0/8
+
+osdm_geneve_min_id: 1
+osdm_geneve_max_id: 10000
+

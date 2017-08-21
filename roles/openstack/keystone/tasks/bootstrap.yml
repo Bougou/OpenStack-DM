@@ -1,0 +1,9 @@
+---
+
+- name: bootstrap keystone
+  shell: keystone-manage bootstrap \
+        --bootstrap-password "{{ osdm_user_admin_pass }}" \
+        --bootstrap-admin-url http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3/ \
+        --bootstrap-internal-url http://{{ osdm_os_keystone_mgmt_ip }}:5000/v3/ \
+        --bootstrap-public-url http://{{ osdm_os_keystone_api_ip }}:5000/v3/ \
+        --bootstrap-region-id  RegionOne

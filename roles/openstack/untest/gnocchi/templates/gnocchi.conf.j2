@@ -1,0 +1,51 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+use_syslog = False
+syslog_log_facility = LOG_USER
+
+[api]
+# Allowed values: keystone, noauth, basic
+#auth_mode = noauth
+auth_mode = keystone
+max_limit = 1000000
+
+#[database]
+# connection = mysql://{{ osdm_os_gnocchi_db_user }}:{{ osdm_os_gnocchi_db_pass }}@{{ osdm_mysql_mgmt_ip }}/gnocchi
+
+[indexer]
+url = mysql://{{ osdm_os_gnocchi_db_user }}:{{ osdm_os_gnocchi_db_pass }}@{{ osdm_mysql_mgmt_ip }}/gnocchi
+
+[storage]
+# file, ceph
+driver = ceph
+file_basepath = /var/lib/gnocchi
+ceph_pool = gnocchi
+ceph_username = gnocchi
+#ceph_secret =
+ceph_keyring = /etc/ceph/ceph.client.gnocchi.keyring
+ceph_conffile = /etc/ceph/ceph.conf
+
+
+[statsd]
+host = 0.0.0.0
+port = 8125
+resource_id = {{ osdm_os_gnocchi_statsd_resource_id }}
+
+# Archive policy name to use when creating metrics (string value)
+#archive_policy_name = <None>
+flush_delay = 10
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+memcached_servers = {{ osdm_os_access_mgmt_vip }}:11211
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = gnocchi
+password = c68b783ce3899782a801
+
+# gnocchi does not require [service_credentials]

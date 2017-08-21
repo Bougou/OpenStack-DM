@@ -1,0 +1,36 @@
+---
+
+- name: template local.repo
+  template: src=local.repo.j2 dest=/etc/yum.repos.d/local.repo
+
+#- name: yum clean metadata
+#  shell: yum clean metadata
+
+- name: yum clean - local repo
+  shell: yum --disablerepo=* --enablerepo=local clean all
+
+- name: make sure local repo path exists
+  file: path={{ osdm_local_repo_packages_target }} state=directory
+
+# If sync from cluster proxy node, not from ansible host.
+- name: sync packages from cluster proxy node
+  synchronize: 
+    src: "{{ osdm_local_repo_packages_proxy }}/" 
+    dest: "{{ osdm_local_repo_packages_target }}/"
+    recursive: yes
+    delete: yes
+  delegate_to: "{{ osdm_cluster_proxy_addr_inner }}"
+  when: osdm_cluster_proxy_sync
+  tags: sync-from-cluster-proxy
+
+# If sync from ansible host directly, must provide rsync_opts.
+- name: sync packages from ansible host
+  synchronize:
+    src: "{{ osdm_local_repo_packages }}/" 
+    dest: "{{ osdm_local_repo_packages_target }}/" 
+    recursive: yes
+    delete: yes 
+    rsync_opts:
+      - "{{ osdm_ansible_rsync_opts }}"
+  when: not osdm_cluster_proxy_sync
+

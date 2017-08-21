@@ -1,0 +1,5 @@
+osdm_os_cloudkitty_api_ip: "{{ osdm_os_access_ext_vip }}"
+osdm_os_cloudkitty_mgmt_ip: "{{ osdm_os_access_mgmt_vip }}"
+
+osdm_os_cloudkitty_db_user: "cloudkittydb"
+osdm_os_cloudkitty_db_pass: "cloudkittypass"

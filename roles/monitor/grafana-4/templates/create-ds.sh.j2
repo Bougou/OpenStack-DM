@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# jinja templates render these values
+influxdb_admin_user='{{ grafana_ds_influxdb_admin_user }}'
+influxdb_admin_pass='{{ grafana_ds_influxdb_admin_pass }}'
+influxdb_server_host='{{ grafana_ds_influxdb_server_host }}'
+
+# set shell variable's default value
+influxdb_admin_user=${influxdb_admin_user:='influxadmin'}
+influxdb_admin_pass=${influxdb_admin_pass:='influxadmin'}
+influxdb_server_host=${influxdb_server_host:='127.0.0.1'}
+
+curl -X POST -u admin:admin -H "Content-Type: application/json" -d '{
+    "name": "ds_influxdb",
+    "type": "influxdb",
+    "url": "'"http://$influxdb_server_host:8086"'",
+    "access": "proxy",
+    "basicauth": false,
+    "database": "collectd",
+    "user": "'"$influxdb_admin_user"'",
+    "password": "'"$influxdb_admin_pass"'"
+}' "http://127.0.0.1:3000/api/datasources"

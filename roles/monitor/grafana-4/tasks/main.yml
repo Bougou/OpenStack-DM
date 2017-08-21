@@ -1,0 +1,19 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: init-db.yml
+  tags:
+    - init-db
+
+- include: start.yml
+  tags:
+    - start
+
+- include: import-datasource.yml
+  tags: import-datasource
+
+- include: import-dashboard.yml
+  tags: import-dashboard

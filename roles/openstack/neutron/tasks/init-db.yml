@@ -1,0 +1,38 @@
+---
+
+- name: add neutron database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - neutron
+
+- name: create neutron db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_neutron_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_neutron_db_pass }}"
+    priv: "neutron.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate neutron database
+  shell: su neutron -s /bin/sh -c "neutron-db-manage
+          --config-file /etc/neutron/neutron.conf
+          --config-file /etc/neutron/plugins/ml2/ml2_conf.ini
+          upgrade head"
+
+
+- name: pupulate neutron vpnaas database
+  shell: su neutron -s /bin/sh -c "neutron-db-manage --subproject neutron-lbaas upgrade head"
+
+  

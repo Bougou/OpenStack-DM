@@ -1,0 +1,26 @@
+---
+
+# require libsemanage-python package installed
+#- seboolean: name=collectd_tcp_network_connect state=yes persistent=yes
+
+# collectd can't write /var/log/collectd.log when selinux is enforced
+- name: disable SELinux
+  selinux: policy=targeted state=permissive
+
+- name: template /etc/collectd.conf
+  template: src=collectd.conf.j2 dest=/etc/collectd.conf backup=yes
+
+- name: make sure /etc/collectd.d directory exists
+  file: path=/etc/collectd.d state=directory
+
+# basic collectd conf for all hosts
+- name: template collectd base plugins
+  template: src={{ item }} dest=/etc/collectd.d/{{ item | basename | regex_replace('\.j2$', '') }}
+  with_fileglob:
+    - ../templates/base/*.conf.j2
+
+- debug: msg={{ collectd_client_send_host }}
+
+- name: template collectd network_client.conf
+  template: src=client.conf.j2 dest=/etc/collectd.d/client.conf
+  

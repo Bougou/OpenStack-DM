@@ -1,0 +1,23 @@
+---
+
+- name: create zabbix_server.d directory
+  file: path=/etc/zabbix/zabbix_server.d/ state=directory
+
+- name: template zabbix_server.conf
+  template: src=zabbix_server.conf.j2 dest=/etc/zabbix/zabbix_server.conf backup=yes
+
+- name: template zabbix.conf.php
+  template: src=zabbix.conf.php.j2 dest=/etc/zabbix/zabbix.conf.php backup=yes
+
+- name: template httpd zabbix.conf
+  template: src=httpd-zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf backup=yes
+  notify:
+    - restart httpd
+
+- name: start zabbix-server service
+  service: name=zabbix-server state=restarted enabled=yes
+  run_once: yes
+
+- name: start httpd
+  service: name=httpd state=restarted enabled=yes
+  run_once: yes

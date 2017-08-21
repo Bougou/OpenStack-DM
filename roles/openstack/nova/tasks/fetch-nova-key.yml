@@ -1,0 +1,10 @@
+---
+
+# no need
+#- name: make sure /var/lib/nova security context
+#  file: path=/var/lib/nova seuser=system_u serole=object_r setype=ssh_home_t selevel=s0
+
+- name: get nova key from os-controller[0]
+  synchronize: src=/var/lib/nova/.ssh dest=/var/lib/nova/
+  delegate_to: "{{ groups['os-controller'][0] }}"
+  when: "inventory_hostname != groups['os-controller'][0]"

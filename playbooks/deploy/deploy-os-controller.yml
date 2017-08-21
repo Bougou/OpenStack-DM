@@ -1,0 +1,51 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Install OpenStack Controller Nodes
+  hosts: os-controller
+  # vars:
+  #   nova_deploy_api_cell: true
+  tags: ['play-os-controller']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+
+    - role: ceph/ceph-10-pkg
+      tags: ['ceph-pkg']
+      when: osdm_use_ceph
+
+    - role: openstack/init
+      tags: ['os-init']
+      when: "inventory_hostname == groups['os-controller'][0]"
+
+    - role: openstack/fetch_ceph_key
+      when: osdm_use_ceph
+      tags: ['ceph-key']
+
+    - role: openstack/keystone
+      tags: ['os-keystone']
+
+    - role: openstack/glance
+      tags: ['os-glance']
+
+    - role: openstack/cinder
+      tags: ['os-cinder']
+
+    # deploy nova api-cell, and cell1
+    - role: openstack/nova
+      nova_deploy_api_cell: true
+      tags: ['os-nova']
+
+    - role: openstack/neutron
+      neutron_deploy_server: true
+      tags: ['os-neutron']
+      when: osdm_network_mode == 'neutron'
+
+    - role: openstack/dashboard
+      tags: ['os-dashboard']

@@ -1,0 +1,15 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+- include: start.yml
+  tags:
+    - start
+
+- include: setup-master-slave.yml
+  when: inventory_hostname == ps56_mysql_master_host or inventory_hostname == ps56_mysql_slave_host
+  static: no
+  tags:
+    - setup-master-slave

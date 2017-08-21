@@ -1,0 +1,20 @@
+---
+
+#- name: yum clean metadata
+#  shell: yum clean metadata
+#
+#- name: make sure local repo packages path exists on the proxy
+#  file: path={{ local_repo_packages }} state=directory
+
+# The ansible host can directly connect to the proxy node, 
+# so there's no need to provide `rsync_opts`.
+- name: sync packages to proxy from ansible host.
+  # The reason to use `rsync` directly in shell instead of `synchronize` module is:
+  # `synchronize` module here does not work. This task might be executed on any Targets,
+  # but the job of this task is to Sync files from Ansible host to Proxy Node(a third node).
+  # no matter how you combine `delegate_to` and `push/pull` mode, you can not simulate this case.
+  shell: rsync -avz --delete \
+         "{{ osdm_local_repo_packages }}/" \
+         "root@{{ osdm_cluster_proxy_addr_outer }}:{{ osdm_local_repo_packages_proxy }}/"
+  run_once: true
+  delegate_to: "127.0.0.1"

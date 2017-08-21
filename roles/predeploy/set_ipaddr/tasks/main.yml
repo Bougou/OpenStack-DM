@@ -1,0 +1,12 @@
+---
+
+- name: check the existence of file .set_ipaddr.finished
+  stat: path=/root/.set_ipaddr.finished
+  register: set_ipaddr_finished
+  tags:
+    - always
+
+# run.yml will create `.set_ipaddr.finished` finally
+- include: run.yml
+  when: not set_ipaddr_finished.stat.exists 
+  

@@ -1,0 +1,67 @@
+osdm_use_ceph: true
+osdm_ceph_replica_size: 1
+osdm_ceph_replica_min_size: 1
+
+osdm_enable_radosgw: true
+osdm_radosgw_webproxy: false
+osdm_radosgw_webserver: 'httpd'
+osdm_radosgw_access_ext_vip: "10.5.252.198"
+osdm_radosgw_access_mgmt_vip: "172.30.17.198"
+osdm_radosgw_access_domain: "s3.test.com"
+osdm_ceph_pool_pgnum: 256
+
+osdm_ceph_cinder_pool: volumes
+osdm_ceph_cinder_pool_pgnum: 2048
+osdm_ceph_cinder_user: cinder
+
+osdm_ceph_glance_pool: images
+osdm_ceph_glance_pool_pgnum: 256
+osdm_ceph_glance_user: glance
+
+osdm_ceph_nova_pool: vms
+osdm_ceph_nova_pool_pgnum: 1024
+# note: still use cinder user.
+osdm_ceph_nova_user: cinder  
+
+osdm_ceph_cinder_backup_pool: backups
+osdm_ceph_cinder_backup_pool_pgnum: 8
+osdm_ceph_cinder_backup_user: cinder-backup
+
+osdm_ceph_gnocchi_pool: gnocchi
+osdm_ceph_gnocchi_pool_pgnum: 128
+osdm_ceph_gnocchi_user: gnocchi
+
+
+# use uuidgen to generate a uuid.
+#osdm_ceph_libvirt_uuid_secret: 80b84653-e5c2-4223-8a58-b93ea8d0e000
+osdm_ceph_libvirt_uuid_secret: 460B9122-D7B9-4958-A65C-E233DBB77FBA
+
+# This will be set as the default volume type
+osdm_cinder_backend: 
+  name: "rbd-default"
+  pool: "{{ osdm_ceph_cinder_pool }}"
+  type: "Capacity"
+
+
+# pass to role's var `ceph-deploy-init/ceph_deploy_ceph_conf_params`
+# MB
+# list value, empty must set to []
+osdm_ceph_conf_params:
+  - osd_pool_default_size={{ osdm_ceph_replica_size }}
+
+
+# pass to role's var `ceph-deploy-init/ceph_deploy_dir`
+osdm_ceph_deploy_dir: "/root/ceph-deploy"
+
+# pass to role's var `ceph-deploy-init/ceph_deploy_ceph_osd_disks`
+# list value, empty must set to []
+osdm_ceph_osd_disks:
+  - 172.30.15.98:vdb
+
+## Format is
+## Hostname:DISK[:JOURNAL]
+## DISK and JOURNAL MUST be a full disk name (partition not accepted)
+## DISK (sdb) will be auto partitioned to sdb1 with the full size by ceph-deploy
+## JOURNAL (sdc) will be auto added a new partition with a auto-increased-calcuated number
+## The journal size is determinzed by osd_journal_size parameter (default 5120->5G)
+## in ceph-deploy/ceph.conf by the ceph-deploy utility.

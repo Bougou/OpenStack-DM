@@ -1,0 +1,20 @@
+---
+
+- name: copy pub key
+  copy: src={{ pubkey_file }} dest=/tmp/{{ pubkey_file }}
+
+- name: create keypair
+  shell: openstack keypair create --public-key /tmp/{{ pubkey_file }} mytestkey
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
+
+- name: remove pub key
+  file: path=/tmp/{{ pubkey_file }} state=absent

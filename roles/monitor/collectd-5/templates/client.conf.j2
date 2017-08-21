@@ -1,0 +1,17 @@
+LoadPlugin network
+<Plugin network>
+  <Server "{{ collectd_client_send_host }}" "{{ collectd_client_send_port }}">
+  SecurityLevel None
+  </Server>
+</Plugin>
+
+{#
+LoadPlugin network
+<Plugin network>
+  {% if collectd_server_enable -%}<Server "{{ collectd_server_forward_host }}" "{{ collectd_server_forward_port }}">
+  {% else -%}<Server "{{ collectd_client_send_host }}" "{{ collectd_client_send_port }}">
+  {% endif %}
+  SecurityLevel None
+  </Server>
+</Plugin>
+#}

@@ -1,0 +1,21 @@
+---
+
+- name: install some repo here
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - epel-release
+    - centos-release-openstack-{{ osdm_ostack_version }}
+
+- name: install team packages
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - teamd
+    - NetworkManager-team
+  when: osdm_team_type == 'team'
+
+- name: install openvswitch
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openvswitch
+  when: osdm_network_mode == 'neutron' 
+        # and inventory_hostname in groups['os-all']

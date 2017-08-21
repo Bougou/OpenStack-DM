@@ -1,0 +1,7 @@
+---
+
+- name: copy .my.cnf with root password credentials
+  template: src=root.my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600
+
+- name: start mysql service to join pxc cluster
+  service: name={{ pxc56_mysql_service }} state=started

@@ -1,0 +1,19 @@
+zerostep_libselinux_python: libselinux-python-2.2.2-6.el7.x86_64.rpm
+
+zerostep_yum_utils: yum-utils-1.1.31-34.el7.noarch.rpm
+zerostep_python_kitchen: python-kitchen-1.1.1-5.el7.noarch.rpm
+zerostep_python_chardet: python-chardet-2.2.1-1.el7_1.noarch.rpm
+zerostep_python_ipaddress: python-ipaddress-1.0.7-4.el7.noarch.rpm
+zerostep_rsync: rsync-3.0.9-17.el7.x86_64.rpm
+
+zerostep_pkg_list:
+  - "{{ zerostep_yum_utils }}"
+  - "{{ zerostep_python_kitchen }}"
+  - "{{ zerostep_python_chardet }}"
+  - "{{ zerostep_python_ipaddress }}"
+  - "{{ zerostep_rsync }}"
+
+# libselinux-python must be installed before ansible can work correctly
+# yum-utils is installed to execute 'yum-complete-transaction'
+# yum-utils depends on python-kitchen which depends on python-chardet
+# rsync must be installed so that local_repo can sync packages to target

@@ -1,0 +1,19 @@
+---
+
+
+
+- name: template grafana.ini
+  template: src=grafana.ini.j2 dest=/etc/grafana/grafana.ini
+  notify:
+    - restart grafana-server
+
+- name: start grafana-server
+  service: name=grafana-server state=restarted enabled=yes
+
+
+# Note: you must make sure nginx is already installed
+- name: template nginx-grafana.conf
+  template: src=nginx-grafana.conf.j2 dest=/etc/grafana/nginx-grafana.conf
+
+- name: template httpd-grafana.conf
+  template: src=httpd-grafana.conf.j2 dest=/etc/grafana/httpd-grafana.conf

@@ -1,0 +1,3 @@
+# all dir string should end with /'
+frp_base_rpm_dir_on_target: '/var/cache/yum/x86_64/7/'
+# frp_dest_dir_on_proxy: '/tmp/pkgdir.tmp/'

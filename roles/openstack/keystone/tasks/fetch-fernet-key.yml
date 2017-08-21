@@ -1,0 +1,9 @@
+---
+
+- name: sync fernet key from one keystone node to all other keystone nodes
+  synchronize: src=/etc/keystone/fernet-keys/ dest=/etc/keystone/fernet-keys/ recursive=yes delete=yes
+  delegate_to: "{{ groups['os-controller'][0] }}"
+
+- name: sync credential key from one keystone node to all other keystone nodes
+  synchronize: src=/etc/keystone/credential-keys/ dest=/etc/keystone/credential-keys/ recursive=yes delete=yes
+  delegate_to: "{{ groups['os-controller'][0] }}"

@@ -1,0 +1,13 @@
+---
+
+- include: install.yml
+  tags: install
+
+- include: start.yml
+  tags: start
+
+- include: create-cluster.yml
+  when: groups[pacemaker_cluster_node_group]|length > 0
+  run_once: true
+  static: no
+  tags: create-cluster

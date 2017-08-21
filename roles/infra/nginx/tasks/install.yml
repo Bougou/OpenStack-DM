@@ -1,0 +1,7 @@
+---
+
+- name: prepare Nginx repo
+  copy: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo
+
+- name: install Nginx package
+  yum: name=nginx state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}

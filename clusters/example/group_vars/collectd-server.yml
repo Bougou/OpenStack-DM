@@ -1,0 +1,2 @@
+osdm_collectd_server_enable: true
+osdm_collectd_server_listen_port: 25826

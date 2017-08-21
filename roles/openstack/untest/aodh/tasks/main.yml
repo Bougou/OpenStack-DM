@@ -1,0 +1,20 @@
+---
+
+- include: install.yml
+  tags:
+    - aodh-install
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - aodh-init-endpoint
+
+- include: init-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+  tags:
+    - aodh-init-db
+
+- include: start.yml
+  tags:
+    - aodh-start
+

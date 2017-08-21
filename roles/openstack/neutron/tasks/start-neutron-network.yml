@@ -1,0 +1,24 @@
+---
+
+- name: start neutron on network
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - neutron-netns-cleanup
+    - neutron-dhcp-agent
+    - neutron-l3-agent
+    - neutron-metadata-agent
+
+- name: start neutron-linuxbridge-agent on network
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - neutron-linuxbridge-agent
+  when: osdm_ml2_agent == 'br'
+
+- name: start neutron-openvswitch-agent on network
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openvswitch
+    - neutron-openvswitch-agent
+    - neutron-ovs-cleanup
+  when: osdm_ml2_agent == 'ovs'
+

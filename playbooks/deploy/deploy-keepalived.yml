@@ -1,0 +1,21 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Install and configure keepalived on controller nodes
+  hosts: os-controller
+  tags: ['play-keepalived']
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: infra/keepalived
+      tags: ['keepalived']
+      keepalived_vrrp_interface: "{{ osdm_node_nics_admin_if }}"
+      keepalived_chk_proxy_enable: "{{ osdm_enable_haproxy }}"
+      keepalived_router_id: "{{ osdm_keepalived_router_id }}"
+

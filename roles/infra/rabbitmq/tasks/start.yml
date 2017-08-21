@@ -1,0 +1,47 @@
+---
+
+- name: enable the RabbitMQ plugins
+  rabbitmq_plugin:
+    names: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items: "{{ rabbitmq_plugins }}"
+  notify: restart rabbitmq-server
+
+- debug: msg="xx{{ rabbitmq_listen_addr }}xx"
+
+- name: template rabbitmq config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: "rabbitmq-env.conf.j2", dest: "/etc/rabbitmq/rabbitmq-env.conf" }
+    #- { src: "rabbitmq.config.j2", dest: "/etc/rabbitmq/rabbitmq.config" }
+
+- name: create rabbitmq systemd service config dir
+  file:
+    path: "/etc/systemd/system/rabbitmq-server.service.d"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755" 
+
+- name: apply rabbitmq resource limits (systemd)
+  template: src=limits.conf.j2 dest=/etc/systemd/system/rabbitmq-server.service.d/limits.conf
+  
+- name: reload systemd daemon
+  shell: "systemctl daemon-reload"
+  
+- name: start and enable RabbitMQ service
+  service: name="rabbitmq-server" state=started enabled=yes
+
+- name: checking if rabbitmqadmin is installed
+  stat:
+    path: /usr/sbin/rabbitmqadmin
+  register: rabbitmqadmin_check
+
+- name: install rabbitmqadmin utility
+  get_url:
+    url: "http://guest:guest@127.0.0.1:15672/cli/rabbitmqadmin"
+    dest: /usr/sbin/rabbitmqadmin
+    mode: 0755
+  when: not rabbitmqadmin_check.stat.exists

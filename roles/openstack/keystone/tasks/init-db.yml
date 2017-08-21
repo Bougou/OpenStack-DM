@@ -1,0 +1,33 @@
+---
+
+- name: add keystone database
+  mysql_db:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ item }}"
+    state: present
+    encoding: utf8
+  with_items:
+    - keystone
+
+- name: create keystone db user/pass
+  mysql_user:
+    login_host: "{{ osdm_mysql_mgmt_ip }}"
+    login_user: root
+    login_password: "{{ osdm_mysql_root_pass }}"
+    name: "{{ osdm_os_keystone_db_user }}"
+    host: "{{ item }}"
+    password: "{{ osdm_os_keystone_db_pass }}"
+    priv: "keystone.*:ALL PRIVILEGES"
+    state: present
+  with_items:
+   - 'localhost'
+   - '%'
+
+- name: populate keystone database
+  shell: su keystone -s /bin/sh -c "keystone-manage db_sync"
+
+# fernet key must be setup on One of the controller node and sync to all other controller nodes.
+- name: initialize fernet keys
+  shell: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone

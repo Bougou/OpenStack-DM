@@ -1,0 +1,7 @@
+# better not to change this directory.
+# syslinux-tftpboot package alreay install pxe library modules to this place
+# if you change to another directory, you need to manually move these modules.
+pxe_tftp_base: "/var/lib/tftpboot"
+
+# normally this should point to the interface of the node provides the pxe service.
+pxe_http_host: ""

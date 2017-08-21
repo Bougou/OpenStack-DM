@@ -1,0 +1,4 @@
+---
+
+- name: template ironic.conf
+  template: src="ironic.conf.j2" dest="/etc/ironic/ironic.conf" backup=yes

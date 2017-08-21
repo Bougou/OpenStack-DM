@@ -1,0 +1,6 @@
+---
+
+- name: create monitor initial
+  shell: "cd {{ ceph_deploy_dir }};
+          ceph-deploy --overwrite-conf mon create-initial
+         "

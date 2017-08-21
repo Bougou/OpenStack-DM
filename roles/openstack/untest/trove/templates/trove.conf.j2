@@ -1,0 +1,59 @@
+[DEFAULT]
+log_file = /var/log/trove/trove.log
+debug = {{ osdm_log_debug }}
+rpc_backend = rabbit
+auth_strategy = keystone
+bind_host = 0.0.0.0
+bind_port = 8779
+
+trove_auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:5000/v3
+
+nova_compute_url = http://{{ osdm_os_nova_mgmt_ip }}:8774/v2
+
+cinder_url = http://{{ osdm_os_cinder_mgmt_ip }}:8776/v1
+
+# swift_url = http://{{ osdm_os_swift_mgmt_ip }}:8080/v1/AUTH_
+
+neutron_url = http://{{ osdm_os_neutron_mgmt_ip }}:9696/
+
+
+transport_url = rabbit://{{ osdm_mq_os_user }}:{{ osdm_mq_os_pass }}@{{ osdm_mq_mgmt_ip }}:5672/
+
+# with neutron enabled
+network_label_regex = .*
+
+api_paste_config = /etc/trove/api-paste.ini
+
+
+[oslo_messaging_notifications]
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ osdm_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass}}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true
+rabbit_durable_queues = true
+
+
+
+[database]
+connection = mysql://{{ osdm_os_trove_db_user }}:{{ osdm_os_trove_db_pass }}@{{ osdm_mysql_mgmt_ip }}/trove
+
+[keystone_authtoken]
+# public Identity API endpoint
+auth_uri = http://{{ osdm_os_keystone_api_ip }}:5000/
+# admin Identity API endpoint
+auth_url = http://{{ osdm_os_keystone_mgmt_ip }}:35357/
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = trove
+password = {{ osdm_user_service_pass }}
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211

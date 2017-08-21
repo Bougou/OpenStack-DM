@@ -1,0 +1,18 @@
+server {
+    listen 80;
+    server_name localhost
+                {{ ansible_default_ipv4.address }}
+                {{ osdm_radosgw_access_ext_vip }}
+                {{ osdm_radosgw_access_mgmt_vip }}
+                {{ ceph_deploy_radosgw_access_domain }};
+
+    location / {
+        proxy_pass http://127.0.0.1:7480;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+

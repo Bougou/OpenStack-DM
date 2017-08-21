@@ -1,0 +1,8 @@
+---
+
+- name: start openstack trove services on controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-trove-api
+    - openstack-trove-taskmanager
+    - openstack-trove-conductor

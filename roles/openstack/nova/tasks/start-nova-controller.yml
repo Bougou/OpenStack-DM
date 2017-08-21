@@ -1,0 +1,42 @@
+---
+
+# nova-os-compute-api substitutes nova-api
+# nova-cert is not required
+- name: start nova related service on controller
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-os-compute-api
+    - openstack-nova-consoleauth
+    - openstack-nova-conductor
+    - openstack-nova-scheduler
+
+
+- name: start httpd for nova-placement-api service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - httpd
+
+- name: start novncproxy if console type is vnc
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-novncproxy
+  when: osdm_console_type == 'vnc'
+
+- name: start spicehtml5proxy if console type is not vnc
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-spicehtml5proxy
+  when: osdm_console_type != 'vnc'
+  
+- name: start nova-network/nova-metadata-api service on controller if multi_host is False
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-network
+    - openstack-nova-metadata-api
+  when:  osdm_network_mode == 'nova-network' and not osdm_use_multihost
+
+- name: start openstack-nova-metadata-api on controller if network mode is neutron
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - openstack-nova-metadata-api
+  when: osdm_network_mode == 'neutron'

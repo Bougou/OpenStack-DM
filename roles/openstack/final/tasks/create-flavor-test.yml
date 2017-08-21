@@ -1,0 +1,19 @@
+---
+
+# test.nano can be used for cirros
+# test.small can be used for ubuntu
+# can create flavor whose ID or name is duplicated with existing flavor
+- name: create test flavor test.nano and test.small
+  shell: openstack flavor create --id 0 --vcpus 1 --ram 64 --disk 1 test.nano;
+         openstack flavor create --id 1 --vcpus 1 --ram 512 --disk 5 test.small; 
+         openstack quota set --instances 30 --class default;
+  environment:
+    OS_USERNAME: admin
+    OS_PASSWORD: "{{ osdm_user_admin_pass }}"
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    # OS_TOKEN: "{{ osdm_admin_token }}"
+    # OS_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
+    OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"

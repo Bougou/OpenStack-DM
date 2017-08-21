@@ -1,0 +1,24 @@
+---
+
+- include: 00-deploy-api-cell.yml
+  when: inventory_hostname in groups['os-controller']
+        and nova_deploy_api_cell
+  tags:
+    - 00-deploy-api-cell
+
+
+# Note: Just for adding new nova cell.
+# the first nova cell (cell1) is deployed in 00-deploy-api-cell.yml
+- include: 01-deploy-nova-cell.yml
+  when: inventory_hostname in groups['os-cell-controller']
+        and nova_deploy_nova_cell
+  tags:
+    - 01-deploy-nova-cell
+
+
+- include: 02-deploy-nova-compute.yml
+  when: inventory_hostname in groups['os-compute']
+        and nova_deploy_nova_compute
+  tags:
+    - 02-deploy-nova-compute
+

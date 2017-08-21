@@ -1,0 +1,13 @@
+---
+
+- name: install gnocchi
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - openstack-gnocchi-api
+    #- openstack-gnocchi-carbonara
+    - openstack-gnocchi-indexer-sqlalchemy
+    - openstack-gnocchi-metricd
+    - openstack-gnocchi-statsd
+    - python-gnocchi
+    - python-gnocchiclient
+

@@ -1,0 +1,28 @@
+---
+
+- name: generate nova user key pairs
+  user:
+    name: nova
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+    ssh_key_comment: "nova@compute"
+
+- name: generate nova user authorized_keys
+  shell: "{{ item }}"
+  with_items:
+    - cp /var/lib/nova/.ssh/id_rsa.pub /var/lib/nova/.ssh/authorized_keys
+    - chmod 0644 /var/lib/nova/.ssh/authorized_keys
+    - echo -e "Host *\nStrictHostKeyChecking no\nUserKnownHostsFile=/dev/null" > /var/lib/nova/.ssh/config
+
+# no need
+#- name: make sure /var/lib/nova security context
+#  file: path=/var/lib/nova seuser=system_u serole=object_r setype=ssh_home_t selevel=s0
+#  tags:
+#    - generate-nova-key
+
+- name: make sure nova owns /var/lib/nova/.ssh
+  file: path=/var/lib/nova/.ssh/ owner=nova group=nova state=directory recurse=yes
+
+- name: make sure /var/lib/nova/.ssh security context
+  file: path=/var/lib/nova/.ssh/ seuser=system_u serole=object_r setype=ssh_home_t selevel=s0 state=directory recurse=yes

@@ -1,0 +1,15 @@
+---
+
+- include: install-base.yml
+  tags:
+    - install
+
+- include: install-radosgw.yml
+  when: ceph_pkg_radosgw
+  tags:
+    - install
+
+- include: install-fs.yml
+  when: ceph_pkg_fs
+  tags:
+    - install

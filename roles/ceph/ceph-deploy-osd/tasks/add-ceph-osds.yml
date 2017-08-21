@@ -1,0 +1,23 @@
+---
+
+- name: check if ceph-deploy dir exists
+  stat: path={{ ceph_deploy_dir }}
+  register: ceph_deploy_dir_stat
+
+- name: fail when ceph-deploy dir not exist
+  fail:
+    msg: "Could not find ceph-deploy dir: {{ ceph_deploy_dir }}"
+  when: not ceph_deploy_dir_stat.stat.exists
+
+- name: add osds - disk zap
+  shell: cd {{ ceph_deploy_dir }};
+         ceph-deploy --overwrite-conf disk zap "{{ item.split(':')[0:2]|join(':') }}"
+  with_items: "{{ ceph_deploy_ceph_osd_disks | default([]) }}"
+
+- name: add osds - osd create
+  shell:  cd {{ ceph_deploy_dir }};
+          ceph-deploy --overwrite-conf osd create {{ item }};
+  with_items: "{{ ceph_deploy_ceph_osd_disks | default([]) }}"
+
+# do not use the following syntax
+# ceph-deploy --overwrite-conf osd create {% for osd in ceph_deploy_ceph_osd_disks %} {{ osd }} {% endfor %}

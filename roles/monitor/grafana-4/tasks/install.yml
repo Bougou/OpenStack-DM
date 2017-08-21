@@ -1,0 +1,23 @@
+---
+
+- name: prepare grafana repo file
+  copy: src={{ item }} dest=/etc/yum.repos.d/{{ item }}
+  with_items:
+    - grafana.repo
+    - grafana.key
+    - packagecloud.key
+
+- name: import grafana key
+  rpm_key: state=present key=/etc/yum.repos.d/{{ item }}
+  with_items:
+     - grafana.key
+     - packagecloud.key
+
+- name: install grafana packages
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - grafana
+    - python2-httpie
+# httpie are used to import dashboard via API
+
+

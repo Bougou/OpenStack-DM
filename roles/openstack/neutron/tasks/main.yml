@@ -1,0 +1,60 @@
+---
+
+- include: install.yml
+  tags:
+    - install
+
+# must config the conf before init-db
+- include: config.yml
+  tags:
+    - config
+    - config-neutron
+
+- include: config-lbaas.yml
+  when: osdm_enable_neutron_lbaas
+  tags:
+    - config
+    - config-lbaas
+
+- include: config-fwaas.yml
+  when: osdm_enable_neutron_fwaas
+  tags:
+    - config
+    - cnofig-fwaas
+
+- include: config-vpnaas.yml
+  when: osdm_enable_neutron_vpnaas
+  tags:
+    - config
+    - config-vpnaas
+
+- include: init-endpoint.yml
+  when: inventory_hostname == groups['os-controller'][0] 
+        and neutron_deploy_server
+  tags:
+    - init-endpoint
+
+- include: init-db.yml
+  when: inventory_hostname == groups['os-controller'][0]
+        and neutron_deploy_server
+  tags:
+    - init-db
+
+- include: start-neutron-server.yml
+  when: inventory_hostname in groups['os-controller']
+        and neutron_deploy_server
+  tags:
+    - start-neutron-server
+
+- include: start-neutron-network.yml
+  when: inventory_hostname in groups['os-network']
+        and neutron_deploy_network
+  tags:
+    - start-neutron-network
+
+- include: start-neutron-compute.yml
+  when: inventory_hostname in groups['os-compute']
+        and neutron_deploy_compute
+  tags:
+    - start-neutron-compute
+

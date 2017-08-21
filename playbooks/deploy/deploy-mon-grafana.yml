@@ -1,0 +1,26 @@
+---
+
+- name: Update /etc/hosts on all targets
+  hosts: all
+  tags: ['always']
+  roles:
+    - util/zerostep
+    - util/update_hosts
+
+- name: Deploy Monitor Solution - grafana
+  hosts:
+    - "{{ _hosts }}"
+  roles:
+    - role: predeploy/predeploy
+      tags: ['always']
+    - role: monitor/grafana-4
+      tags: ['grafana']
+      grafana_db_host: "{{ osdm_grafana_db_host }}"
+      grafana_db_port: "{{ osdm_grafana_db_port }}"
+      grafana_db_name: "{{ osdm_grafana_db_name }}"
+      grafana_db_user: "{{ osdm_grafana_db_user }}"
+      grafana_db_pass: "{{ osdm_grafana_db_pass }}" 
+      grafana_ds_influxdb_server_host: "{% set _influxdb_server=groups['influxdb'][0] %}{{ hostvars[_influxdb_server]['osdm_os_mgmt_if_ip'] | default('127.0.0.1') }}"
+      grafana_ds_influxdb_admin_user: "{{ osdm_influxdb_admin_user }}"
+      grafana_ds_influxdb_admin_pass: "{{ osdm_influxdb_admin_pass }}"
+

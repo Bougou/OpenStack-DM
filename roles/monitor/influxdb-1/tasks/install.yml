@@ -1,0 +1,22 @@
+---
+
+- name: prepare InfluxDB repo file
+  copy: src={{ item }} dest=/etc/yum.repos.d/{{ item }}
+  with_items:
+    - influxdb.repo
+    - influxdb.key
+
+- name: import influxdb key
+  rpm_key: state=present key=/etc/yum.repos.d/influxdb.key
+
+- name: install InfluxDB packages
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - collectd
+    - influxdb
+    - telegraf
+    - chronograf
+    - kapacitor
+
+
+# If influxdb listen on port for collectd data, it needs to access collectd types.db

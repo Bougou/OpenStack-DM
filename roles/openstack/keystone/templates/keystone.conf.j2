@@ -1,0 +1,44 @@
+[DEFAULT]
+debug = {{ osdm_log_debug }}
+admin_token = {{ osdm_admin_token }}
+rpc_backend = rabbit
+public_bind_host = {{ osdm_keystone_listen_addr }}
+admin_bind_host = {{ osdm_keystone_listen_addr }}
+
+[database]
+connection = mysql://{{ osdm_os_keystone_db_user }}:{{ osdm_os_keystone_db_pass }}@{{ osdm_mysql_mgmt_ip }}/keystone
+
+[memcache]
+servers = localhost:11211
+
+[token]
+provider = fernet
+driver = memcache
+expiration = 36000
+
+[fernet_tokens]
+key_repository = /etc/keystone/fernet-keys/
+
+[credential]
+provider = fernet
+key_repository = /etc/keystone/credential-keys/
+
+[revoke]
+driver = sql
+cache_time = 36000
+
+[cache]
+expiration_time = 86400
+{# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
+
+memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
+
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ osdm_mq_mgmt_ip }}
+rabbit_userid = {{ osdm_mq_os_user }}
+rabbit_password = {{ osdm_mq_os_pass }}
+rabbit_retry_interval = 1
+rabbit_retry_backoff = 2
+rabbit_max_retries = 0
+rabbit_ha_queues = true

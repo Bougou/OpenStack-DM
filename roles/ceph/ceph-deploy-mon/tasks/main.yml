@@ -1,0 +1,9 @@
+---
+
+- include: prepare-ceph-conf.yml
+  tags:
+    - prepare-ceph-conf
+
+- include: init-ceph-cluster.yml
+  tags:
+    - init-ceph-cluster

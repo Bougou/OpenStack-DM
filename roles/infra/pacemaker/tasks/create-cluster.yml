@@ -1,0 +1,17 @@
+---
+
+
+- name: print hostname of nodes
+  shell: echo {{ hostvars[item]['ansible_hostname'] }}
+  with_items: "{{ groups[pacemaker_cluster_node_group] }}"
+  register: _pacemaker_host
+
+- name: build pacemaker nodes list by hostname
+  set_fact: _pacemaker_nodes={{ _pacemaker_host.results | map(attribute='stdout') | list }}
+
+- name: auth hacluster user
+  shell: pcs cluster auth -u hacluster -p "{{ pacemaker_hacluster_password }}" {{ _pacemaker_nodes|join(' ') }}
+  
+- name: create cluster
+  shell: pcs cluster setup --start --name "{{ pacemaker_cluster_name }}" {{ _pacemaker_nodes|join(' ') }}
+
