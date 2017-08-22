@@ -1,0 +1,5 @@
+[grafana]
+name=grafana
+baseurl=https://mirror.tuna.tsinghua.edu.cn/grafana/yum/el7/
+enabled=1
+gpgcheck=0

@@ -1,3 +1,7 @@
+haproxy_packages:
+    - haproxy
+
+_download_packages: "{{ haproxy_packages | join(' ') }}"
 
 haproxy_bind_on_local: true
 

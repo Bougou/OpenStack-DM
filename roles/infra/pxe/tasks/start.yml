@@ -46,6 +46,3 @@
 
 
 ### iPXE dhcp setup
-
-- name: template dnsmasq
-  f

@@ -4,16 +4,8 @@
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
     - libselinux-python
-    - epel-release
     - ntp
     - iptables-services
-    - centos-release-openstack-{{ osdm_ostack_version }}
-
-# Note: centos-release-openstack-{{ osdm_ostack_version }} also installs the following packages as its dependencies:
-# centos-release-ceph-hammer or centos-release-ceph-jewel
-# centos-release-qemu-ev
-# centos-release-storage-common
-# centos-release-virt-common
 
 # Warning:
 # the ceph-deploy package from ceph repo requires python-setuptools 

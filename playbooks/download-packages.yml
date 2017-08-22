@@ -1,0 +1,22 @@
+---
+
+# the releasever should not use `7.2.1511` or like so.
+- hosts: os-controller[0]
+  vars:
+    - osdm_download_packages: true
+  roles:
+    #- role: ceph/ceph-10-pkg
+    #- role: infra/percona-server-5.6
+    #- role: infra/percona-server-5.7
+    #- role: infra/pxc-5.6
+    #- role: infra/haproxy
+    #- role: infra/keepalived
+    #- role: infra/nginx
+    #- role: infra/pacemaker
+    #- role: infra/pxe
+    #- role: infra/rabbitmq
+    #- role: monitor/collectd-5
+    #- role: monitor/grafana-4
+    #- role: monitor/influxdb-1
+    #- role: monitor/kapacitor-1
+    - role: monitor/zabbix-agent-3.2

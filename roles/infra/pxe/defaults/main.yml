@@ -5,3 +5,16 @@ pxe_tftp_base: "/var/lib/tftpboot"
 
 # normally this should point to the interface of the node provides the pxe service.
 pxe_http_host: ""
+
+pxe_packages:
+    - dhcp
+    - tftp-server
+    - xinetd
+    - syslinux-tftpboot
+    - httpd
+    - mod_ssl
+    - grub2-efi
+    - shim
+    - ipxe-bootimgs
+
+_download_packages: "{{ pxe_packages | join(' ') }}"

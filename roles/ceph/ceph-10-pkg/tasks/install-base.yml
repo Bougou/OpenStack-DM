@@ -1,26 +1,9 @@
 ---
 
-- name: install selinux bindings
-  yum: name=libselinux-python state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
-
-- name: copy Ceph gpg key
-  copy: src=ceph.key dest=/tmp/ceph.key
-
-- name: import Ceph gpg key
-  rpm_key: state=present key=/tmp/ceph.key
-
-- name: prepare Ceph release repo
-  copy: src=ceph.repo dest=/etc/yum.repos.d/ceph.repo
-
 - name: install ceph
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
-    - rsync
-    - ceph
-    - ceph-deploy
-    - librados2
-    - librbd1
-
+    - "{{ ceph_packages_base }}"
 
 # CentOS 7.2 install parted 3.1, but we need parted 3.2 due to bug:
 # http://tracker.ceph.com/issues/15176

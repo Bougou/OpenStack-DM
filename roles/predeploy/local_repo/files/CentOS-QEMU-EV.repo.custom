@@ -1,0 +1,10 @@
+# CentOS-QEMU-EV.repo
+#
+# Please see http://wiki.centos.org/SpecialInterestGroup/Virtualization for more
+# information
+
+[centos-qemu-ev]
+name=CentOS-$releasever - QEMU EV
+baseurl=http://mirrors.aliyun.com/centos/$releasever/virt/$basearch/kvm-common/
+gpgcheck=0
+enabled=0

@@ -3,3 +3,19 @@
 
 ceph_pkg_radosgw: false
 ceph_pkg_fs: false
+
+ceph_packages_base:     
+  - rsync
+  - ceph
+  - ceph-deploy
+  - librados2
+  - librbd1
+
+ceph_packages_radosgw:
+  - ceph-radosgw
+  - mailcap
+  - python-boto
+  - httpd
+  - mod_ssl
+
+_download_packages: "{{ ceph_packages_base | join(' ') }} {{ ceph_packages_radosgw | join(' ') }}"

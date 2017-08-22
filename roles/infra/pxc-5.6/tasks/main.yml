@@ -1,6 +1,21 @@
 ---
 
+- include: repo.yml
+  tags:
+    - repo
+
+- include: download.yml
+  when: osdm_download_packages
+  tags:
+    - download
+
 - include: install.yml
+  tags:
+    - install
+
+- include: configure.yml
+  tags:
+    - configure
 
 - include: bootstrap.yml
   when: inventory_hostname == pxc56_bootstrap_node

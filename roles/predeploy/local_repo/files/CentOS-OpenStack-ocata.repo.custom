@@ -1,0 +1,10 @@
+# CentOS-OpenStack-ocata.repo
+#
+# Please see http://wiki.centos.org/SpecialInterestGroup/Cloud for more
+# information
+
+[centos-openstack-ocata]
+name=CentOS-7 - OpenStack ocata
+baseurl=http://mirrors.aliyun.com/centos/7/cloud/$basearch/openstack-ocata/
+gpgcheck=0
+enabled=1

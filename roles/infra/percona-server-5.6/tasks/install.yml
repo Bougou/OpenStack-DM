@@ -1,27 +1,7 @@
 ---
 
-#- debug: var=hostvars[inventory_hostname]
-
-- name: install selinux bindings
-  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
-  with_items:
-    - libselinux-python
-
-- name: transfer percona-release package
-  copy: src={{ ps56_percona_release }} dest=/tmp/{{ ps56_percona_release }}
-
-- name: install percona-release package
-  yum: name=/tmp/{{ ps56_percona_release }} state=present disablerepo=*
-
-- name: delete temporay file
-  file: path=/tmp/{{ ps56_percona_release }} state=absent
-
 - name: install Percona-Server-56 packages
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
-    - Percona-Server-server-56
-    - percona-xtrabackup
-    - MySQL-python
-    - nc
-    - socat
+    - "{{ ps56_packages }}"
 

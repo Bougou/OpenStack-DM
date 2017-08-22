@@ -1,0 +1,17 @@
+---
+
+- name: copy influxdb gpg key
+  copy: src={{ item }} dest=/tmp/{{ item }}
+  with_items:
+    - influxdb.key
+
+- name: import influxdb gpg key
+  rpm_key: state=present key=/tmp/{{ item }}
+  with_items:
+    - influxdb.key
+
+- name: prepare influxdb release repo
+  copy: src={{ item }}.{{ osdm_install_repo_source }} dest=/etc/yum.repos.d/{{ item }}
+  with_items:
+    - influxdb.repo
+

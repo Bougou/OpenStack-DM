@@ -1,5 +1,3 @@
-ps57_percona_release: "percona-release-0.1-4.noarch.rpm"
-
 # some releases provide 'mysql', some provide 'mysqld'
 ps57_mysql_service: mysqld
 
@@ -18,3 +16,12 @@ ps57_mysql_master_host: ''
 ps57_mysql_slave_host: ''
 
 db_listen_addr: 0.0.0.0
+
+ps57_packages:
+  - Percona-Server-server-57
+  - percona-xtrabackup
+  - MySQL-python
+  - nc
+  - socat
+
+_download_packages: "{{ ps57_packages | join (' ') }}"

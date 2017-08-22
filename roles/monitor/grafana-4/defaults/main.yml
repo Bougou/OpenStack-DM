@@ -1,3 +1,10 @@
+grafana_packages:
+  - grafana
+  - python2-httpie
+  
+_download_packages: "{{ grafana_packages | join(' ') }}"
+
+
 # default web login user/pass = admin/admin
 
 # these are settings for grafana database
@@ -11,3 +18,4 @@ grafana_db_pass: grafana
 grafana_ds_influxdb_server_host: ''
 grafana_ds_influxdb_admin_user: ''
 grafana_ds_influxdb_admin_pass: ''
+

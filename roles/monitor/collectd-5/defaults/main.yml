@@ -1,3 +1,8 @@
+collectd_packages:
+  - collectd
+
+_download_packages: "{{ collectd_packages | join(' ') }}"
+
 # for collectd client
 collectd_client_send_host: '127.0.0.1'
 collectd_client_send_port: 25826

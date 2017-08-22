@@ -1,0 +1,22 @@
+---
+
+- name: disable SELinux
+  selinux: policy=targeted state=permissive
+
+- name: template my.cnf
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+
+- name: make sure mysql service stopped
+  service: name={{ item }} state=stopped
+  with_items:
+    - "{{ pxc56_mysql_service }}"
+    - "{{ pxc56_mysql_service }}@bootstrap"
+
+- name: make sure pxc56_datadir exists
+  file: path={{ pxc56_datadir }} state=directory owner=mysql group=mysql
+
+- name: cleanup pxc56_datadir
+  shell: "test -d {{ pxc56_datadir }} && cd {{ pxc56_datadir }} && rm -rf * || :"
+
+- name: run mysql_install_db
+  shell: su - mysql -s /bin/sh -c mysql_install_db

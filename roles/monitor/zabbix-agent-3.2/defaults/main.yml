@@ -1,0 +1,8 @@
+zabbix_server_host: '127.0.0.1'
+
+zabbix_agent_packages:
+  - zabbix-agent
+  - zabbix-server
+  - zabbix-get
+
+_download_packages: "{{ zabbix_agent_packages | join(' ') }}"

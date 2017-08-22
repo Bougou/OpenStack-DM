@@ -1,17 +1,4 @@
-
 ---
-
-- name: install selinux bindings
-  yum: name=libselinux-python state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
-
-- name: disable SELinux
-  selinux: policy=targeted state=permissive
-
-- name: transfer percona repo rpm
-  copy: src={{ pxc56_release_file }} dest=/tmp/{{ pxc56_release_file }}
-
-- name: prepare percona repo
-  yum: name=/tmp/{{ pxc56_release_file }} state=present
 
 - name: avoid conflict
   yum: name={{ item }} state=absent disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
@@ -22,30 +9,4 @@
 - name: install Percona-XtraDB-Cluster
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
-    - nc
-    - socat
-    - Percona-XtraDB-Cluster-56
-    - Percona-XtraDB-Cluster-server-56
-    - MySQL-python
-
-- name: template my.cnf
-  template: src=my.cnf.j2 dest=/etc/my.cnf
-
-- name: make sure mysql service stopped
-  service: name={{ item }} state=stopped
-  with_items:
-    - "{{ pxc56_mysql_service }}"
-    - "{{ pxc56_mysql_service }}@bootstrap"
-# mariadb must be stopped before to run mysql_install_db
-
-#- name: make sure mysql server started
-#  service: name=mysql@bootstrap state=restarted
-
-- name: make sure pxc56_datadir exists
-  file: path={{ pxc56_datadir }} state=directory owner=mysql group=mysql
-
-- name: cleanup pxc56_datadir
-  shell: "test -d {{ pxc56_datadir }} && cd {{ pxc56_datadir }} && rm -rf * || :"
-
-- name: run mysql_install_db
-  shell: su - mysql -s /bin/sh -c mysql_install_db
+    - "{{ pxc56_packages }}"

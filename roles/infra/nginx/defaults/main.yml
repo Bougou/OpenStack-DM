@@ -1,0 +1,4 @@
+nginx_packages:
+  - nginx
+
+_download_packages: "{{ nginx_packages | join(' ') }}"

@@ -1,3 +1,8 @@
+rabbitmq_packages:
+  - rabbitmq-server
+
+_download_packages: "{{ rabbitmq_packages | join(' ') }}"
+
 rabbitmq_listen_addr: '0.0.0.0'
 
 # If this variable is not empty, then the target will check whether its 

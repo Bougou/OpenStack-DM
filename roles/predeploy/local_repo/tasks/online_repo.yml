@@ -1,0 +1,18 @@
+---
+
+- name: make a backup dir
+  file: path=/etc/yum.repos.d/bak  state=directory
+  when: osdm_install_repo_source == 'custom'
+
+- name: disable the repo file provided by os
+  shell: mv -f /etc/yum.repos.d/*.repo /etc/yum.repos.d/bak/ || true
+  when: osdm_install_repo_source == 'custom'
+
+- name: copy custom repo file
+  copy: src={{ item }}.custom dest=/etc/yum.repos.d/{{ item }}
+  with_items:
+    - CentOS-Base.repo
+    - epel.repo
+    - CentOS-OpenStack-ocata.repo
+    - CentOS-QEMU-EV.repo
+  when: osdm_install_repo_source == 'custom'

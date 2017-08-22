@@ -6,3 +6,9 @@ pacemaker_cluster_node_group: ''
 pacemaker_hacluster_password: 'hacluster'
 # PFXGIFSKEYBUVEZDJRZB
 
+pacemaker_packages:
+    - pacemaker
+    - pcs
+    - fence-agents-all
+
+_download_packages: "{{ pacemaker_packages | join(' ') }}"

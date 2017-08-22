@@ -1,6 +1,11 @@
 ---
 
+- name: prepare online repo
+  include: online_repo.yml
+  when: osdm_install_mode == 'online'
+
 # touch the local.repo file regardless of the mode of install
+# !!This step must be behind of online_repo.yml
 - name: template local.repo
   template: src=local.repo.j2 dest=/etc/yum.repos.d/local.repo
 
@@ -9,4 +14,17 @@
 
 - include: build_local_repo.yml
   when: osdm_install_mode == 'offline'
-  
+
+# If online from official repo
+- name: install epel and openstack official repo
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - epel-release
+    - centos-release-openstack-{{ osdm_ostack_version }}
+  when: osdm_install_mode == 'online' and osdm_install_repo_source == 'official'
+# Note: centos-release-openstack-{{ osdm_ostack_version }} also installs the following packages as its dependencies:
+# centos-release-ceph-hammer or centos-release-ceph-jewel
+# centos-release-qemu-ev
+# centos-release-storage-common
+# centos-release-virt-common
+

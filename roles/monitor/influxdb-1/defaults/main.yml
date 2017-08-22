@@ -1,3 +1,12 @@
+influxdb_packages:
+  - collectd
+  - influxdb
+  - telegraf
+  - chronograf
+  - kapacitor
+
+_download_packages: "{{ influxdb_packages | join(' ') }}"
+
 influxdb_admin_user: "influxadmin"
 influxdb_admin_pass: 'influxadmin'
 influxdb_data_dir: '/data/influxdb/'
