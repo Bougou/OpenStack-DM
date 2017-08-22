@@ -36,10 +36,17 @@ osdm_ansible_rsync_opts: "--rsh 'ssh -S none -o StrictHostKeyChecking=no -F {{ i
 
 ## Installaction Mode
 # yum or local  (online or offline)
-osdm_install_mode: 'offline'
+osdm_install_mode: 'online'
 
 # use official repo or custom repo source'
-osdm_install_repo_source: 'official'
+osdm_install_repo_source: 'custom'
+
+osdm_download_packages: false
+
+osdm_download_packages_installroot: '/tmp/yumdownloaderinstallroot'
+osdm_download_packages_dir: '/opt/osdmyumdownload'
+osdm_download_packages_releasever: 7
+osdm_download_str: "yumdownloader --installroot={{ osdm_download_packages_installroot }} --releasever={{ osdm_download_packages_releasever }} --resolve --destdir {{ osdm_download_packages_dir }}"
 
 # Define the directory on the Ansible Host to store the provideded local repo packages.
 # Ususally you download a osdm_local_repo_packages.tar.gz from a website, and untar it
