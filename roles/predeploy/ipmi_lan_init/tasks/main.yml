@@ -1,5 +1,10 @@
 ---
 
+- include: download.yml
+  when: osdm_download_packages
+  tags:
+    - download
+
 - name: check the existence of file .ipmi_lan_init.finished
   stat: path=/root/.ipmi_lan_init.finished
   register: ipmi_lan_init_finished

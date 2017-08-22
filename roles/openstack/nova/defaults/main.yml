@@ -1,3 +1,40 @@
 nova_deploy_api_cell: false
 nova_deploy_nova_cell: false
 nova_deploy_nova_compute: false
+
+os_nova_controller_packages:
+  - openstack-nova-api
+  - openstack-nova-scheduler
+  - openstack-nova-conductor
+  - openstack-nova-cert
+  - openstack-nova-console
+  - openstack-nova-novncproxy
+  - openstack-nova-spicehtml5proxy
+  - spice-html5
+  - python-novaclient
+  - openstack-nova-placement-api
+  - httpd
+  - mod_wsgi
+  - mod_ssl
+
+os_nova_cell_packages:
+  - openstack-nova-conductor
+  - openstack-nova-scheduler
+
+os_nova_compute_packages:
+  - sysfsutils
+  - qemu-kvm-ev
+  - libvirt
+  - libvirt-daemon-config-network
+  - libvirt-daemon-config-nwfilter
+  - openstack-nova-compute
+  - openstack-ceilometer-compute
+
+# don't install 'qemu-kvm' package.
+
+os_nova_network_packages:
+  - conntrack-tools
+  - openstack-nova-network
+  - openstack-nova-api
+
+_download_packages: "{{ (os_nova_controller_packages + os_nova_cell_packages + os_nova_compute_packages + os_nova_network_packages) | join(' ') }}"

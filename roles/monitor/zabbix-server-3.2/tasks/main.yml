@@ -1,0 +1,23 @@
+---
+
+- include: repo.yml
+  tags:
+    - repo
+
+- include: download.yml
+  when: osdm_download_packages
+  tags:
+    - download
+
+- include: install.yml
+  tags:
+    - install
+
+- include: init-db.yml
+  run_once: yes
+  tags:
+    - init-db
+
+- include: start.yml
+  tags:
+    - start

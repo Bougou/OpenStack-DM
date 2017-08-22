@@ -1,0 +1,11 @@
+os_keystone_packages:
+  - openstack-keystone
+  - python-keystone
+  - python-keystoneclient
+  - httpd
+  - mod_ssl
+  - mod_wsgi
+  - memcached
+  - python-memcached
+
+_download_packages: "{{ os_keystone_packages | join(' ') }}"

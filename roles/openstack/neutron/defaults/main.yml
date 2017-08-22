@@ -1,3 +1,28 @@
 neutron_deploy_server: false
 neutron_deploy_network: false
 neutron_deploy_compute: false
+
+os_neutron_packages:
+  - ebtables
+  - ipset
+  - conntrack-tools
+  - openvswitch
+  - python-openvswitch
+  - openstack-neutron
+  - openstack-neutron-ml2
+  - python-neutronclient
+  - openstack-neutron-openvswitch
+  - openstack-neutron-linuxbridge
+
+os_neutron_lbaas_packages:
+  - openstack-neutron-lbaas
+  - openstack-neutron-lbaas-ui
+
+os_neutron_fwaas_packages:
+  - openstack-neutron-vpnaas
+  - python-neutron-vpnaas
+
+os_neutron_vpnaas_packages:
+  - openstack-neutron-fwaas
+ 
+_download_packages: "{{ (os_neutron_packages + os_neutron_lbaas_packages + os_neutron_fwaas_packages + os_neutron_vpnaas_packages) | join(' ') }}"

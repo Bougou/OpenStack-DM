@@ -1,5 +1,4 @@
 .idea/
 .DS_Store
-.ssh/
 clusters/*
 !clusters/example/

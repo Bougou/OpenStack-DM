@@ -1,0 +1,16 @@
+---
+
+- name: copy zabbix gpg key
+  copy: src={{ item }} dest=/tmp/{{ item }}
+  with_items:
+    - zabbix.key
+
+- name: import zabbix gpg key
+  rpm_key: state=present key=/tmp/{{ item }}
+  with_items:
+    - zabbix.key
+
+- name: prepare zabbix release repo
+  copy: src={{ item }}.{{ osdm_install_repo_source }} dest=/etc/yum.repos.d/{{ item }}
+  with_items:
+    - zabbix.repo

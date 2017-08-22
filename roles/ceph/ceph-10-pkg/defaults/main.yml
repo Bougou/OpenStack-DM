@@ -18,4 +18,4 @@ ceph_packages_radosgw:
   - httpd
   - mod_ssl
 
-_download_packages: "{{ ceph_packages_base | join(' ') }} {{ ceph_packages_radosgw | join(' ') }}"
+_download_packages: "{{ (ceph_packages_base + ceph_packages_radosgw) | join(' ') }}"

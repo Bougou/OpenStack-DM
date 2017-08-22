@@ -1,5 +1,6 @@
 - include: install-nova-compute.yml
   tags:
+    - install
     - install-nova-compute
 
 - include: config-nova-compute.yml

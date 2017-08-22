@@ -1,35 +1,15 @@
 ---
 
-- hosts: cluster-proxy[0]
+- hosts: "{{ _hosts }}"
   tasks:
-      - name: make sure temporary dir exist on cluster proxy node
-        file: path={{ osdm_local_repo_packages_proxy }}/packages/ state=directory
-  tags: ['always']
-
-# make sure {{ osdm_local_repo_packages_proxy }}/packages/ exist on the Proxy Node
-# ! Note: Must use `serial: 1`. It might cause the same rpm file to corrupt when rsync from
-# multiple host.
-- name: fetch all rpms from targets
-  #hosts: all
-  hosts: "{{ from_hosts }}"
-  tags: fetch-all
-  roles:
-    - role: helper/fetch-rpm-packages
-      tags: ['fetch-rpm-packages']
-  serial: 1
-
-- hosts: cluster-proxy[0]
-  tags: ['fetch-from-cluster-proxy']
-  tasks:
-      - name: execute createrepo on the proxy node
-        shell: createrepo {{ osdm_local_repo_packages_proxy }}/packages/
-      - name: fetch from cluster proxy node to ansible local
-        synchronize:
-          mode: pull
-          src: "{{ osdm_local_repo_packages_proxy }}/packages/"
-          dest: "{{ osdm_local_repo_packages }}/packages/"
-          delete: yes
-          recursive: yes  
-          rsync_opts:
-            - "{{ osdm_ansible_rsync_opts }}"
-
+    - name: execute createrepo
+      shell: createrepo {{ osdm_local_repo_packages_proxy }}/packages/
+    - name: fetch from cluster proxy node to ansible local
+      synchronize:
+        mode: pull
+        src: "{{ osdm_local_repo_packages_proxy }}/packages/"
+        dest: "{{ osdm_local_repo_packages }}/packages/"
+        delete: yes
+        recursive: yes  
+        rsync_opts:
+          - "{{ osdm_ansible_rsync_opts }}"

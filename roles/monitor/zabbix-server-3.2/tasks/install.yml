@@ -1,0 +1,6 @@
+---
+
+- name: install zabbix packages on server
+  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
+  with_items:
+    - "{{ zabbix_server_packages }}"

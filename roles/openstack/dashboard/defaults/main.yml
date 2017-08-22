@@ -1,0 +1,9 @@
+os_horizon_packages:
+  - httpd
+  - mod_ssl
+  - mod_wsgi
+  - memcached
+  - python-memcached
+  - openstack-dashboard
+
+_download_packages: "{{ os_horizon_packages | join(' ') }}"

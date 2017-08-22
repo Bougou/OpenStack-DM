@@ -1,0 +1,18 @@
+# /usr/share/doc/zabbix-server-mysql-3.0.3/create.sql.gz
+zabbix_mysql_script_file: "/usr/share/doc/zabbix-server-mysql-3.2.24/create.sql.gz"
+
+zabbix_server_packages:
+  - zabbix-agent
+  - zabbix-server-mysql
+  - zabbix-web-mysql
+  - zabbix-sender
+  - zabbix-get
+
+_download_packages: "{{ zabbix_server_packages | join(' ') }}"
+
+zabbix_db_host: 127.0.0.1
+zabbix_db_port: 3306
+zabbix_db_name: zabbix
+zabbix_db_user: zabbix
+zabbix_db_pass: zabbix
+zabbix_time_zone: "Asia/Shanghai"

@@ -1,0 +1,5 @@
+ipmi_packages:
+  - ipmitool
+  - OpenIPMI
+
+_download_packages: "{{ ipmi_packages | join(' ') }}"

@@ -1,0 +1,9 @@
+zabbix_server_host: '127.0.0.1'
+
+zabbix_proxy_packages:
+  - zabbix-agent
+  - zabbix-proxy-mysql
+  - zabbix-sender
+  - zabbix-get
+
+_download_packages: "{{ zabbix_proxy_packages | join(' ') }}"

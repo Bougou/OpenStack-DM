@@ -3,6 +3,7 @@
 - include: install-nova-controller.yml
   #when: inventory_hostname in groups['os-controller']
   tags:
+    - install
     - install-nova-controller
 
 - include: config-nova-controller.yml

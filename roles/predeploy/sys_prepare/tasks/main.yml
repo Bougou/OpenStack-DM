@@ -1,0 +1,16 @@
+---
+
+- include: download.yml
+  when: osdm_download_packages
+  tags:
+    - download
+
+- name: check the existence of file .sys_prepare.finished
+  stat: path=/root/.sys_prepare.finished
+  register: sys_prepare_finished
+  tags:
+    - always
+
+# run.yml will create `.sys_prepare.finished` finally
+- include: run.yml
+  when: not sys_prepare_finished.stat.exists 

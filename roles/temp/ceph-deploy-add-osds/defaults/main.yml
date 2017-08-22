@@ -1,9 +1,0 @@
-ceph_deploy_dir: /root/ceph-deploy
-
-ceph_deploy_osd_disks: []
-
-# list value, set to [] when empty
-# ceph_deploy_osd_disks:
-  # - n1:vdb
-  # - n2:vdb
-  # - n3:vdb

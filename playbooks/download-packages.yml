@@ -19,4 +19,15 @@
     #- role: monitor/grafana-4
     #- role: monitor/influxdb-1
     #- role: monitor/kapacitor-1
-    - role: monitor/zabbix-agent-3.2
+    #- role: monitor/zabbix-agent-3.2
+    #- role: monitor/zabbix-proxy-3.2
+    #- role: monitor/zabbix-server-3.2
+    #- role: openstack/common
+    #- role: openstack/cinder
+    #- role: openstack/dashboard
+    #- role: openstack/glance
+    #- role: openstack/keystone
+    #- role: openstack/neutron
+    #- role: openstack/nova
+    #- role: predeploy/ipmi_lan_init
+    - role: predeploy/sys_prepare

@@ -1,0 +1,6 @@
+os_glance_packages:
+  - openstack-glance
+  - python-glance
+  - python-glanceclient
+
+_download_packages: "{{ os_glance_packages | join(' ') }}"

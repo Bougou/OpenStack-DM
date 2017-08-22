@@ -1,0 +1,6 @@
+os_common_packages:
+  - openstack-selinux
+  - openstack-utils
+  - python-openstackclient
+
+_download_packages: "{{ os_common_packages | join(' ') }}"

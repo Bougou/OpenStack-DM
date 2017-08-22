@@ -3,10 +3,4 @@
 - name: install openstack-dashboard
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
-    - httpd
-    - mod_ssl
-    - mod_wsgi
-    - memcached
-    - python-memcached
-    - openstack-dashboard
-
+    - "{{ os_horizon_packages }}"

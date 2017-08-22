@@ -2,6 +2,7 @@
   #when: inventory_hostname in groups['os-cell-controller']
   #when: osdm_os_nova_cells[osdm_os_nova_cell_name]['standalone_cell_controllers']
   tags:
+    - install
     - install-cell-controller
 
 - include: config-cell-controller.yml

@@ -1,0 +1,6 @@
+os_cinder_packages:
+  - openstack-cinder
+  - python-cinder
+  - python-cinderclient
+
+_download_packages: "{{ os_cinder_packages | join(' ') }}"

@@ -1,0 +1,4 @@
+---
+
+- name: download packages
+  shell: "{{ osdm_download_str }} {{ _download_packages }}"

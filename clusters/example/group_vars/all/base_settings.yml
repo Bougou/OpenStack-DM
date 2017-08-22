@@ -73,7 +73,7 @@ osdm_enable_repo: "{% if osdm_install_mode == 'offline' %}local{% else %}{% endi
 # yum --disablerepo=* --enablerepo=local install
 
 
-# To resolve problem in os_prepare role.
+# To resolve problem in sys_prepare role.
 osdm_disable_repo_python_setuptools: "{% if osdm_install_mode == 'offline' %}*{% else %}*{% endif %}"
 osdm_enable_repo_python_setuptools: "{% if osdm_install_mode == 'offline' %}local{% else %}base{% endif %}"
 

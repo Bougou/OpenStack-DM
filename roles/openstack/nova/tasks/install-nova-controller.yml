@@ -3,45 +3,11 @@
 - name: install nova on controller
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
-    - openstack-nova-api
-    - openstack-nova-scheduler
-    - openstack-nova-conductor
-    - openstack-nova-cert
-    - openstack-nova-console
-    - openstack-nova-novncproxy
-    - openstack-nova-spicehtml5proxy
-    - spice-html5
-    - python-novaclient
-    - openstack-nova-placement-api
-  tags:
-    - install
-
-# 
-#    - spice-server
-#    - spice-protocol
-#
- 
-- name: install nova placement on controller
-  yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
-  with_items:
-    - openstack-nova-placement-api
-    - httpd
-    - mod_wsgi
-    - mod_ssl
-  tags:
-    - install
-
-- name: copy placement httpd-wsgi file
-  copy: src=00-nova-placement-api.conf dest=/etc/httpd/conf.d/00-nova-placement-api.conf backup=yes
-  tags:
-    - install
+    - "{{ os_nova_controller_packages }}"
 
 - name: install nova-network on controller
   yum: name={{ item }} state=present disablerepo={{ osdm_disable_repo }} enablerepo={{ osdm_enable_repo }}
   with_items:
-    - conntrack-tools
-    - openstack-nova-network
-    - openstack-nova-api
+    - "{{ os_nova_network_packages }}"
   when: osdm_network_mode == 'nova-network' and not osdm_use_multihost
-  tags:
-    - install
+
