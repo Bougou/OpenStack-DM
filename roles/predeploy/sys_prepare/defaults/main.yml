@@ -15,7 +15,7 @@ sys_prepare_handy_packages: [
   psmisc, lrzsz, iftop, telnet, iotop, bash-completion,
   pssh, pciutils, OpenIPMI, ipmitool, libsemanage-python,
   policycoreutils-python, libselinux-python, yum-utils,
-  jq, openldap-clients, bc, createrepo]
+  jq, openldap-clients, bc, createrepo, time]
 
 _download_packages: "{{ (sys_prepare_base_packages + sys_prepare_pythonsetup_packages + sys_prepare_handy_packages) | join(' ') }}"
 
