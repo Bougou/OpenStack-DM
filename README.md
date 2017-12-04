@@ -1,4 +1,4 @@
-`osdm` is an OpenStack Deploy Manager using Ansible specifically for CentOS 7.
+OpenStack-DM (`osdm`) is an OpenStack Deploy Manager using Ansible specifically for CentOS 7.
 
 > Frankly speaking, the deployment future of openstack is kolla and docker container. But for people who are not so familar with docker container, the traditional operating system builtin package management tool (yum or apt) seems more friendly.
 
