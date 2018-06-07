@@ -2,4 +2,3 @@
 
 - name: template fwaas_driver.ini
   template: src=fwaas_driver.ini.j2 dest=/etc/neutron/fwaas_driver.ini backup=yes
-

@@ -11,7 +11,7 @@
     url: "{{ httpd_download_url }}"
     dest: /tmp/{{ httpd_image }}
   when: osdm_install_mode == 'online'
-  
+
 - name: transfer script
   copy: src=upload-image.sh dest=/tmp/upload-image.sh
 
@@ -38,4 +38,3 @@
   with_items:
     - "/tmp/httpd.raw"
     - "/tmp/upload-image-httpd.sh"
-

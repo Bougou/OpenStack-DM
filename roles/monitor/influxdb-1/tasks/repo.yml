@@ -14,4 +14,3 @@
   copy: src={{ item }}.{{ osdm_install_repo_source }} dest=/etc/yum.repos.d/{{ item }}
   with_items:
     - influxdb.repo
-

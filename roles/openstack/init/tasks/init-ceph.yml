@@ -1,17 +1,17 @@
 ---
 
 - name: synchronize ceph configuration and admin key from ceph monitor to target
-  synchronize: 
-    src: /etc/ceph/{{ item }} 
+  synchronize:
+    src: /etc/ceph/{{ item }}
     dest: /etc/ceph/{{ item}}
   with_items:
     - ceph.conf
-    - ceph.client.admin.keyring 
+    - ceph.client.admin.keyring
   delegate_to: "{{ groups['ceph-mon'][0] }}"
 
 - name: create ceph pools for openstack
   shell: "ceph osd pool create {{ item.pool_name }} {{ item.pool_pgnum }}"
-  with_items: 
+  with_items:
     - { pool_name: "{{ osdm_ceph_glance_pool }}", pool_pgnum: "{{ osdm_ceph_glance_pool_pgnum }}" }
     - { pool_name: "{{ osdm_ceph_nova_pool }}", pool_pgnum: "{{ osdm_ceph_nova_pool_pgnum }}" }
     - { pool_name: "{{ osdm_ceph_cinder_pool }}", pool_pgnum: "{{ osdm_ceph_cinder_pool_pgnum }}" }
@@ -28,9 +28,9 @@
     - "{{ osdm_ceph_gnocchi_pool }}"
 
 - name: setup ceph client authentication - glance
-  shell: ceph auth get-or-create client.{{ osdm_ceph_glance_user }} mon "allow r" 
-         osd "allow class-read object_prefix rbd_children, 
-              allow rwx pool={{ osdm_ceph_glance_pool }}" > /tmp/os_ceph_init.log 
+  shell: ceph auth get-or-create client.{{ osdm_ceph_glance_user }} mon "allow r"
+         osd "allow class-read object_prefix rbd_children,
+              allow rwx pool={{ osdm_ceph_glance_pool }}" > /tmp/os_ceph_init.log
 
 ## nova/cinder all use this ceph client.
 - name: setup ceph client authentication - cinder
@@ -50,4 +50,3 @@
   shell: ceph auth get-or-create client.{{ osdm_ceph_gnocchi_user }} mon "allow r"
          osd "allow class-read object_prefix rbd_children,
               allow rwx pool={{ osdm_ceph_gnocchi_pool }}" > /tmp/os_ceph_init.log
-

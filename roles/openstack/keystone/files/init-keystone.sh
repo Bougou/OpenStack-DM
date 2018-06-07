@@ -7,7 +7,7 @@ function get_id () {
 # domain: default
 # user: admin
 # role: admin
-# service: keystone/identity 
+# service: keystone/identity
 # was already created in keystone bootstrap
 
 # Create Project, User, Role

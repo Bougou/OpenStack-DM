@@ -37,4 +37,3 @@
 
 - name: template gnocchi.conf
   template: src="gnocchi.conf.j2" dest="/etc/gnocchi/gnocchi.conf" backup=yes
-

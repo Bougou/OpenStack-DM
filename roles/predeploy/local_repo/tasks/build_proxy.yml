@@ -6,7 +6,7 @@
 #- name: make sure local repo packages path exists on the proxy
 #  file: path={{ local_repo_packages }} state=directory
 
-# The ansible host can directly connect to the proxy node, 
+# The ansible host can directly connect to the proxy node,
 # so there's no need to provide `rsync_opts`.
 - name: sync packages to proxy from ansible host.
   # The reason to use `rsync` directly in shell instead of `synchronize` module is:

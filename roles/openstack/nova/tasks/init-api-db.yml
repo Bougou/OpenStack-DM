@@ -13,7 +13,7 @@
     - nova_cell0
     - nova_placement
     - nova_cell1
-    
+
     # the nova_cell1 must be created here, can not be created by init-cell-db
     # because the mysql_user module changes the permission of nova user.
 

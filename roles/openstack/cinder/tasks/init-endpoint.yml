@@ -22,5 +22,4 @@
 
 # Just on the host of os-controller[0]
 - name: remove the temporary script file
-  file: path=/tmp/init-endpoint_cinder.sh state=absent  
-
+  file: path=/tmp/init-endpoint_cinder.sh state=absent

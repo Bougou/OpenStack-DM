@@ -5,7 +5,7 @@
 
 - name: generate host entry for /etc/hosts
   shell: admin_ip={{ item }};
-         mgmt_ip=$(/usr/bin/generate_new_addr.py $admin_ip {{ osdm_os_mgmt_net }} | awk -F'/' '{print $1}');         
+         mgmt_ip=$(/usr/bin/generate_new_addr.py $admin_ip {{ osdm_os_mgmt_net }} | awk -F'/' '{print $1}');
          echo "$mgmt_ip {{ hostvars[item]['ansible_hostname'] }}"
   with_items:
     - "{{ groups['all']|reject('match', osdm_cluster_proxy_addr_inner)|list }}"

@@ -21,4 +21,3 @@
       zabbix_db_user: "{{ osdm_zabbix_db_user }}"
       zabbix_db_pass: "{{ osdm_zabbix_db_pass }}"
       zabbix_time_zone: "Asia/Shanghai"
-

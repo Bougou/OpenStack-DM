@@ -17,4 +17,3 @@
 - include: start.yml
   tags:
     - aodh-start
-

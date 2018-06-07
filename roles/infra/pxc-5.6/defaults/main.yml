@@ -8,7 +8,7 @@ pxc56_datadir: /var/lib/mysql
 
 # pxc56_stream_port: 9999
 
-# using this fact name to derive the ip address 
+# using this fact name to derive the ip address
 # for use of sst.
 pxc56_sst_ip_fact_name: 'ansible_default_ipv4'
 
@@ -19,7 +19,7 @@ pxc56_bootstrap_node: '127.0.0.1'
 
 db_listen_addr: 0.0.0.0
 
-pxc56_packages: 
+pxc56_packages:
   - nc
   - socat
   - Percona-XtraDB-Cluster-56

@@ -38,14 +38,14 @@
   with_items: "{{ sys_prepare_sysctl_entries }}"
 
 - name: setup limits.conf
-  pam_limits: 
+  pam_limits:
     domain: "{{ item.split()[0] }}"
     limit_type: "{{ item.split()[1] }}"
     limit_item: "{{ item.split()[2] }}"
     value: "{{ item.split()[3] }}"
   with_items: "{{ sys_prepare_pam_limits }}"
 
-- name: set rsyslog listen to udp 127.0.0.1:514 
+- name: set rsyslog listen to udp 127.0.0.1:514
   blockinfile:
     dest: /etc/rsyslog.conf
     insertbefore: BOF

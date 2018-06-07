@@ -16,7 +16,7 @@ token=$(curl -s -X POST -H "Content-Type: application/json" -H "Cache-Control: n
 }' "$zabbix_api_url" | jq -r .result)
 
 
-curl -s -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -d '{       
+curl -s -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -d '{
     "jsonrpc": "2.0",
     "method": "action.get",
     "params": {
@@ -113,4 +113,3 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -d
   "auth": "'"$token"'",
   "id": 1
 }' "$zabbix_api_url"
-

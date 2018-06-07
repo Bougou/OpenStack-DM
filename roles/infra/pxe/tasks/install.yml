@@ -1,7 +1,7 @@
 ---
 
 - name: install pxe packages
-  yum: name={{ item }} state=present 
+  yum: name={{ item }} state=present
   with_items:
     - "{{ pxe_packages }}"
 

@@ -59,7 +59,7 @@ stor_nic_ovs_brname=$(make_ovs_brname "$osdm_node_nics_stor_if")
 clear_ovsbr_and_patch $stor_nic_ovs_brname "br-stor"
 
 
-# If osdm_node_nics_admin_if is shared with other function nics, the clear 
+# If osdm_node_nics_admin_if is shared with other function nics, the clear
 # process did not remove the OVSPatchPort on the ovsbridge `ovsbr-ethX`
 # shared by admin network and other function networks.
 # So, restart network service to remove the patch port on the ovsbridge.

@@ -41,7 +41,7 @@
   with_items:
     - { file: 'kvm_intel.conf', content: 'options kvm_intel nested=1' }
     - { file: 'kvm_amd.conf', content: 'options kvm_amd nested=1' }
-    
+
 - name: template nova.conf
   template: src=nova.conf.j2 dest=/etc/nova/nova.conf backup=yes
 

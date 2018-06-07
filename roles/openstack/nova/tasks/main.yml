@@ -24,4 +24,3 @@
         and nova_deploy_nova_compute
   tags:
     - 02-deploy-nova-compute
-

@@ -16,7 +16,7 @@
 
 - name: start mysql service
   service: name={{ ps57_mysql_service }} state=running
-  
+
 - name: get ip address of master host
   # shell: "echo {{ hostvars[master_host_name][ps57_ms_ip_fact_name]['address'] }}"
   shell: "echo {{ hostvars[ps57_mysql_master_host][ps57_ms_ip_fact_name]['address'] }}"
@@ -47,4 +47,3 @@
 
 - name: start slave replication
   shell: mysql -e "start slave;"
-

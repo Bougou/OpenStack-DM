@@ -8,4 +8,3 @@
 
 - name: execute script to create grafana datasource
   shell: (</dev/tcp/127.0.0.1/3000) 2>/dev/null && bash /tmp/create-ds.sh
-

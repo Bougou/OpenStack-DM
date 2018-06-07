@@ -38,5 +38,3 @@ sys_prepare_pam_limits:
   - "* hard nproc 65535"
   - "* soft nofile 1048576"
   - "* hard nofile 1048576"
-
-

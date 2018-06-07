@@ -15,7 +15,7 @@
 #   with_items:
 #     - openstack-manila-share
 #     - python2-PyMySQL
-#     # - samba 
+#     # - samba
 #   when: inventory_hostname in groups['manila-share']
 
 

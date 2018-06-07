@@ -13,7 +13,7 @@
 
 - name: ln nfs-server to nfs-kernel-server
   file:
-    src: /usr/lib/systemd/system/nfs-server.service 
+    src: /usr/lib/systemd/system/nfs-server.service
     dest: /usr/lib/systemd/system/nfs-kernel-server.service
     state: link
     owner: root
@@ -27,7 +27,7 @@
     - python2-PyMySQL
   tags:
     - install
-    # - samba 
+    # - samba
   # when: inventory_hostname in groups['manila-share']
 
 - name: template malina.conf
@@ -41,7 +41,7 @@
   with_items:
     - lvm2-lvmetad
     - nfs-server
-      
+
 ## prepare manila-volumes volume group
 
 - name: start openstack manila share services on manila share node

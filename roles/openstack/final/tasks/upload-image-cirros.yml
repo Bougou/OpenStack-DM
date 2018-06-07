@@ -10,7 +10,7 @@
     url: "{{ cirros_download_url }}"
     dest: /tmp/{{ cirros_image }}
   when: osdm_install_mode == 'online'
-  
+
 - name: transfer script
   copy: src=upload-image.sh dest=/tmp/upload-image.sh
 
@@ -37,4 +37,3 @@
   with_items:
     - "/tmp/cirros.raw"
     - "/tmp/upload-image-cirros.sh"
-

@@ -1,5 +1,5 @@
 ---
 
 - name: create default volume type
-  shell: source /root/keystone-rc.admin; 
-         openstack volume type show {{ osdm_cinder_backend.type }} || openstack volume type create {{ osdm_cinder_backend.type }} --description "Default Volume Type" --public --property volume_backend_name={{ osdm_cinder_backend.type }} 
+  shell: source /root/keystone-rc.admin;
+         openstack volume type show {{ osdm_cinder_backend.type }} || openstack volume type create {{ osdm_cinder_backend.type }} --description "Default Volume Type" --public --property volume_backend_name={{ osdm_cinder_backend.type }}

@@ -20,4 +20,3 @@
 
 - name: create the influxadmin user
   shell: /usr/bin/influx -execute "create user {{ influxdb_admin_user }} with password '{{ influxdb_admin_pass }}' with all privileges"
-

@@ -5,7 +5,7 @@ _download_packages: "{{ rabbitmq_packages | join(' ') }}"
 
 rabbitmq_listen_addr: '0.0.0.0'
 
-# If this variable is not empty, then the target will check whether its 
+# If this variable is not empty, then the target will check whether its
 # inventory_hostname is equal to this variable value.
 # If not equal, the target will join rabbitmq cluster with this node.
 rabbitmq_master_addr: ''

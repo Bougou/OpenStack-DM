@@ -23,14 +23,14 @@
     state: directory
     group: root
     owner: root
-    mode: "0755" 
+    mode: "0755"
 
 - name: apply rabbitmq resource limits (systemd)
   template: src=limits.conf.j2 dest=/etc/systemd/system/rabbitmq-server.service.d/limits.conf
-  
+
 - name: reload systemd daemon
   shell: "systemctl daemon-reload"
-  
+
 - name: start and enable RabbitMQ service
   service: name="rabbitmq-server" state=started enabled=yes
 

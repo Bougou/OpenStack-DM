@@ -7,5 +7,3 @@ Before you can use `offline` mode, you should prepare ***all the packages (rpm f
 ## `playbooks/download-packages.yml`
 
 The playbook `download-packages.yml` can be used to download all packages needed by the `osdm` project.
-
-

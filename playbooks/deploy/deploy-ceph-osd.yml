@@ -23,6 +23,6 @@
       ceph_deploy_dir: "{{ osdm_ceph_deploy_dir }}"
       ceph_deploy_ceph_osd_disks: "{{ osdm_ceph_osd_disks }}"
 
-# If you run this playbook multiple times to add more osds into 
-# the ceph cluster, each time you run it, you shoudl override 
+# If you run this playbook multiple times to add more osds into
+# the ceph cluster, each time you run it, you shoudl override
 # osdm_ceph_osd_disks variable to contain those added disks.

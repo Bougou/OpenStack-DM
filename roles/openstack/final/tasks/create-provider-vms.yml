@@ -19,5 +19,3 @@
 
 - name: remove the temporary file
   file: path=/tmp/create-provider-vms.sh state=absent
-
-

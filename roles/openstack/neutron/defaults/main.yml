@@ -24,5 +24,5 @@ os_neutron_fwaas_packages:
 
 os_neutron_vpnaas_packages:
   - openstack-neutron-fwaas
- 
+
 _download_packages: "{{ (os_neutron_packages + os_neutron_lbaas_packages + os_neutron_fwaas_packages + os_neutron_vpnaas_packages) | join(' ') }}"

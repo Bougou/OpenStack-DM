@@ -10,6 +10,6 @@
         src: "{{ osdm_local_repo_packages_proxy }}/packages/"
         dest: "{{ osdm_local_repo_packages }}/packages/"
         delete: yes
-        recursive: yes  
+        recursive: yes
         rsync_opts:
           - "{{ osdm_ansible_rsync_opts }}"

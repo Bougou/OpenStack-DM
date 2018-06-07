@@ -10,4 +10,3 @@
   with_items:
     - "{{ os_nova_network_packages }}"
   when: osdm_network_mode == 'nova-network' and not osdm_use_multihost
-

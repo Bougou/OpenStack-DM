@@ -25,5 +25,3 @@
       kapacitor_admin_user: "{{ osdm_influxdb_admin_user }}"
       kapacitor_admin_pass: "{{ osdm_influxdb_admin_pass }}"
       kapacitor_data_dir: "{{ osdm_kapacitor_data_dir }}"
-
-

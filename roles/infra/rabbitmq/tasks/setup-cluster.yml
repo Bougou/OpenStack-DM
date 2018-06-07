@@ -13,4 +13,3 @@
 - include: ha-config.yml
   when: inventory_hostname in groups[rabbitmq_cluster_group_name]
         and inventory_hostname != rabbitmq_master_addr
-

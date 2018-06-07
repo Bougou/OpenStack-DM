@@ -50,6 +50,3 @@ openstack service create --name placement --description "OpenStack Placement Ser
 openstack endpoint create --region RegionOne placement public http://$osdm_os_nova_api_ip:8778
 openstack endpoint create --region RegionOne placement internal http://$osdm_os_nova_mgmt_ip:8778
 openstack endpoint create --region RegionOne placement admin http://$osdm_os_nova_mgmt_ip:8778
-
-
-

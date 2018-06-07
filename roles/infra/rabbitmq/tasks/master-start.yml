@@ -8,4 +8,3 @@
 # register **cluster_master** to indicate the node is clustered
 - name: starting rabbitmq app on master
   command: rabbitmqctl start_app
-

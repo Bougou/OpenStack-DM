@@ -5,4 +5,3 @@
   with_items:
     - openstack-ironic-api
     - openstack-ironic-conductor
-    

@@ -5,7 +5,7 @@
   file: path=/tmp/grafana state=absent
 
 - name: transfer dashboard
-  copy: src=dashboard dest=/tmp/grafana 
+  copy: src=dashboard dest=/tmp/grafana
 
 - name: print dashboard
   shell: cd /tmp/grafana/dashboard && ls
@@ -16,7 +16,7 @@
 - name: modify dashboard
   shell: sed -i 's/${DS_INFLUXDB}/ds_influxdb/g' /tmp/grafana/dashboard/{{ item }}
   with_items: "{{ ls_grafana_dashboard.stdout_lines }}"
-  
+
 - name: import dashboard
   shell: cd /tmp/grafana/dashboard;
         /usr/bin/http --auth admin:admin get http://127.0.0.1:3000/api/search | jq -r .[].title | grep -sq "^{{ item | replace('.json', '') }}$" \

@@ -7,4 +7,3 @@
     - cloudkitty-processor
     - httpd
   when: inventory_hostname in groups['os-controller']
-

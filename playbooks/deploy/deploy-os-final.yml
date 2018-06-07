@@ -9,5 +9,5 @@
 
     # - role: openstack/final
     #   tags: ['os-final']
-    #   when: "inventory_hostname == groups['os-controller'][0] 
+    #   when: "inventory_hostname == groups['os-controller'][0]
     #         and osdm_enable_final_test"

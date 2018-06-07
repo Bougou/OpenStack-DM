@@ -31,4 +31,3 @@
 
 - name: populate ironic database
   shell: su ironic -s /bin/sh -c "ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema"
-

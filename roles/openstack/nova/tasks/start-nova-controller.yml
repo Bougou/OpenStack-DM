@@ -27,7 +27,7 @@
   with_items:
     - openstack-nova-spicehtml5proxy
   when: osdm_console_type != 'vnc'
-  
+
 - name: start nova-network/nova-metadata-api service on controller if multi_host is False
   service: name={{ item }} state=restarted enabled=yes
   with_items:

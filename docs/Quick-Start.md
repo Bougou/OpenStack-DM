@@ -6,13 +6,13 @@
 
 You need ***Three*** kinds of machines:
 
-1. A deploy machine. 
+1. A deploy machine.
 
 > This is where you put the source code of this project. Your Mac or a linux machine are both OK.
 
 2. A cluster proxy machine.
 
-> 1. The deploy machine will connect to all target nodes (OpenStack Controller nodes, OpenStack Compute nodes, Ceph Storage ndoes ...) to apply ansible playbooks, but there may be network connection problems for the deploy machine to reach ***ALL those target nodes*** directly. 
+> 1. The deploy machine will connect to all target nodes (OpenStack Controller nodes, OpenStack Compute nodes, Ceph Storage ndoes ...) to apply ansible playbooks, but there may be network connection problems for the deploy machine to reach ***ALL those target nodes*** directly.
 > 2. So you MUST choose a proxy machine to play the intermediate role between the deploy machines and all target nodes.
 > 3. A cluster proxy machine is a ***MUST*** option even though the network connection problem does not exist.
 > 4. The deploy machine use the outer address (`osdm_cluster_proxy_addr_outer`) of the proxy machine to connect to it . And the proxy machine use the innner address (`osdm_cluster_proxy_addr_inner`) to connect to (be connected with) all target nodes.
@@ -39,7 +39,7 @@ yum install -y python-ipaddress
 
 see: [Prepare Network and Nic Settings](./Prepare-Network-and-Nic-Settings.md)
 
-## SSH 
+## SSH
 
 There is a `ssh.cfg` file under cluster environment directory which controls how ansible deploy machine connects to the proxy machine and all target machines.
 
@@ -136,7 +136,7 @@ osdm_ceph_osd_disks:
 ## Test connection of the nodes
 
 ```bash
-$ ansible-playbook -i allinone ../../playbooks/helper/check-conn.yml 
+$ ansible-playbook -i allinone ../../playbooks/helper/check-conn.yml
 ```
 
 ## Prepare the node
@@ -192,7 +192,7 @@ $ ansible-playbook -i allinone ../../playbooks/deploy/deploy-os-controller.yml
 ## Deploy OpenStack Network Nodes
 
 ```bash
-$ ansible-playbook -i allinone ../../playbooks/deploy/deploy-os-network.yml 
+$ ansible-playbook -i allinone ../../playbooks/deploy/deploy-os-network.yml
 ```
 
 ## Deploy OpenStack Compute Nodes
@@ -226,4 +226,3 @@ $ ansible-playbook -i allinone ../../playbooks/deploy/deploy-mon-collectd-server
 
 $ ansible-playbook -i allinone ../../playbooks/deploy/deploy-mon-collectd-client.yml -e _hosts=172.30.15.98
 ```
-

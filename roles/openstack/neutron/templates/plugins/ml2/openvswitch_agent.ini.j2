@@ -33,7 +33,7 @@ integration_bridge = {{ osdm_ovsbr_intergration }}
 tunnel_bridge = {{ osdm_ovsbr_tunnel }}
 local_ip = {{ osdm_os_ten_if_ip }}
 use_veth_interconnection = False
-of_interface = native 
+of_interface = native
 # native or ovs-ofctl
 of_listen_address = 127.0.0.1
 of_listen_port = 6633
@@ -46,7 +46,7 @@ ovsdb_connection = tcp:127.0.0.1:6640
 bridge_mappings = {%- if osdm_enable_external_network and osdm_enable_provider_network -%}
 {{ osdm_external_physnet_label }}:{{ osdm_ovsbr_external }},{{ osdm_provider_physnet_label }}:{{ osdm_ovsbr_provider }}
                 {%- elif osdm_enable_external_network -%}
-{{ osdm_external_physnet_label }}:{{ osdm_ovsbr_external }}             
+{{ osdm_external_physnet_label }}:{{ osdm_ovsbr_external }}
                 {%- elif osdm_enable_provider_network -%}
 {{ osdm_provider_physnet_label }}:{{ osdm_ovsbr_provider }}
                 {%- endif %}
@@ -60,4 +60,3 @@ firewall_driver = {% if osdm_ml2_agent == 'br' -%}
                   {%- else -%}
                   neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
                   {% endif %}
-

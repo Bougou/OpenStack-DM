@@ -40,4 +40,3 @@
       pxc56_mysql_sst_user: "{{ osdm_mysql_sst_user }}"
       pxc56_mysql_sst_pass: "{{ osdm_mysql_sst_pass }}"
       pxc56_sst_ip_fact_name: "osdm_os_mgmt_if_ipv4"
-

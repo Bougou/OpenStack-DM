@@ -24,4 +24,3 @@
     - { key: 'prefix', value: "{{ osdm_os_ext_if_addr | ipaddr('prefix') }}" }
     - { key: 'netmask', value: "{{ osdm_os_ext_if_addr | ipaddr('netmask') }}" }
   no_log: true
-  

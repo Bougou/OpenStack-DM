@@ -7,4 +7,3 @@
     - role: util/zerostep
     - role: util/update_hosts
     - role: predeploy/predeploy
-

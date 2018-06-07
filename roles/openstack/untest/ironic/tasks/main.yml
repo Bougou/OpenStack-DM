@@ -21,4 +21,3 @@
   when: inventory_hostname == groups['os-controller'][0]
   tags:
     - init-endpoint
-    

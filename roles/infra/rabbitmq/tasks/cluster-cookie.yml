@@ -17,5 +17,3 @@
     group: rabbitmq
     mode: 0400
     backup: yes
-
-

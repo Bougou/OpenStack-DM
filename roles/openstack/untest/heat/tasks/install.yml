@@ -15,4 +15,3 @@
   template: src=heat.conf.j2 dest=/etc/heat/heat.conf backup=yes
   tags:
     - config
-

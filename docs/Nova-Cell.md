@@ -22,4 +22,3 @@
 # - 4. add 'os-cell-controller_cell1' as child of group [os-cell-controller]
 # - 5. add 'os-cell-compute_cell1' as child of group [os-compute]
 ```
-

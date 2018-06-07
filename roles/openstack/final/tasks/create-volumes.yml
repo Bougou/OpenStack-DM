@@ -20,5 +20,3 @@
 
 - name: remove the temporary file
   file: path=/tmp/create-volumes.sh state=absent
-
-

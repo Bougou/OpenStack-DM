@@ -35,7 +35,7 @@
 -A INPUT -p tcp -m multiport --dports 2049,111,875,892 -j ACCEPT
 -A INPUT -p udp -m multiport --dports 2049,111,875,892 -j ACCEPT
 -A INPUT -p tcp -m multiport --dports 139,445,4379 -j ACCEPT
--A INPUT -p udp -m multiport --dports 137,138 -j ACCEPT 
+-A INPUT -p udp -m multiport --dports 137,138 -j ACCEPT
 
 ## HA
 # keepalived vrrp / pacemaker corosync 2224,3121,21064,u5405
@@ -105,7 +105,7 @@
 -A INPUT -p tcp -m multiport --dports 49152:49261 -j ACCEPT
 
 ## Monitor
-# nagios 5666 / collectd 25826 / 
+# nagios 5666 / collectd 25826 /
 # influxdb 8083,8086,8088 / chronograf 8888 / kapacitor 9092
 # grafana 3000 / grafana-nginx 8080
 # zabbix 10050,10051
@@ -152,4 +152,3 @@
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
 COMMIT
-

@@ -9,4 +9,3 @@
 
 - name: template cloudkitty.conf
   template: src="cloudkitty.conf.j2" dest="/etc/cloudkitty/cloudkitty.conf" backup=yes
-

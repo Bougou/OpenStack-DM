@@ -18,7 +18,7 @@ Tenant | ten | 20 | only for neutron Tenant
 Provider | pro | 21 | only for neutron Provider
 Storage | stor | 22 | only for ceph cluster network
 
-## Prepare Admin Network 
+## Prepare Admin Network
 
 The Admin Network is used for ansible deploy machine (proxy machine) to connect to target nodes to execute ansible tasks. The network configuration of it is neither managed nor changed by our deploy procedure. So you need to set the ip address infomation of the Admin network in advance on each node.
 
@@ -88,23 +88,23 @@ Examples of `ansible group_vars file` or `ansbile host_vars file`:
 # osdm_configure_ext_if: true
 # osdm_node_nics_ext_if: "eth0"
 # osdm_node_nics_ext_dedicated: false
- 
+
 # osdm_configure_mgmt_if: true
 # osdm_node_nics_mgmt_if: "eth0"
 # osdm_node_nics_mgmt_dedicated: false
- 
+
 # osdm_configure_data_if: false
 # osdm_node_nics_data_if: "eth0"
 # osdm_node_nics_data_dedicated: false
- 
+
 # osdm_configure_stor_if: true
 # osdm_node_nics_stor_if: "eth0"
 # osdm_node_nics_stor_dedicated: false
- 
+
 # osdm_configure_ten_if: false
 # osdm_node_nics_ten_if: "eth0"
 # osdm_node_nics_ten_dedicated: false
- 
+
 # osdm_configure_pro_if: false
 # osdm_node_nics_pro_if: "eth0"
 # osdm_node_nics_pro_dedicated: false
@@ -114,7 +114,7 @@ Examples of `ansible group_vars file` or `ansbile host_vars file`:
 
 All those networks can share a single nic interface, or can share a bonded two interfaces, or can use their dedicated interfaces if you have enough nic interfaces. If a network does not use an interface or a boned two interfaces exclusively, you should set `osdm_node_nics_<name>_dedicated` to false.
 
-You can set them like this: 
+You can set them like this:
 
 ```yaml
 # The management network share eth0 interface with other networks.

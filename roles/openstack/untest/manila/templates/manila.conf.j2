@@ -26,9 +26,9 @@ connect_share_server_to_tenant_network = true
 service_instance_network_helper_type = neutron
 
 
-# 
+#
 #admin_network_id = bcfa7385-f1e2-43fe-aa64-00dbdef4162e
-#admin_subnet_id = 3d405c9c-eaa5-445d-8b1e-7e86ad12b4e5   
+#admin_subnet_id = 3d405c9c-eaa5-445d-8b1e-7e86ad12b4e5
 
 
 [backend_lvm]
@@ -115,4 +115,3 @@ password = {{ osdm_user_service_pass }}
 {# memcache_servers = {% for _host in groups['os-controller'] %}{{ hostvars[_host]["osdm_os_mgmt_if_ip"] }}:11211{% if not loop.last %},{% endif %}{% endfor %} #}
 
 memcache_servers = {{ osdm_os_access_mgmt_vip }}:11211
-

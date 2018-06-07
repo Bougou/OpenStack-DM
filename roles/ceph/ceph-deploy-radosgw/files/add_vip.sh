@@ -6,4 +6,4 @@ function add_vip() {
     ip addr add ${_ip}/32 dev $_if
     arping -I $_if -c 3 -U $_ip
 }
-export -f add_vip  
+export -f add_vip

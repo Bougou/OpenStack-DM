@@ -29,4 +29,3 @@
   shell: su heat -s /bin/sh -c "heat-manage db_sync"
   tags:
     - db_sync
-

@@ -30,4 +30,3 @@
   with_items:
     - "StrictHostKeyChecking no"
     - "UserKnownHostsFile /dev/null"
-

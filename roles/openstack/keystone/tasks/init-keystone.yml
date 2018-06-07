@@ -21,4 +21,3 @@
 # Just on the host of os-controller[0]
 - name: remove the temporary script file
   file: path=/tmp/init-keystone.sh state=absent
-

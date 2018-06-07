@@ -36,7 +36,7 @@
 - name: set facts - STOR
   include: set-facts-ip-stor.yml
   #when: osdm_configure_stor_if
-  #      and osdm_ceph_cluster_network_dedicated 
+  #      and osdm_ceph_cluster_network_dedicated
   #      and inventory_hostname in groups['ceph-all']
   static: no
 
@@ -56,5 +56,5 @@
   #      and osdm_network_mode == 'neutron'
   #      and osdm_os_pro_net != 'none'
   static: no
-       
+
 - template: src=calc_ip.txt.j2 dest=/tmp/calc_ip.txt

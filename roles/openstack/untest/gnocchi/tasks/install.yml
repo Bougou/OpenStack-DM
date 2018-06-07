@@ -10,4 +10,3 @@
     - openstack-gnocchi-statsd
     - python-gnocchi
     - python-gnocchiclient
-

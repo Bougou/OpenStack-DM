@@ -34,5 +34,3 @@
 
 - name: pupulate neutron vpnaas database
   shell: su neutron -s /bin/sh -c "neutron-db-manage --subproject neutron-lbaas upgrade head"
-
-  

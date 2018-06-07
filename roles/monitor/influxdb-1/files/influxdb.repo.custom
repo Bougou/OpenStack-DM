@@ -4,4 +4,3 @@ baseurl = https://mirror.tuna.tsinghua.edu.cn/influxdata/yum/el7-x86_64/
 enabled = 1
 gpgcheck = 1
 gpgkey = https://repos.influxdata.com/influxdb.key
-

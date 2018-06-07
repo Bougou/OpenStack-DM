@@ -20,7 +20,7 @@
 
     - role: ceph/ceph-10-pkg
       ceph_pkg_radosgw: true
-    
+
     - role: infra/nginx
       when: osdm_webserver == 'nginx'
 

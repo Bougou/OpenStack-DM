@@ -8,4 +8,3 @@
     state: present
   run_once: true
   with_items: "{{ rabbitmq_ha_policy }}"
-

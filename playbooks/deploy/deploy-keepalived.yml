@@ -18,4 +18,3 @@
       keepalived_vrrp_interface: "{{ osdm_node_nics_admin_if }}"
       keepalived_chk_proxy_enable: "{{ osdm_enable_haproxy }}"
       keepalived_router_id: "{{ osdm_keepalived_router_id }}"
-

@@ -31,5 +31,3 @@
 
 - name: remove the temporary file
   file: path=/tmp/create-tenant-networks.sh state=absent
-
-

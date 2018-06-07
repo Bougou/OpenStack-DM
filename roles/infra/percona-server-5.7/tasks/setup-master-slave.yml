@@ -1,11 +1,10 @@
 ---
 
 - include: slave-receive.yml
-  when: inventory_hostname == ps57_mysql_slave_host 
+  when: inventory_hostname == ps57_mysql_slave_host
 
 - include: master-send.yml
-  when: inventory_hostname == ps57_mysql_master_host 
+  when: inventory_hostname == ps57_mysql_master_host
 
 - include: slave-reconfigure.yml
-  when: inventory_hostname == ps57_mysql_slave_host 
-
+  when: inventory_hostname == ps57_mysql_slave_host

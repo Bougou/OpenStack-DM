@@ -11,4 +11,3 @@
 
 - name: remove temporary add_vip script
   file: path=/tmp/add_vip.sh state=absent
-

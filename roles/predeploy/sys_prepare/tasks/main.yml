@@ -13,4 +13,4 @@
 
 # run.yml will create `.sys_prepare.finished` finally
 - include: run.yml
-  when: not sys_prepare_finished.stat.exists 
+  when: not sys_prepare_finished.stat.exists

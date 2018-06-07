@@ -4,7 +4,7 @@
   when: osdm_download_packages
   tags:
     - download
-    
+
 - include: install.yml
   tags:
     - install
@@ -34,7 +34,7 @@
     - config-vpnaas
 
 - include: init-endpoint.yml
-  when: inventory_hostname == groups['os-controller'][0] 
+  when: inventory_hostname == groups['os-controller'][0]
         and neutron_deploy_server
   tags:
     - init-endpoint
@@ -62,4 +62,3 @@
         and neutron_deploy_compute
   tags:
     - start-neutron-compute
-

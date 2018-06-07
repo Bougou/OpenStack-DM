@@ -23,4 +23,3 @@
 
 - name: template collectd network_client.conf
   template: src=client.conf.j2 dest=/etc/collectd.d/client.conf
-  

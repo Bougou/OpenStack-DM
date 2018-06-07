@@ -13,11 +13,11 @@
   register: ceph_conf_exists
 
 - name: failed the role if ceph.conf is found in deploy directory
-  fail: 
+  fail:
     msg: "Find ceph.conf in {{ ceph_deploy_dir }}, may be there already exists an ceph cluster.
           If you really want to deploy a new cluster, you should manually clear the deploy directory.
           And you might require to execute the following commands to clear something.
-          ceph-deploy purge <host>, 
+          ceph-deploy purge <host>,
           ceph-deploy purgedata <host>
           "
   when: ceph_conf_exists.stat.exists
@@ -32,8 +32,8 @@
                             {%- endif %}    \
           {% for mon in groups['ceph-mon'] %} {{ hostvars[mon]['ansible_hostname'] }} {% endfor %}
 
-# We don't use --public-network option.         
-# --public-network {{ osdm_os_mgmt_net }} 
+# We don't use --public-network option.
+# --public-network {{ osdm_os_mgmt_net }}
 
 - name: update preset ceph conf parameters
   lineinfile:
@@ -52,4 +52,3 @@
     state: present
   with_items: "{{ ceph_deploy_ceph_conf_params | default([]) }}"
   tags: update-ceph-conf
-

@@ -6,7 +6,7 @@ prevent_arp_spoofing = True
 
 
 ### Note:
-## When create an external network, neutron-linuxbridge-agent automatically 
+## When create an external network, neutron-linuxbridge-agent automatically
 ## creates an qbr* bridge and bridge it to the physical interface, and it
 ## also update the IP info (if existed) from the physical interface to the qbr.
 ## So, here we just specify this mapping information, nothing else needs to do.
@@ -18,7 +18,7 @@ prevent_arp_spoofing = True
 physical_interface_mappings = {% if osdm_enable_external_network and osdm_enable_provider_network -%}
 {{ osdm_external_physnet_label }}:{{ osdm_node_nics_ext_if }},{{ osdm_provider_physnet_label }}:{{ osdm_node_nics_pro_if }}
                 {%- elif osdm_enable_external_network -%}
-{{ osdm_external_physnet_label }}:{{ osdm_node_nics_ext_if }}           
+{{ osdm_external_physnet_label }}:{{ osdm_node_nics_ext_if }}
                 {%- elif osdm_enable_provider_network -%}
 {{ osdm_provider_physnet_label }}:{{ osdm_node_nics_pro_if }}
                 {%- endif %}
@@ -39,5 +39,3 @@ local_ip = {{ osdm_os_ten_if_ip }}
 ## !!!! NOT COMPLETED
 l2_population = {% if osdm_l3_router_mode == 'l3ha' %}False{% else %}True{% endif %}
 arp_responder = True
-
-

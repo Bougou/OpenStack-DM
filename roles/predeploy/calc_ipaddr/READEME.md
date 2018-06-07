@@ -2,7 +2,7 @@
 
 This role is used to caculate the ip address of the management, external, storage, tenant, provider network for the target node.
 
-At the very first, a node only has an admin network ip address configured. 
+At the very first, a node only has an admin network ip address configured.
 
 We set the other networks subnet information under group_vars. So we use a python script to caculate out the other ip addresses.
 
@@ -24,6 +24,3 @@ The output facts will be used mainly in two places.
 
 1. Used by `set_ipaddr` role  to configure ip address on the specific network interface.
 2. Used in `nova.conf` etc configuration file to fill in address.
-
-
-

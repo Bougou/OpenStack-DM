@@ -9,5 +9,3 @@
 
 - name: make sure iptables started
   service: name=iptables state=started enabled=yes
-
-  

@@ -11,7 +11,7 @@
 # osdm_ft_admin_net2_range
 # osdm_ft_admin_net2_gateway
 
-## ExternalNet 
+## ExternalNet
 ##
 
 openstack network create \
@@ -32,7 +32,7 @@ openstack subnet create \
     --dns-nameserver $osdm_ft_dns2 \
     ExtNetFlat-v4-Subnet-1
 
-    
+
 ## AdminNet - 1
 ##
 
@@ -66,7 +66,7 @@ openstack subnet create \
 
 
 ## AdminRouter
-## 
+##
 
 openstack router create AdminRouter-1
 openstack router create AdminRouter-2
@@ -76,7 +76,3 @@ openstack router add subnet AdminRouter-2 AdminNet2-v4-Subnet-1
 
 neutron router-gateway-set AdminRouter-1 ExtNetFlat
 neutron router-gateway-set AdminRouter-2 ExtNetFlat
-
-
-
-

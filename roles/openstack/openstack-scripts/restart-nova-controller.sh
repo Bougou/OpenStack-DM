@@ -16,6 +16,3 @@ for srv in $srv_list; do
   echo "Restart service: $srv"
   systemctl restart $srv
 done
-
-
-

@@ -4,7 +4,7 @@
 ceph_pkg_radosgw: false
 ceph_pkg_fs: false
 
-ceph_packages_base:     
+ceph_packages_base:
   - rsync
   - ceph
   - ceph-deploy

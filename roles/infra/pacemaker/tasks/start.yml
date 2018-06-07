@@ -9,4 +9,3 @@
 
 - name: set hacluster password
   user: name=hacluster password={{ _password.stdout_lines[0] }} createhome=no
-

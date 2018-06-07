@@ -31,4 +31,3 @@
 
 - name: touch /root/.set_ipaddr.finished file
   file: path=/root/.set_ipaddr.finished state=touch
-  

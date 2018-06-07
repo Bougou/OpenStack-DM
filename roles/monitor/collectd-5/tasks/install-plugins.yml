@@ -11,4 +11,3 @@
   with_items:
     - collectd-ceph
   when: collectd_ceph_enable
-

@@ -1,7 +1,7 @@
 grafana_packages:
   - grafana
   - python2-httpie
-  
+
 _download_packages: "{{ grafana_packages | join(' ') }}"
 
 
@@ -18,4 +18,3 @@ grafana_db_pass: grafana
 grafana_ds_influxdb_server_host: ''
 grafana_ds_influxdb_admin_user: ''
 grafana_ds_influxdb_admin_pass: ''
-

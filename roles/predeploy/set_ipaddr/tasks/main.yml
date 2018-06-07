@@ -8,5 +8,4 @@
 
 # run.yml will create `.set_ipaddr.finished` finally
 - include: run.yml
-  when: not set_ipaddr_finished.stat.exists 
-  
+  when: not set_ipaddr_finished.stat.exists

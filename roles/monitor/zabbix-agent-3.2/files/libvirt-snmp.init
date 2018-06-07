@@ -3,9 +3,9 @@
 # description: Starts libvirtMib SNMP subagent
 # Make sure that snmpd is running with the correct agentX-options
 # processname: libvirtMib_subagent
- 
+
 . /etc/init.d/functions
- 
+
 start() {
         echo -n "Starting libvirt-snmp: "
         echo -e "\n"
@@ -14,7 +14,7 @@ start() {
         touch /var/lock/subsys/libvirt-snmp
         return 0
 }
- 
+
 stop() {
         echo -n "Shutting down libvirt-snmp: "
         killproc libvirtMib_subagent
@@ -22,7 +22,7 @@ stop() {
         rm -f /var/lock/subsys/libvirt-snmp
         return 0
 }
- 
+
 case "$1" in
     start)
         start

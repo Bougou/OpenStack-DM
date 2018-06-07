@@ -29,4 +29,3 @@
 
 - name: touch /root/.ipmi_lan_init.finished file
   file: path=/root/.ipmi_lan_init.finished state=touch
-

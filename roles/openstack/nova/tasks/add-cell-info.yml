@@ -14,4 +14,3 @@
   delegate_to: "{{ groups['os-controller'][0] }}"
   # when: "inventory_hostname != groups['os-controller'][0]"
   run_once: yes
-

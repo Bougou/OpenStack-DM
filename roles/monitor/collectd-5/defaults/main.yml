@@ -9,7 +9,7 @@ collectd_client_send_port: 25826
 collectd_interval: 10
 
 # You can overrite these variable in ansible group or host variables.
-# eg: you can specify 'collectd-server' group name in ansible inventory and 
+# eg: you can specify 'collectd-server' group name in ansible inventory and
 # set these collectd_server_* varaible for hosts in collectd-server group.
 # collectd network/server plugin
 # collectd server will be listened on UDP 25826 to receive metric send by collectd client.

@@ -18,5 +18,3 @@
 
 - name: remove the temporary file
   file: path=/tmp/create-tenant-vms-httpd.sh state=absent
-
-

@@ -22,7 +22,7 @@
 
 # Just on the host of os-controller[0]
 - name: remove the temporary script file
-  file: path=/tmp/init-endpoint_cloudkitty.sh state=absent  
+  file: path=/tmp/init-endpoint_cloudkitty.sh state=absent
 
 
 # assign user[cloudkitty] to project[some-project] with role[rating]
@@ -37,5 +37,3 @@
     OS_PROJECT_DOMAIN_NAME: default
     OS_AUTH_URL: "http://{{ osdm_os_keystone_mgmt_ip }}:35357/v3"
     OS_IDENTITY_API_VERSION: "{{ osdm_user_use_identity_version }}"
-
-

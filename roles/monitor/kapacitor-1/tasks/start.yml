@@ -20,4 +20,3 @@
 
 # - name: create the influxadmin user
 #   shell: /usr/bin/influx -execute "create user {{ kapacitor_admin_user }} with password '{{ kapacitor_admin_pass }}' with all privileges"
-

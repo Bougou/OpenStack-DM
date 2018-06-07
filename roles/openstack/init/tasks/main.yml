@@ -1,7 +1,7 @@
 ---
 
 - include: init-ceph.yml
-  tags: 
+  tags:
     - init-ceph
 
 - include: init-rabbitmq.yml

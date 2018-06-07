@@ -2,7 +2,7 @@
 debug = {{ osdm_log_debug }}
 
 [ml2]
-# After you configure the ML2 plug-in, 
+# After you configure the ML2 plug-in,
 # **removing values in the type_drivers option** can lead to database inconsistency.
 type_drivers = flat,vlan,vxlan,gre,geneve
 
@@ -32,7 +32,7 @@ flat_networks = {% if osdm_enable_external_network and osdm_enable_provider_netw
 network_vlan_ranges = {% if osdm_enable_external_network and osdm_enable_provider_network -%}
 {{ osdm_external_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }},{{ osdm_provider_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}
                     {%- elif osdm_enable_external_network -%}
-{{ osdm_external_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}               
+{{ osdm_external_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}
                     {%- elif osdm_enable_provider_network -%}
 {{ osdm_provider_physnet_label }}:{{ osdm_vlan_min_id }}:{{ osdm_vlan_max_id }}
                     {%- endif %}

@@ -5,4 +5,3 @@
   #with_items: "{{ groups['mysql-slave'] }}"
   with_items:
     - "{{ ps57_mysql_slave_host }}"
-

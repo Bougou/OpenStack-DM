@@ -61,10 +61,10 @@ function make_team() {
 
     nmcli con add type $_type con-name $_teamname ifname $_teamname
     nmcli con mod $_teamname ipv4.method disabled ipv6.method ignore
-   
+
     [[ $_type == 'team' ]] && nmcli con mod $_teamname team.config "{\"runner\": {\"name\": \"$_mode\"}}"
     [[ $_type == 'bond' ]] && nmcli con mod $_teamname bond.options mode=$_mode
-  
+
     # re-up the connection after modify it.
     ip link set $_teamname up
     nmcli con up $_teamname
@@ -132,16 +132,16 @@ function clear_nics() {
             # So no need to remove_dev_name
         done
 
-        _teamname=$(make_teamname team ${_node_nics[@]}) 
-        remove_con_name $_teamname 
-        remove_dev_name $_teamname 
+        _teamname=$(make_teamname team ${_node_nics[@]})
+        remove_con_name $_teamname
+        remove_dev_name $_teamname
 
-        _teamname=$(make_teamname bond ${_node_nics[@]}) 
-        remove_con_name $_teamname 
-        remove_dev_name $_teamname 
-    else 
-        remove_con_name "$_node_nics" 
-        # if nics num is equal to 1, it means this is a single hardware device.  
+        _teamname=$(make_teamname bond ${_node_nics[@]})
+        remove_con_name $_teamname
+        remove_dev_name $_teamname
+    else
+        remove_con_name "$_node_nics"
+        # if nics num is equal to 1, it means this is a single hardware device.
         # hardware device can not be deleted.
         # So there is no need to remove_dev_name
     fi
@@ -166,7 +166,7 @@ function prepare_os_if() {
     if [[ "$osdm_network_mode" == 'neutron' ]]; then
         prepare_os_if_neutron "$@"
     fi
-    
+
     if [[ "$osdm_network_mode" == 'nova-network' ]]; then
         prepare_os_if_nn "$@"
     fi
@@ -277,7 +277,7 @@ function clear_ovsbr_and_patch() {
     _name2=${_br2#*-}
 
     _patch1=${_name1}-patch-${_name2}
-    _patch2=${_name2}-patch-${_name1}   
+    _patch2=${_name2}-patch-${_name1}
 
     clear_ovsbr ${_br2}
     rm_ifcfg_file ifcfg-${_br2}
@@ -339,7 +339,7 @@ export -f make_ovs_brname
 
 
 # The reason to use ifcfg- style to create ovs bridge instead of using `ovs-vsctl` command is:
-# Authough bridges created by `ovs-vsctl`persists after system reboot, 
+# Authough bridges created by `ovs-vsctl`persists after system reboot,
 # but the ip address infomation still will be lost if it's not written to ifcfg- file.
 # So we use ifcfg- file to create the ovs bridge and assign ip address.
 
@@ -380,7 +380,7 @@ OVS_BRIDGE=${_ovs_brname}
 BOND_IFACES="${_nics}"
 OVS_OPTIONS="bond_mode=${_mode}"
 ONBOOT=yes
-BOOTPROTO=none 
+BOOTPROTO=none
 EOF
 }
 export -f make_ovs_bondport
@@ -445,7 +445,7 @@ function make_ovs_br_from_nics() {
     # just two fields in the string means <metric> is ignored.
     # just one fields in the string means <gateway> is ignored.
     # format of ipaddr is: `192.168.1.1/24`
-    # 
+    #
     _ip_info_ipaddr=$(echo $_ip_info | awk '{print $1}')
     _ip_info_gateway=$(echo $_ip_info | awk '{print $2}')
     _ip_info_metric=$(echo $_ip_info | awk '{print $3}')
@@ -475,7 +475,7 @@ export -f make_ovs_br_from_nics
 # make_ovs_br_from_br ovsbr-eth0-eth1 br-ex 17 "192.168.17.11/24 192.168.17.254 -1"
 # using ovs patch to connect ovsbr1 and ovsbr2
 # ovsbr1 should already exist, ovsbr2 will be created.
-# 
+#
 function make_ovs_br_from_br() {
     _br1="$1"
     _br2="$2"
@@ -490,15 +490,15 @@ function make_ovs_br_from_br() {
     [[ X"$_ip_info_ipaddr" == "Xnone" ]] && _ip_info_ipaddr=''
     [[ X"$_ip_info_gateway" == "Xnone" ]] && _ip_info_gateway=''
     [[ X"$_ip_info_metric" == "Xnone" ]] && _ip_info_metric=''
-    
+
 
     if [[ $_tag != "none" ]]; then
         # set ovs port to `access mode`
-        _ovs_options="tag=${_tag}" 
+        _ovs_options="tag=${_tag}"
     else
         ## ovs port default to `trunk mode`
         # _ovs_options="trunk=10,11" explicitly specify the allowed vlan
-        _ovs_options="" 
+        _ovs_options=""
    fi
 
     _name1=${_br1#*-}
@@ -579,7 +579,7 @@ function prepare_os_if_neutron() {
     fi
     # If nics number > 1, like `eth0 eth1` -> ovsbr-eth0-eth1, ovsbond-eth0-eth1
     # If nics number = 1, like `eth0` -> ovsport-eth0, ovsbr-eth0
-    
+
     # There's no ip addr information for all above interfaces.
 
     _node_nics_x_if=$(make_ovs_brname "$_node_nics_x_if")
@@ -592,4 +592,3 @@ function prepare_os_if_neutron() {
     make_ovs_br_from_br "$_node_nics_x_if" $_os_x_if $_os_x_vlan "$_ip_info"
 }
 export -f prepare_os_if_neutron
-

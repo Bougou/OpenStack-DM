@@ -23,4 +23,3 @@ openstack service create --name cloudkitty --description "OpenStack Rating Servi
 openstack endpoint create --region RegionOne rating public http://$osdm_os_cloudkitty_api_ip:8889
 openstack endpoint create --region RegionOne rating internal http://$osdm_os_cloudkitty_mgmt_ip:8889
 openstack endpoint create --region RegionOne rating admin http://$osdm_os_cloudkitty_mgmt_ip:8889
-

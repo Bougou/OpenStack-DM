@@ -28,7 +28,7 @@
     osdm_ft_pro_vlan1_gateway: "{{ osdm_ft_pro_vlan1_gateway }}"
     osdm_ft_pro_vlan1_pool_start: "{{ osdm_ft_pro_vlan1_pool_start }}"
     osdm_ft_pro_vlan1_pool_end: "{{ osdm_ft_pro_vlan1_pool_end }}"
-    
+
     osdm_ft_pro_vlan2: "{{ osdm_ft_pro_vlan2 }}"
     osdm_ft_pro_vlan2_range: "{{ osdm_ft_pro_vlan2_range }}"
     osdm_ft_pro_vlan2_gateway: "{{ osdm_ft_pro_vlan2_gateway }}"
@@ -37,5 +37,3 @@
 
 - name: remove the temporary file
   file: path=/tmp/create-provider-networks.sh state=absent
-
-

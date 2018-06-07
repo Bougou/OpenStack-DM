@@ -22,7 +22,7 @@
 
 # pxe image: pxelinux.0
 # pxe netboot chain: chain.c32
-# ipxe image: 
+# ipxe image:
 
 
 ## UEFI

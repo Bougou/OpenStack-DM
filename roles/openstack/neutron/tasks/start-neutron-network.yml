@@ -21,4 +21,3 @@
     - neutron-openvswitch-agent
     - neutron-ovs-cleanup
   when: osdm_ml2_agent == 'ovs'
-

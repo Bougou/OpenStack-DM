@@ -19,5 +19,3 @@
     - grafana
     - python2-httpie
 # httpie are used to import dashboard via API
-
-
